@@ -3,7 +3,7 @@ use_frameworks!
 
 source 'https://github.com/CocoaPods/Specs'
 source 'https://github.com/popcornMaster/Specs'
-source 'https://github.com/aggelos81/CocoaSpecs'
+source 'https://github.com/angryDuck2/CocoaSpecs'
 
 target "Popcorn Time" do
     pod 'Alamofire'
