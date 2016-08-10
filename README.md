@@ -10,7 +10,6 @@
 [![Slack](https://img.shields.io/badge/questions-slack-yellow.svg?style=flat)](https://popcorntimetv.slack.com/)
 [![Facebook](https://img.shields.io/badge/facebook-Popcorn%20Time-354F88.svg?style=flat)](https://www.facebook.com/PopcornTimeTv)
 [![Freenode](https://img.shields.io/badge/IRC-freenode-orange.svg?style=flat)](http://webchat.freenode.net/?channels=popcorntime)
-[![Build Status](https://travis-ci.org/PopcornTimeTV/PopcornTimeiOS.svg)](https://travis-ci.org/PopcornTimeTV/PopcornTimeiOS)
 [![License](https://img.shields.io/cocoapods/l/AFNetworking.svg)](https://github.com/PopcornTimeTV/PopcornTimeiOS/blob/master/LICENSE.md)
 
 Allow any iOS user to watch movies easily streaming from torrents, without any particular knowledge.
