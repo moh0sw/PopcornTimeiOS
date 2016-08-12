@@ -17,8 +17,8 @@ class DetailItemOverviewViewController: UIViewController, UIGestureRecognizerDel
     }
     
     @IBOutlet var headerHeightConstraint: NSLayoutConstraint!
-    @IBOutlet var scrollView: PCTScrollView?
-    @IBOutlet var tableView: PCTTableView?
+    @IBOutlet var scrollView: PCTScrollView!
+    @IBOutlet var tableView: PCTTableView!
     @IBOutlet var blurView: UIVisualEffectView!
     @IBOutlet var gradientViews: [GradientView]!
     @IBOutlet var backgroundImageView: UIImageView!
@@ -36,7 +36,7 @@ class DetailItemOverviewViewController: UIViewController, UIGestureRecognizerDel
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(updateCastStatus), name: kGCKCastStateDidChangeNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(orientationChanged), name: UIDeviceOrientationDidChangeNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(layoutNavigationBar), name: UIDeviceOrientationDidChangeNotification, object: nil)
         updateCastStatus()
         self.navigationController!.navigationBar.setBackgroundImage(UIImage(), forBarMetrics:.Default)
         self.navigationController!.navigationBar.shadowImage = UIImage()
@@ -70,25 +70,26 @@ class DetailItemOverviewViewController: UIViewController, UIGestureRecognizerDel
         }
     }
     
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        layoutNavigationBar()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         headerHeightConstraint.constant = maximumHeight
         (castButton.customView as! CastIconButton).addTarget(self, action: #selector(castButtonTapped), forControlEvents: .TouchUpInside)
     }
     
-    func orientationChanged() {
-        var scrollingView: AnyObject
-        if let tableView = tableView {
-            scrollingView = tableView
-        } else {
-            scrollingView = scrollView!
-        }
-        if headerHeightConstraint.constant < minimumHeight || scrollingView.valueForKey("programaticScrollEnabled")!.boolValue // On iPhones, status bar hides when view traits become compact so we need to force an update for the header size.
+    /// On iPhones, status bar hides when view traits become compact so we need to force an update for the header size.
+    func layoutNavigationBar() {
+        let scrollingView: UIScrollView! = tableView ?? scrollView
+        if headerHeightConstraint.constant < minimumHeight || scrollingView.valueForKey("programaticScrollEnabled")!.boolValue
         {
             headerHeightConstraint.constant = minimumHeight
         } else if headerHeightConstraint.constant > maximumHeight {
             headerHeightConstraint.constant = maximumHeight
-        } else if scrollingView.valueForKey("frame")!.CGRectValue().size.height > scrollingView.valueForKey("contentSize")!.CGSizeValue().height + scrollingView.valueForKey("contentInset")!.UIEdgeInsetsValue().bottom {
+        } else if scrollingView.frame.size.height > scrollingView.contentSize.height + scrollingView.contentInset.bottom {
             resetToEnd(scrollingView)
         }
         updateScrolling(true)
@@ -98,12 +99,7 @@ class DetailItemOverviewViewController: UIViewController, UIGestureRecognizerDel
         let translation = sender.translationInView(sender.view!.superview!)
         let offset = translation.y - lastTranslation
         let scrollDirection: ScrollDirection = offset > 0 ? .Up : .Down
-        var scrollingView: AnyObject
-        if let tableView = tableView {
-            scrollingView = tableView
-        } else {
-            scrollingView = scrollView!
-        }
+        let scrollingView: UIScrollView! = tableView ?? scrollView
     
         if sender.state == .Changed || sender.state == .Began {
             if (headerHeightConstraint.constant + offset) >= minimumHeight && scrollingView.valueForKey("programaticScrollEnabled")!.boolValue == false {
@@ -116,7 +112,7 @@ class DetailItemOverviewViewController: UIViewController, UIGestureRecognizerDel
                     updateScrolling(false)
                 }
             }
-            if headerHeightConstraint.constant == minimumHeight && scrollingView.valueForKey("isAtTop")!.boolValue
+            if headerHeightConstraint.constant == minimumHeight && scrollingView.isAtTop
             {
                 if scrollDirection == .Up {
                     scrollingView.setValue(false, forKey: "programaticScrollEnabled")
@@ -130,7 +126,7 @@ class DetailItemOverviewViewController: UIViewController, UIGestureRecognizerDel
             if headerHeightConstraint.constant > maximumHeight {
                 headerHeightConstraint.constant = maximumHeight
                 updateScrolling(true)
-            } else if scrollingView.valueForKey("frame")!.CGRectValue().size.height > scrollingView.valueForKey("contentSize")!.CGSizeValue().height + scrollingView.valueForKey("contentInset")!.UIEdgeInsetsValue().bottom {
+            } else if scrollingView.frame.size.height > scrollingView.contentSize.height + scrollingView.contentInset.bottom {
                 resetToEnd(scrollingView)
             }
             lastTranslation = 0.0
@@ -152,8 +148,8 @@ class DetailItemOverviewViewController: UIViewController, UIGestureRecognizerDel
         }
     }
     
-    func resetToEnd(scrollingView: AnyObject, animated: Bool = true) {
-        headerHeightConstraint.constant += scrollingView.valueForKey("frame")!.CGRectValue().size.height - (scrollingView.valueForKey("contentSize")!.CGSizeValue().height + scrollingView.valueForKey("contentInset")!.UIEdgeInsetsValue().bottom)
+    func resetToEnd(scrollingView: UIScrollView, animated: Bool = true) {
+        headerHeightConstraint.constant += scrollingView.frame.size.height - (scrollingView.contentSize.height + scrollingView.contentInset.bottom)
         if headerHeightConstraint.constant > maximumHeight {
             headerHeightConstraint.constant = maximumHeight
         }

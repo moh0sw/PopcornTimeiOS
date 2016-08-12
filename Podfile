@@ -22,7 +22,7 @@ target "Popcorn Time" do
     pod 'ColorArt'
     pod '1PasswordExtension'
     pod 'PopcornTorrent/iOS'
-    pod 'MobileVLCKit-unstable', '3.0.0a17'
+    pod 'MobileVLCKit-unstable', '3.0.0a10'
     pod 'SwiftyTimer'
     pod 'SRT2VTT'
 end

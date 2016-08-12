@@ -51,6 +51,7 @@ class ItemOverview: UICollectionViewController, UISearchControllerDelegate, UISe
         collectionView?.addSubview(refreshControl)
     }
     
+    
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         observeValueForKeyPath("frame", ofObject: collectionView, change: nil, context: nil) // If view size has changed while view isn't first responder, force a resize upon reappearing.

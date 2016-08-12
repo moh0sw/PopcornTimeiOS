@@ -26,7 +26,7 @@ class TVShowDetailViewController: DetailItemOverviewViewController, UITableViewD
     
     var currentSeason: Int! {
         didSet {
-            self.tableView?.reloadData()
+            self.tableView.reloadData()
         }
     }
     var currentSeasonArray = [PCTEpisode]()
@@ -35,16 +35,16 @@ class TVShowDetailViewController: DetailItemOverviewViewController, UITableViewD
         super.viewWillAppear(animated)
         WatchlistManager.episodeManager.getProgress()
         WatchlistManager.showManager.getWatched() {
-            self.tableView?.reloadData()
+            self.tableView.reloadData()
         }
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         let adjustForTabbarInsets = UIEdgeInsetsMake(0, 0, CGRectGetHeight(tabBarController!.tabBar.frame), 0)
-        tableView!.contentInset = adjustForTabbarInsets
-        tableView!.scrollIndicatorInsets = adjustForTabbarInsets
-        tableView!.rowHeight = UITableViewAutomaticDimension
+        tableView.contentInset = adjustForTabbarInsets
+        tableView.scrollIndicatorInsets = adjustForTabbarInsets
+        tableView.rowHeight = UITableViewAutomaticDimension
         navigationItem.title = currentItem.title
         titleLabel.text = currentItem.title
         infoLabel.text = "\(currentItem.year)"
@@ -63,7 +63,7 @@ class TVShowDetailViewController: DetailItemOverviewViewController, UITableViewD
                 self.seasons = seasons
                 self.currentItem.rating = rating
                 self.setUpSegmenedControl()
-                self.tableView!.reloadData()
+                self.tableView.reloadData()
             }
         } else {
             TVAPI.sharedInstance.getShowInfo(currentItem.imdbId) { (genres, status, synopsis, episodes, seasons) in
@@ -78,10 +78,10 @@ class TVShowDetailViewController: DetailItemOverviewViewController, UITableViewD
                 self.episodes = updatedEpisodes
                 self.seasons = seasons
                 self.summaryView.text = self.currentItem.synopsis
-                self.tableView!.sizeHeaderToFit()
+                self.tableView.sizeHeaderToFit()
                 self.infoLabel.text = "\(self.currentItem.year) ● \(self.currentItem.status!.capitalizedString) ● \(self.currentItem.genres![0].capitalizedString)"
                 self.setUpSegmenedControl()
-                self.tableView!.reloadData()
+                self.tableView.reloadData()
             }
         }
         backgroundImageView.af_setImageWithURL(NSURL(string: currentItem.coverImageAsString.stringByReplacingOccurrencesOfString("thumb", withString: "original"))!, placeholderImage: UIImage(named: "Placeholder"), imageTransition: .CrossDissolve(animationLength))
@@ -145,8 +145,8 @@ class TVShowDetailViewController: DetailItemOverviewViewController, UITableViewD
     
     @IBAction func segmentedControlDidChangeSegment(segmentedControl: UISegmentedControl) {
         currentSeason = segmentedControl.selectedSegmentIndex == 0 ? Int.max: seasons?[segmentedControl.selectedSegmentIndex - 1]
-        if tableView!.frame.height > tableView!.contentSize.height + tableView!.contentInset.bottom {
-            resetToEnd(tableView!)
+        if tableView.frame.height > tableView.contentSize.height + tableView.contentInset.bottom {
+            resetToEnd(tableView)
         }
     }
     
@@ -155,7 +155,7 @@ class TVShowDetailViewController: DetailItemOverviewViewController, UITableViewD
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         super.prepareForSegue(segue, sender: sender)
         if segue.identifier == "showDetail" {
-            let indexPath = tableView!.indexPathForCell(sender as! TVShowDetailTableViewCell)
+            let indexPath = tableView.indexPathForCell(sender as! TVShowDetailTableViewCell)
             let destinationController = segue.destinationViewController as! EpisodeDetailViewController
             destinationController.currentItem = currentSeasonArray[indexPath!.row]
             var allEpisodes = [PCTEpisode]()

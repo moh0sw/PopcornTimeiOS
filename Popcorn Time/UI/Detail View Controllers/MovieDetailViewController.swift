@@ -27,8 +27,8 @@ class MovieDetailViewController: DetailItemOverviewViewController, TablePickerVi
         navigationItem.title = currentItem.title
         watchedBtn.image = getWatchedButtonImage()
         let adjustForTabbarInsets = UIEdgeInsetsMake(0, 0, CGRectGetHeight(tabBarController!.tabBar.frame), 0)
-        scrollView!.contentInset = adjustForTabbarInsets
-        scrollView!.scrollIndicatorInsets = adjustForTabbarInsets
+        scrollView.contentInset = adjustForTabbarInsets
+        scrollView.scrollIndicatorInsets = adjustForTabbarInsets
         titleLabel.text = currentItem.title
         summaryView.text = currentItem.summary
         ratingView.rating = Float(currentItem.rating)

@@ -1,6 +1,6 @@
 <p align="left " >
   <img src="http://i.imgur.com/PjpFdOs.png" alt="Popcorn Time" title="Popcorn Time">
-</p> 
+</p>
 
 ## Popcorn Time for iOS
 
@@ -19,18 +19,24 @@ Allow any iOS user to watch movies easily streaming from torrents, without any p
 
 Want to report a bug, request a feature, contribute or translate Popcorn Time? Check out our in-depth guide to [Contributing to Popcorn Time](CONTRIBUTING.md).
 
-## Build Instructions ##
+## Jailbroken?
+
+[Add our Cydia Repo](cydia://url/https://cydia.saurik.com/api/share#?source=https://popcorntimetv.github.io/)
+
+## Noob?
+
+Visit our comprehensive [Build Guide](https://github.com/PopcornTimeTV/PopcornTimeiOS/wiki)
+
+## Know what you're doing?
 
 This project uses  [CocoaPods](http://cocoapods.org/). Build instructions:
 
 ``` bash
 $ git clone https://github.com/PopcornTimeTV/PopcornTimeiOS.git master
 $ cd PopcornTimeiOS/
-$ pod install
+$ swift install.swift
 $ open Popcorn Time.xcworkspace
 ```
-
-No idea what that means? Visit our more comprehensive  [Build Guide](https://github.com/PopcornTimeTV/PopcornTimeiOS/wiki)
 
 ## Versioning
 
@@ -68,6 +74,5 @@ Note: some dependencies are external libraries, which might be covered by a diff
 
 ***
 
-If you want to contact us: [hello@popcorntime.io](mailto:hello@popcorntime.sh)
 
-Copyright (c) 2014 Popcorn Time Foundation - Released under the [GPL V3 license](https://github.com/mourke/popcorn-iOS/LICENSE.md).
+Copyright (c) 2014 Popcorn Time Foundation - Released under the [GPL V3 license](https://github.com/PopcornTimeTV/PopcornTimeiOS/LICENSE.md).
