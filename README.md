@@ -21,7 +21,7 @@ Want to report a bug, request a feature, contribute or translate Popcorn Time? C
 
 ## Jailbroken?
 
-[Add our Cydia Repo](cydia://url/https://cydia.saurik.com/api/share#?source=https://popcorntimetv.github.io/)
+[Add our Cydia Repo](https://popcorntimetv.github.io/)
 
 ## Noob?
 
