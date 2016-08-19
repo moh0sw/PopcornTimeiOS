@@ -3,7 +3,7 @@
 import UIKit
 import AlamofireImage
 
-class AnimeCollectionViewController: ItemOverview, UIPopoverPresentationControllerDelegate, GenresDelegate, ItemOverviewDelegate {
+class AnimeCollectionViewController: ItemOverviewCollectionViewController, UIPopoverPresentationControllerDelegate, GenresDelegate, ItemOverviewDelegate {
     
     var anime = [PCTShow]()
     

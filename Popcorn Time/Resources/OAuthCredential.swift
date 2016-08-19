@@ -95,7 +95,7 @@ class OAuthCredential: NSObject, NSCoding {
     /**
      Creates an OAuth credential from the specified URL string, username, password and scope. 
      
-     - Important: This method **must** be run on a background thread or else it will cause your application to become completely unresponsive.
+     - Important: It is recommended that this function would be run on a background thread to stop UI from locking up..
      
      - Parameter URLString:                 The URL string used to create the request URL.
      - Parameter username:                  The username used for authentication.
@@ -126,7 +126,7 @@ class OAuthCredential: NSObject, NSCoding {
     /**
      Refreshes the OAuth token for the specified URL string, username, password and scope. 
      
-     - Important: This method **must** be run on a background thread or else it will cause your application to become completely unresponsive.
+     - Important: It is recommended that this function would be run on a background thread to stop UI from locking up..
      
      - Parameter URLString:                 The URL string used to create the request URL.
      - Parameter refreshToken:              The refresh token returned from the authorization code exchange.
@@ -150,7 +150,7 @@ class OAuthCredential: NSObject, NSCoding {
     /**
      Creates an OAuth credential from the specified URL string, code. 
      
-     - Important: This method **must** be run on a background thread or else it will cause your application to become completely unresponsive.
+     - Important: It is recommended that this function would be run on a background thread to stop UI from locking up..
      
      - Parameter URLString:                 The URL string used to create the request URL.
      - Parameter code:                      The authorization code.
@@ -176,7 +176,7 @@ class OAuthCredential: NSObject, NSCoding {
     /**
      Creates an OAuth credential from the specified parameters.
      
-     - Important: This method **must** be run on a background thread or else it will cause your application to become completely unresponsive.
+     - Important: It is recommended that this function would be run on a background thread to stop UI from locking up.
      
      - Parameter URLString:                 The URL string used to create the request URL.
      - Parameter parameters:                The parameters to be encoded and set in the request HTTP body.
@@ -193,7 +193,7 @@ class OAuthCredential: NSObject, NSCoding {
         clientSecret: String,
         useBasicAuthentication: Bool = true
         ) throws {
-        assert(!NSThread.isMainThread(), "The function: \(#function) must be run on a background thread.")
+        if NSThread.isMainThread() { print("Consider moving this method to a background thread to prevent performance loss.") }
         var headers: [String: String]?
         var parameters = parameters
         if useBasicAuthentication {
@@ -205,10 +205,11 @@ class OAuthCredential: NSObject, NSCoding {
         let semaphore = dispatch_semaphore_create(0)
         var error: NSError?
         super.init()
-        Alamofire.request(.POST, URLString, parameters: parameters, headers: headers).validate().responseJSON { response in
+        let queue = dispatch_queue_create("com.popcorn-time.response.queue", DISPATCH_QUEUE_CONCURRENT)
+        Alamofire.request(.POST, URLString, parameters: parameters, headers: headers).validate().responseJSON(queue: queue, options: .AllowFragments, completionHandler: { response in
             guard response.result.isSuccess else {
-                dispatch_semaphore_signal(semaphore)
                 error = response.result.error!
+                dispatch_async(dispatch_get_main_queue()) { dispatch_semaphore_signal(semaphore) }
                 return
             }
             let responseObject = JSON(response.result.value!)
@@ -223,7 +224,7 @@ class OAuthCredential: NSObject, NSCoding {
                 self.refreshToken = refreshToken!
             }
             
-            // Expiration is optional, but recommended in the OAuth2 spec. It not provide, assume distantFuture === never expires.
+            // Expiration is optional, but recommended in the OAuth2 spec. It not provide, assume distantFuture == never expires.
             var expireDate: NSDate? = NSDate.distantFuture()
             let expiresIn = responseObject["expires_in"].int
             if expiresIn != nil && expiresIn != NSNull() {
@@ -232,8 +233,8 @@ class OAuthCredential: NSObject, NSCoding {
             if expireDate != nil {
                 self.expiration = expireDate!
             }
-            dispatch_semaphore_signal(semaphore)
-        }
+            dispatch_async(dispatch_get_main_queue()) { dispatch_semaphore_signal(semaphore) }
+        })
         dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER)
         if error != nil { throw error!}
     }

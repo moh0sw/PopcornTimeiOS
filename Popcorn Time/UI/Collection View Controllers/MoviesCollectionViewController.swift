@@ -3,7 +3,7 @@
 import UIKit
 import AlamofireImage
 
-class MoviesCollectionViewController: ItemOverview, UIPopoverPresentationControllerDelegate, GenresDelegate, ItemOverviewDelegate {
+class MoviesCollectionViewController: ItemOverviewCollectionViewController, UIPopoverPresentationControllerDelegate, GenresDelegate, ItemOverviewDelegate {
     
     var movies = [PCTMovie]()
     

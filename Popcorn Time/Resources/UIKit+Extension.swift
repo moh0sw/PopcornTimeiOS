@@ -174,7 +174,14 @@ extension UIView {
         }
     }
     
-    private var backgroundView: UIVisualEffectView
+    var imageTransform: CGAffineTransform = CGAffineTransformMakeScale(0.5, 0.5) {
+        didSet {
+            updatedImageView.transform = imageTransform
+        }
+    }
+    
+    var backgroundView: UIVisualEffectView
+    private var updatedImageView = UIImageView()
     
     override init(frame: CGRect) {
         backgroundView = UIVisualEffectView(effect: UIBlurEffect(style: blurStyle))
@@ -192,13 +199,14 @@ extension UIView {
         backgroundView.frame = bounds
         backgroundView.userInteractionEnabled = false
         insertSubview(backgroundView, atIndex: 0)
-        let imageView = UIImageView(image: self.imageView!.image)
-        imageView.frame = self.imageView!.bounds
-        imageView.center = CGPointMake(CGRectGetMidX(bounds), CGRectGetMidY(bounds))
-        imageView.userInteractionEnabled = false
+        updatedImageView = UIImageView(image: self.imageView!.image)
+        updatedImageView.frame = self.imageView!.bounds
+        updatedImageView.center = CGPointMake(CGRectGetMidX(bounds), CGRectGetMidY(bounds))
+        updatedImageView.userInteractionEnabled = false
         self.imageView?.removeFromSuperview()
-        addSubview(imageView)
-        imageView.transform = CGAffineTransformMakeScale(0.5, 0.5)
+        addSubview(updatedImageView)
+        updatedImageView.transform = imageTransform
+        cornerRadius = frame.width/2
     }
     
     override var highlighted: Bool {
@@ -211,11 +219,6 @@ extension UIView {
         UIView.animateWithDuration(0.25, delay: 0.0, options: .CurveEaseInOut, animations: { 
             self.backgroundView.contentView.backgroundColor = tint ? UIColor.whiteColor() : self.blurTint
             }, completion: nil)
-    }
-    
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        cornerRadius = bounds.width/2
     }
 }
 
