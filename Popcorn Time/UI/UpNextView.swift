@@ -66,7 +66,7 @@ class UpNextView: UIVisualEffectView {
         updateTimer = nil
         timer.invalidate()
         timer = nil
-        self.delegate?.timerFinished()
+        delegate?.timerFinished()
     }
 
 }

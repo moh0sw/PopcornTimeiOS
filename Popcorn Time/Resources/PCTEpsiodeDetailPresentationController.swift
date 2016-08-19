@@ -40,7 +40,9 @@ class PCTEpisodeDetailPresentationController: UIPresentationController {
         super.dismissalTransitionWillBegin()
         presentedViewController.transitionCoordinator()?.animateAlongsideTransition({ [weak self] context in
             self?.dimmingView.alpha = 0
-            }, completion: nil)
+            }, completion: { [weak self] _ in
+                self?.dimmingView.removeFromSuperview()
+        })
     }
     
     override func frameOfPresentedViewInContainerView() -> CGRect {

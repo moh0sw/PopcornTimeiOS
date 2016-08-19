@@ -2,10 +2,37 @@
 
 import UIKit
 
+/**
+ Listen for PCTPickerView delegate calls.
+ */
 @objc public protocol PCTPickerViewDelegate: class {
-    optional func pickerView(pickerView: PCTPickerView, didClose selectedItems: [String: AnyObject])
+    /**
+     Called when the pickerView has been closed.
+     
+     - Parameter pickerView:    The pickerView.
+     - Parameter items:         The current selected item(s) in the pickerView. These may not have changed from the 
+                                original selected items passed in.
+     */
+    optional func pickerView(pickerView: PCTPickerView, didClose items: [String: AnyObject])
+    /**
+     Called when the pickerView is about to be closed.
+     
+     - Parameter pickerView:    The pickerView.
+     - Parameter items:         The current selected item(s) in the pickerView. These may not have changed from the 
+                                original selected items passed in.
+     */
+    optional func pickerView(pickerView: PCTPickerView, willClose items: [String: AnyObject])
+    /**
+     Called when the pickerView has been closed and it's selected items have been changed.
+     
+     - Parameter pickerView:    The pickerView.
+     - Parameter items:         The current selected item(s) in the pickerView.
+     */
+    optional func pickerView(pickerView: PCTPickerView, didChange items: [String: AnyObject])
 }
-
+/**
+ A class based on UIPickerView that handles hiding and dismissing itself from the view its added to.
+ */
 public class PCTPickerView: UIView, UIPickerViewDataSource, UIPickerViewDelegate {
     
     @IBOutlet private var view: UIView!
@@ -21,11 +48,30 @@ public class PCTPickerView: UIView, UIPickerViewDataSource, UIPickerViewDelegate
     }
     private var superView: UIView
     private var speed: Double = 0.2
+    private let dimmingView: UIView
     public private (set) var numberOfComponents: Int = 0
     public private (set) var numberOfRowsInComponets = [Int]()
-    public private (set) var selectedItems: [String]
-    public private (set) var componentDataSources: [[String: AnyObject]]
-    public private (set) var attributesForComponents: [String?]!
+    public var selectedItems: [String]
+    public var componentDataSources: [[String: AnyObject]] {
+        didSet {
+            numberOfComponents = componentDataSources.count
+            numberOfRowsInComponets.removeAll()
+            for array in componentDataSources {
+                numberOfRowsInComponets.append(array.count)
+            }
+            pickerView?.reloadAllComponents()
+        }
+    }
+    public var attributesForComponents: [String?]! {
+        didSet {
+            pickerView?.reloadAllComponents()
+        }
+    }
+    
+    public override func layoutSubviews() {
+        super.layoutSubviews()
+        layoutView()
+    }
     
     /**
      Designated Initialiser. Creates a UIPickerView with toolbar on top to handle dismissal of the view. Also handles hiding and showing animations.
@@ -35,20 +81,32 @@ public class PCTPickerView: UIView, UIPickerViewDataSource, UIPickerViewDelegate
      Parameter delegate:                    Register for `PCTPickerViewDelegate` notifications.
      Parameter selectedItems:               Data source keys that the pickerView will start on.
      Parameter attributesForComponenets:    Array of keys for NSAttributedString to customize component text style. Value
-                                            for supplied key will be taken from the corresponding componentDataSource value.
+     for supplied key will be taken from the corresponding componentDataSource value.
      */
     public init(superView: UIView, componentDataSources: [[String: AnyObject]], delegate: PCTPickerViewDelegate?, selectedItems: [String], attributesForComponents: [String?]? = nil) {
-        for array in componentDataSources {
-            numberOfComponents += 1
-            self.numberOfRowsInComponets.append(array.count)
-        }
         self.superView = superView
         self.componentDataSources = componentDataSources
         self.delegate = delegate
         self.selectedItems = selectedItems
+        self.dimmingView = {
+           let view = UIView(frame: superView.bounds)
+            view.backgroundColor = UIColor.blackColor()
+            return view
+        }()
         super.init(frame: CGRectZero)
         self.attributesForComponents = attributesForComponents ?? [String?](count:numberOfComponents, repeatedValue: nil)
-        prepareView()
+        loadNib()
+        self.hidden = true
+        let borderTop = CALayer()
+        borderTop.frame = CGRectMake(0.0, toolbar.frame.height - 1, toolbar.frame.width, 0.5);
+        borderTop.backgroundColor = UIColor(red:0.17, green:0.17, blue:0.17, alpha:1.0).CGColor
+        toolbar.layer.addSublayer(borderTop)
+        layoutView()
+        insertSubview(dimmingView, belowSubview: view)
+        dimmingView.alpha = 0
+        dimmingView.hidden = true
+        dimmingView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(cancel)))
+        view.frame.origin.y = UIScreen.mainScreen().bounds.height
     }
     /**
      This method of initialisation is not supported.
@@ -61,25 +119,37 @@ public class PCTPickerView: UIView, UIPickerViewDataSource, UIPickerViewDelegate
      */
     public func show() {
         for component in 0..<numberOfComponents {
-            pickerView.selectRow(Array(componentDataSources[component].keys).indexOf(selectedItems[component])!, inComponent: component, animated: true)
+            pickerView?.selectRow(Array(componentDataSources[component].keys.sort(>)).indexOf(selectedItems[component])!, inComponent: component, animated: false)
         }
-        self.hidden = false
-        var newFrame = self.frame
-        newFrame.origin.y = superView.frame.height - self.frame.height
-        UIView.animateWithDuration(speed, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
-            self.frame = newFrame
-            }, completion: { (finished) in })
+        dimmingView.hidden = false
+        view.setNeedsLayout()
+        view.layoutIfNeeded()
+        self.view.frame.origin.y = UIScreen.mainScreen().bounds.height
+        hidden = false
+        UIView.animateWithDuration(speed, delay: 0, options: .CurveEaseInOut, animations: {
+            self.dimmingView.alpha = 0.6
+            self.view.frame.origin.y = self.superView.frame.height - self.view.frame.height
+            }, completion: nil)
     }
     /**
      Hide pickerView in superView with animation.
      */
     public func hide() {
         if visible {
-            var newFrame = self.frame
-            newFrame.origin.y = superView.frame.height
-            UIView.animateWithDuration(speed, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
-                self.frame = newFrame
-                }, completion: { (finished) in
+            var selected = [String: AnyObject]()
+            for component in 0..<numberOfComponents {
+                let key = Array(componentDataSources[component].keys.sort(>))[pickerView.selectedRowInComponent(component)]
+                let value = componentDataSources[component][key]
+                selected[key] = value
+            }
+            selectedItems = Array(selected.keys).reverse()
+            self.delegate?.pickerView?(self, willClose: selected)
+            UIView.animateWithDuration(speed, delay: 0, options: .CurveEaseInOut, animations: { [weak self] in
+                self?.dimmingView.alpha = 0
+                self?.view.frame.origin.y = UIScreen.mainScreen().bounds.height
+                }, completion: { [unowned self] _ in
+                    self.delegate?.pickerView?(self, didClose: selected)
+                    self.dimmingView.hidden = true
                     self.hidden = true
             })
         }
@@ -94,18 +164,20 @@ public class PCTPickerView: UIView, UIPickerViewDataSource, UIPickerViewDelegate
     // MARK: - UIPickerViewDataSource
     
     public func pickerView(pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusingView view: UIView?) -> UIView {
+        let key = Array(componentDataSources[component].keys).sort(>)[row]
+        let value = componentDataSources[component][key]
         var attributes = [String: AnyObject]()
         if let attribute = attributesForComponents[component] {
-            attributes[attribute] = Array(componentDataSources[component].values)[row]
+            attributes[attribute] = value
         }
         let textLabel = view as? UILabel ?? {
             let label = UILabel()
             label.textColor = UIColor.whiteColor()
             label.textAlignment = .Center
             return label
-        }()
-        textLabel.text = Array(componentDataSources[component].keys)[row]
-        textLabel.attributedText = NSAttributedString(string: Array(componentDataSources[component].keys)[row], attributes: attributes)
+            }()
+        textLabel.text = key
+        textLabel.attributedText = NSAttributedString(string: key, attributes: attributes)
         return textLabel
     }
     
@@ -119,39 +191,34 @@ public class PCTPickerView: UIView, UIPickerViewDataSource, UIPickerViewDelegate
     
     // MARK: Private methods
     
-    private func prepareView() {
-        loadNib()
-        let borderTop = CALayer()
-        borderTop.frame = CGRectMake(0.0, toolbar.frame.height - 1, toolbar.frame.width, 0.5);
-        borderTop.backgroundColor = UIColor(red:0.17, green:0.17, blue:0.17, alpha:1.0).CGColor
-        toolbar.layer.addSublayer(borderTop)
-        self.hidden = true
-        let height = UIScreen.mainScreen().bounds.height / 2.7
-        let frameSelf = CGRect(x: 0, y: UIScreen.mainScreen().bounds.height, width: superView.frame.width, height: height)
-        var framePicker = frameSelf
-        framePicker.origin.y = 0
-        self.frame = frameSelf
-        self.view.frame = framePicker
+    private func layoutView() {
+        frame = CGRect(x: 0, y: 0, width: superView.frame.width, height: UIScreen.mainScreen().bounds.height)
+        dimmingView.frame = superView.bounds
+        view.frame = CGRect(origin: CGPoint(x: 0, y: UIScreen.mainScreen().bounds.height - view.frame.size.height), size: CGSize(width: superView.frame.width, height: UIScreen.mainScreen().bounds.height / 2.7))
     }
     
     private func loadNib() {
         UINib(nibName: "PCTPickerView", bundle: nil).instantiateWithOwner(self, options: nil)[0] as? UIView
-        self.addSubview(self.view)
+        addSubview(view)
     }
     
     @IBAction func done() {
         var selected = [String: AnyObject]()
         for component in 0..<numberOfComponents {
-            let key = Array(componentDataSources[component].keys)[pickerView.selectedRowInComponent(component)]
+            let key = Array(componentDataSources[component].keys.sort(>))[pickerView.selectedRowInComponent(component)]
             let value = componentDataSources[component][key]
             selected[key] = value
         }
-        selectedItems = Array(selected.keys).reverse()
+        if selectedItems != Array(selected.keys).reverse() {
+            selectedItems = Array(selected.keys).reverse()
+            delegate?.pickerView?(self, didChange: selected)
+        } else {
+            selectedItems = Array(selected.keys).reverse()
+        }
         hide()
-        delegate?.pickerView?(self, didClose: selected)
     }
     
     @IBAction func cancel() {
-       hide()
+        hide()
     }
 }

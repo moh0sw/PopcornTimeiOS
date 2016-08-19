@@ -39,9 +39,9 @@
 		4DC541941CFB5467001A531C /* SubtitlesTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC541901CFB5467001A531C /* SubtitlesTableViewController.swift */; };
 		4DC541951CFB5467001A531C /* GenresTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC541911CFB5467001A531C /* GenresTableViewController.swift */; };
 		4DC541961CFB5467001A531C /* BugReportTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC541921CFB5467001A531C /* BugReportTableViewController.swift */; };
-		4DC5419A1CFB5491001A531C /* TablePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC541971CFB5491001A531C /* TablePickerView.swift */; };
+		4DC5419A1CFB5491001A531C /* PCTTablePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC541971CFB5491001A531C /* PCTTablePickerView.swift */; };
 		4DC5419B1CFB5491001A531C /* LoadingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC541981CFB5491001A531C /* LoadingViewController.swift */; };
-		4DC5419C1CFB5491001A531C /* TablePickerView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4DC541991CFB5491001A531C /* TablePickerView.xib */; };
+		4DC5419C1CFB5491001A531C /* PCTTablePickerView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4DC541991CFB5491001A531C /* PCTTablePickerView.xib */; };
 		4DC5419F1CFB54A3001A531C /* UIKit+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC5419D1CFB54A3001A531C /* UIKit+Extension.swift */; };
 		4DC541A01CFB54A3001A531C /* PCTEpsiodeDetailPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC5419E1CFB54A3001A531C /* PCTEpsiodeDetailPresentationController.swift */; };
 		4DCA0F131D4A4A91003FC58E /* PCTLoadingViewAnimatedTransitioning.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DCA0F121D4A4A91003FC58E /* PCTLoadingViewAnimatedTransitioning.swift */; };
@@ -106,9 +106,9 @@
 		4DC541901CFB5467001A531C /* SubtitlesTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SubtitlesTableViewController.swift; path = "UI/Table View Controllers/SubtitlesTableViewController.swift"; sourceTree = "<group>"; };
 		4DC541911CFB5467001A531C /* GenresTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = GenresTableViewController.swift; path = "UI/Table View Controllers/GenresTableViewController.swift"; sourceTree = "<group>"; };
 		4DC541921CFB5467001A531C /* BugReportTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BugReportTableViewController.swift; path = "UI/Table View Controllers/BugReportTableViewController.swift"; sourceTree = "<group>"; };
-		4DC541971CFB5491001A531C /* TablePickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TablePickerView.swift; path = UI/TablePickerView.swift; sourceTree = "<group>"; };
+		4DC541971CFB5491001A531C /* PCTTablePickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PCTTablePickerView.swift; path = UI/PCTTablePickerView.swift; sourceTree = "<group>"; };
 		4DC541981CFB5491001A531C /* LoadingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LoadingViewController.swift; path = UI/LoadingViewController.swift; sourceTree = "<group>"; };
-		4DC541991CFB5491001A531C /* TablePickerView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = TablePickerView.xib; path = UI/TablePickerView.xib; sourceTree = "<group>"; };
+		4DC541991CFB5491001A531C /* PCTTablePickerView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = PCTTablePickerView.xib; path = UI/PCTTablePickerView.xib; sourceTree = "<group>"; };
 		4DC5419D1CFB54A3001A531C /* UIKit+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "UIKit+Extension.swift"; path = "Resources/UIKit+Extension.swift"; sourceTree = "<group>"; };
 		4DC5419E1CFB54A3001A531C /* PCTEpsiodeDetailPresentationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PCTEpsiodeDetailPresentationController.swift; path = Resources/PCTEpsiodeDetailPresentationController.swift; sourceTree = "<group>"; };
 		4DCA0F121D4A4A91003FC58E /* PCTLoadingViewAnimatedTransitioning.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PCTLoadingViewAnimatedTransitioning.swift; path = UI/PCTLoadingViewAnimatedTransitioning.swift; sourceTree = "<group>"; };
@@ -158,8 +158,8 @@
 			children = (
 				4DCFA56D1CD25D04005246DC /* TableViewBackground.swift */,
 				4DCFA56B1CD2206F005246DC /* TableViewBackground.xib */,
-				4DC541971CFB5491001A531C /* TablePickerView.swift */,
-				4DC541991CFB5491001A531C /* TablePickerView.xib */,
+				4DC541971CFB5491001A531C /* PCTTablePickerView.swift */,
+				4DC541991CFB5491001A531C /* PCTTablePickerView.xib */,
 				4DA7BA4E1D5A629400229B14 /* PCTPickerView.swift */,
 				4DA7BA501D5A686B00229B14 /* PCTPickerView.xib */,
 				4D3FE2861D4380B100707065 /* UpNextView.swift */,
@@ -300,9 +300,9 @@
 		7EA9DF2C1B61A1EC00BAC6AF /* Collection View Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				4DC541891CFB545A001A531C /* ItemOverview.swift */,
 				4DC541871CFB545A001A531C /* TVShowsCollectionViewController.swift */,
 				4DC541881CFB545A001A531C /* MoviesCollectionViewController.swift */,
-				4DC541891CFB545A001A531C /* ItemOverview.swift */,
 				4DC5418A1CFB545A001A531C /* AnimeCollectionViewController.swift */,
 			);
 			name = "Collection View Controllers";
@@ -430,7 +430,7 @@
 				4DCFA56C1CD2206F005246DC /* TableViewBackground.xib in Resources */,
 				4DA7BA5A1D5BE14400229B14 /* Entitlements.plist in Resources */,
 				4DA7BA511D5A686B00229B14 /* PCTPickerView.xib in Resources */,
-				4DC5419C1CFB5491001A531C /* TablePickerView.xib in Resources */,
+				4DC5419C1CFB5491001A531C /* PCTTablePickerView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -527,7 +527,7 @@
 				7E2D473D1B653EDE00611019 /* TVAPI.swift in Sources */,
 				4D0005661D3C3CAD0075706C /* AirPlayManager.swift in Sources */,
 				4D33E8771CF3957500E65498 /* OpenSubtitles.swift in Sources */,
-				4DC5419A1CFB5491001A531C /* TablePickerView.swift in Sources */,
+				4DC5419A1CFB5491001A531C /* PCTTablePickerView.swift in Sources */,
 				7E2AD00D1B61D28A001B24BE /* AppDelegate.swift in Sources */,
 				4DC5418E1CFB545A001A531C /* AnimeCollectionViewController.swift in Sources */,
 				4DF4497E1CC2795600278078 /* OAuthCredential.swift in Sources */,

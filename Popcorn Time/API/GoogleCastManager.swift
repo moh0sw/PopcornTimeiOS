@@ -82,7 +82,7 @@ class GoogleCastManager: NSObject, GCKDeviceScannerListener, GCKSessionManagerLi
             if let subtitles = castMetadata.subtitles {
                 var mediaTracks = [GCKMediaTrack]()
                 for (index, subtitle) in subtitles.enumerate() {
-                    mediaTracks.append(GCKMediaTrack(identifier: index, contentIdentifier: castMetadata.mediaAssetsPath.URLByAppendingPathComponent("Subtitles", isDirectory: true).URLByAppendingPathComponent(subtitle.ISO639 + ".vtt").relativeString!, contentType: "text/vtt", type: .Text, textSubtype: .Subtitles, name: subtitle.language, languageCode: subtitle.ISO639, customData: nil))
+                    mediaTracks.append(GCKMediaTrack(identifier: index, contentIdentifier: castMetadata.mediaAssetsPath.URLByAppendingPathComponent("Subtitles", isDirectory: true).URLByAppendingPathComponent(subtitle.ISO639 + ".vtt").relativeString!, contentType: "text/vtt", type: .Text, textSubtype: .Captions, name: subtitle.language, languageCode: subtitle.ISO639, customData: nil))
                 }
                 self.streamToDevice(mediaTracks, sessionManager: sessionManager, castMetadata: castMetadata)
                 self.delegate?.didConnectToDevice(deviceIsChromecast: true)
@@ -99,7 +99,7 @@ class GoogleCastManager: NSObject, GCKDeviceScannerListener, GCKSessionManagerLi
         let metadata = GCKMediaMetadata(metadataType: .Movie)
         metadata.setString(castMetadata.title, forKey: kGCKMetadataKeyTitle)
         metadata.addImage(GCKImage(URL: castMetadata.imageUrl, width: 480, height: 720))
-        let mediaInfo = GCKMediaInformation(contentID: castMetadata.url, streamType: .Buffered, contentType: castMetadata.contentType, metadata: metadata, streamDuration: 0, mediaTracks: mediaTrack, textTrackStyle: mediaTrack == nil ? nil : GCKMediaTextTrackStyle.createDefault(), customData: nil)
+        let mediaInfo = GCKMediaInformation(contentID: castMetadata.url, streamType: .Buffered, contentType: castMetadata.contentType, metadata: metadata, streamDuration: 0, mediaTracks: mediaTrack, textTrackStyle: GCKMediaTextTrackStyle.createDefault(), customData: nil)
         sessionManager.currentCastSession!.remoteMediaClient.loadMedia(mediaInfo, autoplay: true, playPosition: castMetadata.startPosition)
     }
 

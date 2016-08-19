@@ -6,7 +6,7 @@ import AlamofireImage
 import ColorArt
 import PopcornTorrent
 
-class MovieDetailViewController: DetailItemOverviewViewController, TablePickerViewDelegate, UIViewControllerTransitioningDelegate {
+class MovieDetailViewController: DetailItemOverviewViewController, PCTTablePickerViewDelegate, UIViewControllerTransitioningDelegate {
     
     @IBOutlet var torrentHealth: CircularView!
     @IBOutlet var qualityBtn: UIButton!
@@ -15,7 +15,7 @@ class MovieDetailViewController: DetailItemOverviewViewController, TablePickerVi
     @IBOutlet var watchedBtn: UIBarButtonItem!
     
     var currentItem: PCTMovie!
-    var subtitlesTablePickerView: TablePickerView!
+    var subtitlesTablePickerView: PCTTablePickerView!
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
@@ -32,7 +32,7 @@ class MovieDetailViewController: DetailItemOverviewViewController, TablePickerVi
         titleLabel.text = currentItem.title
         summaryView.text = currentItem.summary
         ratingView.rating = Float(currentItem.rating)
-        infoLabel.text = "\(currentItem.year) ● \(currentItem.runtime) min ● \(currentItem.genres[0])"
+        infoLabel.text = "\(currentItem.year) ● \(currentItem.runtime) min ● \(currentItem.genres[0].capitalizedString)"
         currentItem.currentTorrent = currentItem.torrents.first!
         for torrent in currentItem.torrents {
             if torrent.quality == NSUserDefaults.standardUserDefaults().objectForKey("PreferredQuality") as? String {
@@ -65,9 +65,9 @@ class MovieDetailViewController: DetailItemOverviewViewController, TablePickerVi
                         }
                     }
                 }
-                self.subtitlesTablePickerView = TablePickerView(superView: self.view, sourceDict: PCTSubtitle.dictValue(subtitles), self)
+                self.subtitlesTablePickerView = PCTTablePickerView(superView: self.view, sourceDict: PCTSubtitle.dictValue(subtitles), self)
                 if let link = self.currentItem.currentSubtitle?.link {
-                    self.subtitlesTablePickerView?.setSelected([link])
+                    self.subtitlesTablePickerView.selectedItems = [link]
                 }
                 self.tabBarController?.view.addSubview(self.subtitlesTablePickerView!)
             })
@@ -138,7 +138,7 @@ class MovieDetailViewController: DetailItemOverviewViewController, TablePickerVi
         loadingViewController.transitioningDelegate = self
         loadingViewController.backgroundImage = backgroundImageView.image
         presentViewController(loadingViewController, animated: true, completion: nil)
-        let magnet = makeMagnetLink(currentItem.currentTorrent.hash!)
+        let magnet = cleanMagnet(currentItem.currentTorrent.url)
         let moviePlayer = self.storyboard!.instantiateViewControllerWithIdentifier("PCTPlayerViewController") as! PCTPlayerViewController
         let currentProgress = WatchlistManager.movieManager.currentProgress(currentItem.id)
         let castDevice = GCKCastContext.sharedInstance().sessionManager.currentSession?.device
@@ -181,7 +181,7 @@ class MovieDetailViewController: DetailItemOverviewViewController, TablePickerVi
         presentViewController(vc, animated: true, completion: nil)
 	}
 
-	func tablePickerView(tablePickerView: TablePickerView, didChange items: [String]) {
+	func tablePickerView(tablePickerView: PCTTablePickerView, didChange items: [String]) {
         if items.count == 0 {
             currentItem.currentSubtitle = nil
             subtitlesButton.setTitle("None ▾", forState: .Normal)

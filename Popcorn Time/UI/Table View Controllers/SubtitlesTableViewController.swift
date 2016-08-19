@@ -35,6 +35,7 @@ class SubtitlesTableViewController: UITableViewController {
         {
             tableView.deselectRowAtIndexPath(indexPath, animated: true)
             delegate?.didSelectASubtitle(nil)
+            tableView.reloadData()
             return
         }
         delegate?.didSelectASubtitle(dataSourceArray[indexPath.row])

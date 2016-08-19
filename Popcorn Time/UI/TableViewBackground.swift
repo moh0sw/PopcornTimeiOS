@@ -27,7 +27,7 @@ class TableViewBackground: UIView {
         case -403:
             title = "Forbidden"
             helpfulDescription = "Sorry, it looks like you're not on the guest list!"
-        case -1005:
+        case -1005, -1009:
             title = "Network connection lost"
             helpfulDescription = "Popcorn Time will automatically reconnect once it detects a valid internet connection."
         default:

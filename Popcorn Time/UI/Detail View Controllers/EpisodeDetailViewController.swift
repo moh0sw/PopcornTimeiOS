@@ -8,7 +8,7 @@ protocol EpisodeDetailViewControllerDelegate: class {
     func loadMovieTorrent(media: PCTEpisode, animated: Bool, onChromecast: Bool)
 }
 
-class EpisodeDetailViewController: UIViewController, TablePickerViewDelegate, UIGestureRecognizerDelegate {
+class EpisodeDetailViewController: UIViewController, PCTTablePickerViewDelegate, UIGestureRecognizerDelegate {
     
     @IBOutlet var backgroundImageView: UIImageView?
     @IBOutlet var titleLabel: UILabel!
@@ -22,7 +22,7 @@ class EpisodeDetailViewController: UIViewController, TablePickerViewDelegate, UI
     @IBOutlet var torrentHealth: CircularView!
     
     var currentItem: PCTEpisode!
-    var subtitlesTablePickerView: TablePickerView!
+    var subtitlesTablePickerView: PCTTablePickerView!
     
     weak var delegate: EpisodeDetailViewControllerDelegate?
     var interactor: PCTEpisodeDetailPercentDrivenInteractiveTransition?
@@ -60,9 +60,9 @@ class EpisodeDetailViewController: UIViewController, TablePickerViewDelegate, UI
                         }
                     }
                 }
-                self.subtitlesTablePickerView = TablePickerView(superView: self.view, sourceDict: PCTSubtitle.dictValue(subtitles), self)
+                self.subtitlesTablePickerView = PCTTablePickerView(superView: self.view, sourceDict: PCTSubtitle.dictValue(subtitles), self)
                 if let link = self.currentItem.currentSubtitle?.link {
-                    self.subtitlesTablePickerView?.setSelected([link])
+                    self.subtitlesTablePickerView.selectedItems = [link]
                 }
                 self.view.addSubview(self.subtitlesTablePickerView!)
                 
@@ -135,7 +135,7 @@ class EpisodeDetailViewController: UIViewController, TablePickerViewDelegate, UI
         }
     }
     
-    func tablePickerView(tablePickerView: TablePickerView, didChange items: [String]) {
+    func tablePickerView(tablePickerView: PCTTablePickerView, didChange items: [String]) {
         if items.count == 0 {
             currentItem.currentSubtitle = nil
             subtitlesButton.setTitle("None ▾", forState: .Normal)

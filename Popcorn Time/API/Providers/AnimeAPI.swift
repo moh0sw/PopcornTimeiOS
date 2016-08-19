@@ -5,7 +5,7 @@ import Alamofire
 import SwiftyJSON
 
 class AnimeAPI {
-    private let animeAPIEndpoint = "http://ptp.haruhichan.com/"
+    private let animeAPIEndpoint = "https://api-fetch.website/tv/"
     /**
      Creates new instance of AnimeAPI class
      
@@ -19,7 +19,6 @@ class AnimeAPI {
         case All = "All"
         case Action = "Action"
         case Adventure = "Adventure"
-        case Cars = "Cars"
         case Comedy = "Comedy"
         case Dementia = "Dementia"
         case Demons = "Demons"
@@ -27,12 +26,15 @@ class AnimeAPI {
         case Ecchi = "Ecchi"
         case Fantasy = "Fantasy"
         case Game = "Game"
+        case GenderBender = "Gender Bender"
+        case Gore = "Gore"
         case Harem = "Harem"
         case Historical = "Historical"
         case Horror = "Horror"
-        case Josei = "Josei"
         case Kids = "Kids"
         case Magic = "Magic"
+        case MahouShoujo = "Mahou Shoujo"
+        case MahouShounen = "Mahou Shounen"
         case MartialArts = "Martial Arts"
         case Mecha = "Mecha"
         case Military = "Military"
@@ -41,24 +43,23 @@ class AnimeAPI {
         case Parody = "Parody"
         case Police = "Police"
         case Psychological = "Psychological"
+        case Racing = "Racing"
         case Romance = "Romance"
         case Samurai = "Samurai"
         case School = "School"
         case SciFi = "Sci-Fi"
-        case Seinen = "Seinen"
-        case Shoujo = "Shoujo"
-        case ShoujoAi = "Shoujo Ai"
-        case Shounen = "Shounen"
         case ShounenAi = "Shounen Ai"
+        case ShoujoAi = "Shoujo Ai"
         case SliceOfLife = "Slice of Life"
         case Space = "Space"
         case Sports = "Sports"
-        case SuperPower = "Super Power"
         case Supernatural = "Supernatural"
+        case SuperPower = "Super Power"
         case Thriller = "Thriller"
         case Vampire = "Vampire"
+        case Yuri = "Yuri"
         
-        static let arrayValue = [All, Action, Adventure, Cars, Comedy, Dementia, Demons, Drama, Ecchi, Fantasy, Game, Harem, Historical, Horror, Josei, Mystery, Kids, Magic, MartialArts, Mecha, Military, Music, Mystery, Parody, Police, Psychological, Romance, Samurai, School, SciFi, Seinen, Shoujo, ShoujoAi, Shounen, ShounenAi, SliceOfLife, Space, Sports, SuperPower, Supernatural, Thriller, Vampire]
+        static let arrayValue = [All, Action, Adventure, Comedy, Dementia, Demons, Drama, Ecchi, Fantasy, Game, GenderBender, Gore, Harem, Historical, Horror, Kids, Magic, MahouShoujo, MahouShounen, MartialArts, Mecha, Military, Music, Mystery, Parody, Police, Psychological, Racing, Romance, Samurai, School, SciFi, ShounenAi, ShoujoAi, SliceOfLife, Space, Sports, Supernatural, SuperPower, Thriller, Vampire, Yuri]
     }
     /**
      Possible filters used in API call.
@@ -88,12 +89,21 @@ class AnimeAPI {
         }
     }
     /**
+     Possible orders used in API call.
+     */
+    enum orders: Int {
+        case Ascending = 1
+        case Descending = -1
+        
+    }
+    /**
      Load Anime from API.
      
      - Parameter page:       The page number to load.
      - Parameter filterBy:   Sort the response by Popularity, Year, Date Rating, Alphabet or Trending.
      - Paramter genre:       Only return anime that match the provided genre.
      - Parameter searchTerm: Only return movies that match the provided string.
+     - Parameter order:      Ascending or descending.
      
      - Returns: Array of `PCTAnimes`.
      */
@@ -102,13 +112,13 @@ class AnimeAPI {
         filterBy: filters,
         genre: genres = .All,
         searchTerm: String? = nil,
+        order: orders = .Descending,
         completion: (items: [PCTShow]) -> Void) {
-        var params: [String: AnyObject] = ["sort": filterBy.rawValue, "limit": 30, "type": genre.rawValue.stringByReplacingOccurrencesOfString(" ", withString: "-"), "order": "asc", "page": page - 1]
+        var params: [String: AnyObject] = ["sort": filterBy.rawValue, "type": genre.rawValue, "order": order.rawValue]
         if searchTerm != nil {
-            params["search"] = searchTerm!
+            params["keywords"] = searchTerm!
         }
-        let queue = dispatch_queue_create("com.popcorn-time.response.queue", DISPATCH_QUEUE_CONCURRENT)
-        Alamofire.request(.GET, animeAPIEndpoint + "/list.php", parameters: params).validate().responseJSON(queue: queue, options: .AllowFragments, completionHandler: { response in
+        Alamofire.request(.GET, animeAPIEndpoint + "animes/\(page)", parameters: params).validate().responseJSON { response in
             guard response.result.isSuccess else {
                 NSNotificationCenter.defaultCenter().postNotificationName(errorNotification, object: response.result.error!)
                 print("Error is: \(response.result.error!)")
@@ -117,69 +127,62 @@ class AnimeAPI {
             let animes = JSON(response.result.value!)
             var pctAnimes = [PCTShow]()
             for (_, anime) in animes {
-                let id = anime["id"].int!
-                let name = anime["name"].string!.stringByReplacingOccurrencesOfString("(TV)", withString: "")
-                let image = anime["malimg"].string!
-                var show: PCTShow? = PCTShow(imdbId: "", title: name, year: "", coverImageAsString: image, rating: 0.0, animeId: id)
-                self.loadMeta(&show)
-                if let show = show {
-                    pctAnimes.append(show)
-                }
+                let id = anime["_id"].string!
+                let title = anime["title"].string!
+                let image = anime["images"]["poster"].string!
+                let year = anime["year"].string!
+                let rating = anime["rating"]["percentage"].float!/20.0
+                let slug = anime["slug"].string!
+                let genres = anime["genres"].arrayObject as! [String]
+                let show = PCTShow(id: id, title: title, year: year, coverImageAsString: image, rating: rating, slug: slug, genres: genres)
+                pctAnimes.append(show)
             }
-            dispatch_async(dispatch_get_main_queue(), {
-                completion(items: pctAnimes)
-            })
-        })
-    }
-    /**
-     Load Anime metadata.
-     
-     - Parameter show: The current show you want metadata added to
-     
-     - Returns: The same `PCTShow` object but with an ImdbId, genres and release year. Returns nil if show doesnt exist on imdb or operation failed.
-     */
-    func loadMeta(inout show: PCTShow?) {
-        let semaphore = dispatch_semaphore_create(0)
-        Alamofire.request(.GET, "http://www.omdbapi.com/?t=\(show!.title.stringByReplacingOccurrencesOfString(" ", withString: "+"))").validate().responseJSON  { response in
-            if response.result.isSuccess {
-                let responseDict = JSON(response.result.value!)
-                if responseDict["Response"].string! == "True" {
-                    show!.imdbId = responseDict["imdbID"].string!
-                    show!.genres = responseDict["Genre"].string!.stringByReplacingOccurrencesOfString(" ", withString: "").componentsSeparatedByString(",")
-                    show!.year = responseDict["Year"].string!.componentsSeparatedByString("–").first!
-                } else {
-                    show = nil
-                }
-            } else {
-                show = nil
-            }
-            dispatch_semaphore_signal(semaphore)
+            completion(items: pctAnimes)
         }
-        dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER)
     }
     /**
      Get detailed Anime information.
      
      - Parameter id: The identification code.
      
-     - Returns: Array of `PCTEpisodes`, the status of the show (continuing, ended etc.), a small description of show and the number of seasons in the show.
+     Returns: Array of `PCTEpisodes`, the status of the show (Continuing, Ended etc.), a small description of show and the number of seasons in the show.
      */
-    func getAnimeInfo(id: Int, imdbId: String, completion: (synopsis: String, status: String, imageURL: String, episodes: [PCTEpisode], seasonNumbers: [Int], rating: Float) -> Void) {
-        Alamofire.request(.GET, animeAPIEndpoint + "/anime.php?id=\(id)").validate().responseJSON { response in
+    func getAnimeInfo(id: String, completion: (status: String, synopsis: String, episodes: [PCTEpisode], seasons: [Int]) -> Void) {
+        Alamofire.request(.GET, animeAPIEndpoint + "anime/\(id)").validate().responseJSON { response in
             guard response.result.isSuccess else {
                 NSNotificationCenter.defaultCenter().postNotificationName(errorNotification, object: response.result.error!)
                 print("Error is: \(response.result.error!)")
                 return
             }
-            let responseDict = JSON(response.result.value!)
-            var torrents = [PCTTorrent]()
-            for (_, episode) in responseDict["episodes"] {
-                torrents.append(PCTTorrent(url: episode["magnet"].string!, seeds: 0, peers: 0, quality: episode["quality"].string!.componentsSeparatedByString("-").first!))
+            let show = JSON(response.result.value!)
+            let synopsis = show["synopsis"].string!
+            let status = show["status"].string!
+            var pctEpisodes = [PCTEpisode]()
+            var seasons = [Int]()
+            for (_, episodes) in show["episodes"] {
+                let season = Int(episodes["season"].string!)!
+                if !seasons.contains(season) {
+                    seasons.append(season)
+                }
+                let episode = Int(episodes["episode"].string!)!
+                let title = episodes["title"].string!
+                let overview = episodes["overview"].string ?? "No synopsis available"
+                let tvdbId = episodes["tvdb_id"].string!.stringByReplacingOccurrencesOfString("-", withString: "")
+                let airedDate = NSDate(timeIntervalSince1970: Double(show["last_updated"].int!))
+                var torrents = [PCTTorrent]()
+                for (index, torrent) in episodes["torrents"] {
+                    if index != "0" {
+                        let torrent = PCTTorrent(url: torrent["url"].string ?? "", seeds: torrent["seeds"].int!, peers: torrent["peers"].int!, quality: index)
+                        torrents.append(torrent)
+                    }
+                }
+                torrents.sortInPlace(<)
+                let pctEpisode = PCTEpisode(season: season, episode: episode, title: title, summary: overview, airedDate: airedDate, tvdbId: tvdbId, torrents: torrents)
+                pctEpisodes.append(pctEpisode)
             }
-            TraktTVAPI.sharedInstance.getShowMeta(imdbId, completion: { synopsis, status, coverImageAsString, rating in
-                completion(synopsis: synopsis, status: status, imageURL: coverImageAsString, episodes: [], seasonNumbers: [], rating: rating)
-            })
+            seasons.sortInPlace(<)
+            pctEpisodes.sortInPlace({ $0.episode < $1.episode })
+            completion(status: status, synopsis: synopsis, episodes: pctEpisodes, seasons: seasons)
         }
     }
-    
 }

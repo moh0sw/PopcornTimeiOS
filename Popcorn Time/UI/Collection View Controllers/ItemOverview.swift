@@ -118,12 +118,6 @@ class ItemOverview: UICollectionViewController, UISearchControllerDelegate, UISe
             searchBlock = dispatch_after_delay(searchBlockDelay, {
                 self.delegate?.search(searchController.searchBar.text!)
             })
-        } else {
-            let indicator = UIActivityIndicatorView(activityIndicatorStyle: .White)
-            indicator.center = collectionView!.center
-            collectionView!.backgroundView = indicator
-            indicator.sizeToFit()
-            indicator.startAnimating()
         }
     }
     

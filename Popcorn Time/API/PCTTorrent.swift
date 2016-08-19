@@ -30,22 +30,20 @@ struct PCTTorrent: Comparable {
     let seeds, peers: Int
     let url: String
     var health: Health = .Unknown
-    var quality, size, hash: String?
+    var quality, size: String?
     
     init(
         url: String,
         seeds: Int,
         peers: Int,
         quality: String? = nil,
-        size: String? = nil,
-        hash: String? = nil) {
+        size: String? = nil) {
         self.url = url
         self.seeds = seeds
         self.peers = peers
         
         self.quality = quality
         self.size = size
-        self.hash = hash
         
         calcHealth()
     }

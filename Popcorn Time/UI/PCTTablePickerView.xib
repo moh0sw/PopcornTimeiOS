@@ -4,7 +4,7 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
     </dependencies>
     <objects>
-        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="TablePickerView" customModule="Popcorn_Time" customModuleProvider="target">
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="PCTTablePickerView" customModule="Popcorn_Time" customModuleProvider="target">
             <connections>
                 <outlet property="button" destination="d7U-AW-MUe" id="Qwz-p9-cBa"/>
                 <outlet property="tableView" destination="Ieb-Aw-4RQ" id="K24-Am-R87"/>
@@ -30,6 +30,7 @@
                 </toolbar>
                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="Ieb-Aw-4RQ">
                     <rect key="frame" x="0.0" y="44" width="600" height="556"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     <connections>
                         <outlet property="dataSource" destination="-1" id="VdC-S5-72a"/>
                         <outlet property="delegate" destination="-1" id="rAF-yY-hDj"/>

@@ -118,7 +118,6 @@ class MoviesCollectionViewController: ItemOverview, UIPopoverPresentationControl
             let cell = sender as! CoverCollectionViewCell
             movieDetail.currentItem = self.movies[(collectionView?.indexPathForCell(cell)?.row)!]
         }
-
     }
     
     // MARK: - Collection view data source
@@ -153,7 +152,7 @@ class MoviesCollectionViewController: ItemOverview, UIPopoverPresentationControl
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("cell", forIndexPath: indexPath) as! CoverCollectionViewCell
         cell.coverImage.af_setImageWithURL(NSURL(string: movies[indexPath.row].coverImageAsString)!, placeholderImage: UIImage(named: "Placeholder"), imageTransition: .CrossDissolve(animationLength))
         cell.titleLabel.text = movies[indexPath.row].title
-        cell.yearLabel.text = String(movies[indexPath.row].year)
+        cell.yearLabel.text = movies[indexPath.row].year
         cell.watched = WatchlistManager.movieManager.isWatched(movies[indexPath.row].id)
         return cell
     }

@@ -70,11 +70,13 @@ class OAuthCredential: NSObject, NSCoding {
      
      - Parameter token: The OAuth token string.
      - Parameter type:  The OAuth token type.
+     
+     - Returns: Fully initialised `OAuthCredential`.
      */
     class func credentialWithOAuthToken(
         token token: String,
         tokenType: String
-        ) -> OAuthCredential {
+        ) -> Self {
         return self.init(token: token, tokenType: tokenType)
     }
     
@@ -91,7 +93,9 @@ class OAuthCredential: NSObject, NSCoding {
     }
     
     /**
-     Creates an OAuth credential from the specified URL string, username, password and scope. Please note that this method `must` be run on a background thread or else it will cause your application to become completely unresponsive.
+     Creates an OAuth credential from the specified URL string, username, password and scope. 
+     
+     - Important: This method **must** be run on a background thread or else it will cause your application to become completely unresponsive.
      
      - Parameter URLString:                 The URL string used to create the request URL.
      - Parameter username:                  The username used for authentication.
@@ -103,7 +107,7 @@ class OAuthCredential: NSObject, NSCoding {
      
      - Throws: Error if request fails
      */
-    convenience init(
+    convenience init?(
         URLString: String,
         username: String,
         password: String,
@@ -120,7 +124,9 @@ class OAuthCredential: NSObject, NSCoding {
     }
     
     /**
-     Refreshes the OAuth token for the specified URL string, username, password and scope. Please note that this method `must` be run on a background thread or else it will cause your application to become completely unresponsive.
+     Refreshes the OAuth token for the specified URL string, username, password and scope. 
+     
+     - Important: This method **must** be run on a background thread or else it will cause your application to become completely unresponsive.
      
      - Parameter URLString:                 The URL string used to create the request URL.
      - Parameter refreshToken:              The refresh token returned from the authorization code exchange.
@@ -130,7 +136,7 @@ class OAuthCredential: NSObject, NSCoding {
      
      - Throws: Error if request fails.
      */
-    convenience init(
+    convenience init?(
         URLString: String,
         refreshToken: String,
         clientID: String,
@@ -142,7 +148,9 @@ class OAuthCredential: NSObject, NSCoding {
     }
     
     /**
-     Creates an OAuth credential from the specified URL string, code. Please note that this method `must` be run on a background thread or else it will cause your application to become completely unresponsive.
+     Creates an OAuth credential from the specified URL string, code. 
+     
+     - Important: This method **must** be run on a background thread or else it will cause your application to become completely unresponsive.
      
      - Parameter URLString:                 The URL string used to create the request URL.
      - Parameter code:                      The authorization code.
@@ -153,7 +161,7 @@ class OAuthCredential: NSObject, NSCoding {
      
      - Throws: Error if request fails
      */
-    convenience init(
+    convenience init?(
         URLString: String,
         code: String,
         redirectURI: String,
@@ -166,7 +174,9 @@ class OAuthCredential: NSObject, NSCoding {
     }
     
     /**
-     Creates an OAuth credential from the specified parameters. Please note that this method `must` be run on a background thread or else it will cause your application to become completely unresponsive.
+     Creates an OAuth credential from the specified parameters.
+     
+     - Important: This method **must** be run on a background thread or else it will cause your application to become completely unresponsive.
      
      - Parameter URLString:                 The URL string used to create the request URL.
      - Parameter parameters:                The parameters to be encoded and set in the request HTTP body.
@@ -176,7 +186,7 @@ class OAuthCredential: NSObject, NSCoding {
      
      - Throws: Error if request fails
      */
-    init(
+    init?(
         URLString: String,
         parameters: [String: AnyObject],
         clientID: String,

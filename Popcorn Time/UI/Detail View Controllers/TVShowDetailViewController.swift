@@ -50,10 +50,9 @@ class TVShowDetailViewController: DetailItemOverviewViewController, UITableViewD
         infoLabel.text = "\(currentItem.year)"
         ratingView.rating = currentItem.rating
         if currentType == .Animes {
-            AnimeAPI.sharedInstance.getAnimeInfo(currentItem.animeId!, imdbId: currentItem.imdbId) { (synopsis, status, imageURL, episodes, seasons, rating) in
-                self.currentItem.synopsis = synopsis
+            AnimeAPI.sharedInstance.getAnimeInfo(currentItem.id, completion: { (status, synopsis, episodes, seasons) in
                 self.currentItem.status = status
-                self.currentItem.coverImageAsString = imageURL
+                self.currentItem.synopsis = synopsis
                 var updatedEpisodes = [PCTEpisode]()
                 for episode in episodes {
                     episode.show = self.currentItem
@@ -61,12 +60,14 @@ class TVShowDetailViewController: DetailItemOverviewViewController, UITableViewD
                 }
                 self.episodes = updatedEpisodes
                 self.seasons = seasons
-                self.currentItem.rating = rating
+                self.summaryView.text = self.currentItem.synopsis
+                self.tableView.sizeHeaderToFit()
+                self.infoLabel.text = "\(self.currentItem.year) ● \(self.currentItem.status!.capitalizedString) ● \(self.currentItem.genres![0].capitalizedString)"
                 self.setUpSegmenedControl()
                 self.tableView.reloadData()
-            }
+            })
         } else {
-            TVAPI.sharedInstance.getShowInfo(currentItem.imdbId) { (genres, status, synopsis, episodes, seasons) in
+            TVAPI.sharedInstance.getShowInfo(currentItem.id) { (genres, status, synopsis, episodes, seasons) in
                 self.currentItem.genres = genres
                 self.currentItem.status = status
                 self.currentItem.synopsis = synopsis

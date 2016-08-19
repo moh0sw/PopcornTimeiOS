@@ -35,13 +35,13 @@ class PCTItem {
 class PCTMovie: PCTItem {
     let rating: Float
     let genres: [String]
-    let runtime: Int
+    let runtime: String
     let trailorURLString: String
-    let year: Int
+    let year: String
     
     init(
         title: String,
-        year: Int,
+        year: String,
         coverImageAsString: String,
         imdbId: String,
         rating: Float,
@@ -49,7 +49,7 @@ class PCTMovie: PCTItem {
         currentTorrent: PCTTorrent? = nil,
         genres: [String],
         summary: String,
-        runtime: Int,
+        runtime: String,
         trailorURLString: String,
         subtitles: [PCTSubtitle]? = nil,
         currentSubtitle: PCTSubtitle? = nil) {
@@ -69,7 +69,7 @@ class PCTMovie: PCTItem {
 }
 
 struct PCTShow {
-    var imdbId: String
+    var id: String
     var title: String
     var year: String
     var coverImageAsString: String
@@ -77,33 +77,33 @@ struct PCTShow {
     var genres: [String]?
     var status: String?
     var synopsis: String?
-    var animeId: Int?
+    let slug: String
     
     init(
-        imdbId: String,
+        id: String,
         title: String,
         year: String,
         coverImageAsString: String,
         rating: Float,
+        slug: String,
         genres: [String]? = nil,
         status: String? = nil,
-        synopsis: String? = nil,
-        animeId: Int? = nil
+        synopsis: String? = nil
         ) {
-        self.imdbId = imdbId
+        self.id = id
         self.title = title
         self.year = year
         self.coverImageAsString = coverImageAsString
         self.rating = rating
+        self.slug = slug
         self.genres = genres
         self.status = status
         self.synopsis = synopsis
-        self.animeId = animeId
     }
     
     var description: String {
         get {
-            return "<\(self.dynamicType)> title: \"\(self.title)\"\n year: \"\(self.year)\"\n coverImageAsString:  \"\(self.coverImageAsString)\"\n imdbId: \"\(self.imdbId)\"\n rating:  \"\(self.rating)\"\n genres: \"\(self.genres)\"\n status: \"\(self.status)\"\n synopsis: \"\(self.synopsis)\"\n"
+            return "<\(self.dynamicType)> title: \"\(self.title)\"\n year: \"\(self.year)\"\n coverImageAsString:  \"\(self.coverImageAsString)\"\n id: \"\(self.id)\"\n rating:  \"\(self.rating)\"\n genres: \"\(self.genres)\"\n status: \"\(self.status)\"\n synopsis: \"\(self.synopsis)\"\n"
         }
     }
 }

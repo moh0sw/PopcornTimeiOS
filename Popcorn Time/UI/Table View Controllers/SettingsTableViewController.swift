@@ -3,104 +3,186 @@
 import UIKit
 import SafariServices
 
-class SettingsTableViewController: UITableViewController, TablePickerViewDelegate {
+class SettingsTableViewController: UITableViewController, PCTTablePickerViewDelegate, PCTPickerViewDelegate {
 
-    let ud = NSUserDefaults.standardUserDefaults()
+    @IBOutlet var streamOnCellularSwitch: UISwitch!
+    @IBOutlet var removeCacheOnPlayerExitSwitch: UISwitch!
+    @IBOutlet var qualitySegmentedControl: UISegmentedControl!
+    @IBOutlet var traktSignInButton: UIButton!
+    @IBOutlet var openSubsSignInButton: UIButton!
+	
+	var tablePickerView: PCTTablePickerView!
+    var pickerView: PCTPickerView!
     
     var safariViewController: SFSafariViewController!
-    
-    @IBOutlet weak var switchStreamOnCellular: UISwitch!
-    @IBOutlet weak var removeCacheOnPlayerExit: UISwitch!
-    @IBOutlet weak var segmentedQuality: UISegmentedControl!
-	@IBOutlet weak var languageButton: UIButton!
-    @IBOutlet weak var traktSignInButton: UIButton!
-    @IBOutlet weak var openSubsSignInButton: UIButton!
-	
-	var tablePickerView : TablePickerView?
-    let qualities = ["480p", "720p", "1080p"]
-	
+    let ud = NSUserDefaults.standardUserDefaults()
     var state: String!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-		addTablePicker()
-        showSettings()
+        tablePickerView = PCTTablePickerView(superView: view, sourceArray: NSLocale.commonLanguages(), self)
+        tabBarController?.view.addSubview(tablePickerView)
+        pickerView = PCTPickerView(superView: view, componentDataSources: [[String : AnyObject]](), delegate: self, selectedItems: [String]())
+        tabBarController?.view.addSubview(pickerView)
         updateSignedInStatus(traktSignInButton, isSignedIn: ud.boolForKey("AuthorizedTrakt"))
         updateSignedInStatus(openSubsSignInButton, isSignedIn: ud.boolForKey("AuthorizedOpenSubs"))
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(safariLogin(_:)), name: safariLoginNotification, object: nil)
-    }
-    
-    func showSettings() {        
-        // Set StreamOnCellular
-        switchStreamOnCellular.on = ud.boolForKey("StreamOnCellular")
-        removeCacheOnPlayerExit.on = ud.boolForKey("removeCacheOnPlayerExit")
-		
-		// Set preferred subtitle language
-		if let preferredSubtitleLanguage = ud.objectForKey("PreferredSubtitleLanguage") as? String {
-            if preferredSubtitleLanguage != "None" {
-                tablePickerView?.setSelected([preferredSubtitleLanguage])
-                languageButton.setTitle(preferredSubtitleLanguage, forState: .Normal)
-            } else {
-                languageButton.setTitle("None", forState: .Normal)
-            }
-		} else {
-            languageButton.setTitle("None", forState: .Normal)
-		}
-		
-        // Set preferred quality
-        let qualityInSettings = ud.objectForKey("PreferredQuality") as? String
-        var selectedQualityIndex = 0
-        segmentedQuality.removeAllSegments()
-        for (index, quality) in qualities.enumerate() {
-            segmentedQuality.insertSegmentWithTitle(quality, atIndex: index, animated: true)
-            if let qualityInSettings = qualityInSettings {
-                if quality == qualityInSettings {
-                    selectedQualityIndex = index
-                }
+        streamOnCellularSwitch.on = ud.boolForKey("StreamOnCellular")
+        removeCacheOnPlayerExitSwitch.on = ud.boolForKey("removeCacheOnPlayerExit")
+        for index in 0..<qualitySegmentedControl.numberOfSegments {
+            if qualitySegmentedControl.titleForSegmentAtIndex(index) == ud.stringForKey("PreferredQuality") {
+                qualitySegmentedControl.selectedSegmentIndex = index
             }
         }
-        
-        segmentedQuality.selectedSegmentIndex = selectedQualityIndex
+    }
+    
+    // MARK: - UITableViewDelegate
+    
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        let cell = tableView.cellForRowAtIndexPath(indexPath)!
+        switch indexPath.section {
+        case 0 where indexPath.row == 2:
+            tablePickerView?.toggle()
+        case 2:
+            let selectedItem = ud.stringForKey("PreferredSubtitle\(cell.textLabel!.text!.capitalizedString.stringByReplacingOccurrencesOfString(" ", withString: ""))")
+            var dict = [String: AnyObject]()
+            if indexPath.row == 0 || indexPath.row == 2 {
+                for (index, color) in UIColor.systemColors().enumerate() {
+                    dict[UIColor.systemColorStrings()[index]] = color
+                }
+                if indexPath.row == 2 {
+                    dict["None"] = UIColor.clearColor()
+                }
+                pickerView.componentDataSources = [dict]
+                pickerView.selectedItems = [selectedItem ?? cell.detailTextLabel!.text!]
+                pickerView.attributesForComponents = [NSForegroundColorAttributeName]
+            } else if indexPath.row == 1 {
+                for size in 16...40 {
+                    dict["\(size) pt"] = UIFont.systemFontOfSize(CGFloat(size))
+                }
+                pickerView.componentDataSources = [dict]
+                pickerView.selectedItems = [selectedItem ?? cell.detailTextLabel!.text! + " pt"]
+                pickerView.attributesForComponents = [NSFontAttributeName]
+            } else if indexPath.row == 3 {
+                for familyName in UIFont.familyNames() {
+                    for fontName in UIFont.fontNamesForFamilyName(familyName) {
+                        let font = UIFont(name: fontName, size: 25)!; let traits = font.fontDescriptor().symbolicTraits
+                        if !traits.contains(.TraitCondensed) && !traits.contains(.TraitBold) && !traits.contains(.TraitItalic) && !fontName.contains("Thin") && !fontName.contains("Light") && !fontName.contains("Medium") && !fontName.contains("Black") {
+                            dict[fontName] = UIFont(name: fontName, size: 25)
+                        }
+                    }
+                }
+                dict["Default"] = UIFont.systemFontOfSize(25)
+                pickerView.componentDataSources = [dict]
+                pickerView.selectedItems = [selectedItem ?? cell.detailTextLabel!.text!]
+                pickerView.attributesForComponents = [NSFontAttributeName]
+            } else if indexPath.row == 4 {
+                dict = ["Normal": UIFont.systemFontOfSize(25), "Bold": UIFont.boldSystemFontOfSize(25), "Italic": UIFont.italicSystemFontOfSize(25), "Bold-Italic": UIFont.systemFontOfSize(25).boldItalic()]
+                pickerView.componentDataSources = [dict]
+                pickerView.selectedItems = [selectedItem ?? cell.detailTextLabel!.text!]
+                pickerView.attributesForComponents = [NSFontAttributeName]
+            }
+            pickerView.toggle()
+        case 3 where indexPath.row == 1:
+            let controller = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
+            controller.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
+            do {
+                let size = NSFileManager.defaultManager().folderSizeAtPath(downloadsDirectory)
+                try NSFileManager.defaultManager().removeItemAtURL(NSURL(fileURLWithPath: downloadsDirectory))
+                controller.title = "Success"
+                if size == 0 {
+                    controller.message = "Cache was already empty, no disk space was reclamed."
+                } else {
+                    controller.message = "Cleaned \(size) bytes."
+                }
+            } catch {
+                controller.title = "Failed"
+                controller.message = "Error cleanining cache."
+                print("Error: \(error)")
+            }
+            presentViewController(controller, animated: true, completion: nil)
+            tableView.deselectRowAtIndexPath(indexPath, animated: true)
+        case 4 where indexPath.row == 2:
+            openUrl("https://github.com/PopcornTimeTV/PopcornTimeiOS/blob/master/NOTICE.md")
+        default:
+           break
+        }
+    }
+    
+    // MARK: - UITableViewDataSource
+    
+    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let cell = super.tableView(tableView, cellForRowAtIndexPath: indexPath)
+        switch indexPath.section {
+        case 0 where indexPath.row == 2:
+            cell.detailTextLabel?.text = "None"
+            tablePickerView.selectedItems.removeAll()
+            if let preferredSubtitleLanguage = ud.stringForKey("PreferredSubtitleLanguage") where preferredSubtitleLanguage != "None" {
+                self.tablePickerView.selectedItems = [preferredSubtitleLanguage]
+                cell.detailTextLabel?.text = preferredSubtitleLanguage
+            }
+        case 2:
+            if let string = ud.stringForKey("PreferredSubtitle\(cell.textLabel!.text!.capitalizedString.stringByReplacingOccurrencesOfString(" ", withString: ""))") {
+                cell.detailTextLabel?.text = string
+            }
+        case 4 where indexPath.row == 1:
+            cell.detailTextLabel?.text = "\(NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleShortVersionString")!).\(NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleVersion")!)"
+        default:
+            break
+        }
+        return cell
     }
     
     func updateSignedInStatus(sender: UIButton, isSignedIn: Bool) {
         sender.setTitle(isSignedIn ? "Sign Out": "Authorize", forState: .Normal)
         sender.setTitleColor(isSignedIn ? UIColor(red: 230.0/255.0, green: 46.0/255.0, blue: 37.0/255.0, alpha: 1.0) : view.window?.tintColor!, forState: .Normal)
     }
-	
-	func addTablePicker() {
-        tablePickerView = TablePickerView(superView: self.view, sourceArray: NSLocale.commonLanguages(), self)
-		self.tabBarController?.view.addSubview(tablePickerView!)
-	}
     
-    func tablePickerView(tablePickerView: TablePickerView, didChange items: [String]) {
+    // MARK: - PCTTablePickerViewDelegate
+    
+    func tablePickerView(tablePickerView: PCTTablePickerView, didChange items: [String]) {
         if items.count > 0 {
-            ud.setObject(items[0], forKey: "PreferredSubtitleLanguage")
-            languageButton.setTitle(items[0], forState: .Normal)
+            ud.setObject(items.first!, forKey: "PreferredSubtitleLanguage")
         } else {
             ud.setObject("None", forKey: "PreferredSubtitleLanguage")
-            languageButton.setTitle("None", forState: .Normal)
+        }
+        tableView.reloadData()
+    }
+    
+    func tablePickerView(tablePickerView: PCTTablePickerView, willClose items: [String]) {
+        if let indexPath = tableView.indexPathForSelectedRow {
+            tableView.deselectRowAtIndexPath(indexPath, animated: true)
         }
     }
-	
-	override func viewWillDisappear(animated: Bool) {
-        super.viewWillDisappear(animated)
-		tablePickerView?.hide()
-        ud.synchronize()
-	}
+    
+    // MARK: - PCTPickerViewDelegate
+    
+    func pickerView(pickerView: PCTPickerView, didChange items: [String : AnyObject]) {
+        if let index = tableView.indexPathForSelectedRow, let text = tableView.cellForRowAtIndexPath(index)?.textLabel?.text {
+            ud.setObject(items.keys.first, forKey: "PreferredSubtitle\(text.capitalizedString.stringByReplacingOccurrencesOfString(" ", withString: ""))")
+        }
+        tableView.reloadData()
+    }
+
+    func pickerView(pickerView: PCTPickerView, willClose items: [String : AnyObject]) {
+        if let index = tableView.indexPathForSelectedRow {
+            tableView.deselectRowAtIndexPath(index, animated: true)
+        }
+    }
     
     @IBAction func streamOnCellular(sender: UISwitch) {
         ud.setBool(sender.on, forKey: "StreamOnCellular")
     }
     
-    @IBAction func preferredQuality(control: UISegmentedControl) {
-        let resultAsText = control.titleForSegmentAtIndex(control.selectedSegmentIndex)
-        ud.setObject(resultAsText, forKey: "PreferredQuality")
+    @IBAction func removeCacheOnPlayerExit(sender: UISwitch) {
+        ud.setBool(sender.on, forKey: "removeCacheOnPlayerExit")
     }
-	
-	@IBAction func preferredSubtitleLanguage(sender: AnyObject) {
-		tablePickerView?.toggle()
-	}
+    
+    @IBAction func preferredQuality(control: UISegmentedControl) {
+        ud.setObject(control.titleForSegmentAtIndex(control.selectedSegmentIndex), forKey: "PreferredQuality")
+    }
+    
+    // MARK: - Authorization
     
     @IBAction func authorizeTraktTV(sender: UIButton) {
         if ud.boolForKey("AuthorizedTrakt") {
@@ -157,43 +239,13 @@ class SettingsTableViewController: UITableViewController, TablePickerViewDelegat
         }
     }
     
-    @IBAction func showTwitter(sender: AnyObject) {
-        UIApplication.sharedApplication().openURL(NSURL(string: "https://twitter.com/popcorntimetv")!)
-    }
-    
-    @IBAction func clearCache(sender: UIButton) {
-        let controller = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
-        controller.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-        do {
-            let size = NSFileManager.defaultManager().folderSizeAtPath(downloadsDirectory)
-            try NSFileManager.defaultManager().removeItemAtURL(NSURL(fileURLWithPath: downloadsDirectory))
-            controller.title = "Success"
-            if size == 0 {
-                controller.message = "Cache was already empty, no disk space was reclamed."
-            } else {
-               controller.message = "Cleaned \(size) bytes."
-            }
-        } catch {
-            controller.title = "Failed"
-            controller.message = "Error cleanining cache."
-            print("Error: \(error)")
-        }
-        presentViewController(controller, animated: true, completion: nil)
-    }
-    
-    @IBAction func removeCacheOnPlayerExit(sender: UISwitch) {
-        ud.setBool(sender.on, forKey: "removeCacheOnPlayerExit")
-    }
-    
-    @IBAction func showWebsite(sender: AnyObject) {
-        openUrl("http://popcorntime.sh")
-    }
-    
-    func openUrl(url : String) {
-        self.safariViewController = SFSafariViewController(URL: NSURL(string: url)!)
+    func openUrl(url: String) {
+        safariViewController = SFSafariViewController(URL: NSURL(string: url)!)
         self.safariViewController.view.tintColor = UIColor(red:0.37, green:0.41, blue:0.91, alpha:1.0)
         presentViewController(self.safariViewController, animated: true, completion: nil)
     }
+    
+    // MARK: - TraktOAuth
     
     func safariLogin(notification: NSNotification) {
         safariViewController.dismissViewControllerAnimated(true, completion: nil)
@@ -204,7 +256,7 @@ class SettingsTableViewController: UITableViewController, TablePickerViewDelegat
             dispatch_async(dispatch_get_global_queue(Int(QOS_CLASS_USER_INITIATED.rawValue), 0)) {
                 do {
                     let credential = try OAuthCredential(URLString: "https://api-v2launch.trakt.tv/oauth/token", code: query["code"]!, redirectURI: "PopcornTime://trakt", clientID: TraktTVAPI.sharedInstance.clientId, clientSecret: TraktTVAPI.sharedInstance.clientSecret, useBasicAuthentication: false)
-                    OAuthCredential.storeCredential(credential, identifier: "trakt")
+                    OAuthCredential.storeCredential(credential!, identifier: "trakt")
                     dispatch_async(dispatch_get_main_queue(), {
                         self.ud.setBool(true, forKey: "AuthorizedTrakt")
                         self.updateSignedInStatus(self.traktSignInButton, isSignedIn: true)

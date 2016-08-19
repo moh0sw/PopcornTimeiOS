@@ -63,31 +63,6 @@ class TraktTVAPI {
         }
     }
     /**
-     Load show metadata from API.
-     
-     - Parameter imbd: The imbd identification code used to lookup the show.
-     
-     - Returns: The background art URL, status (continuing, ended) rating and synopsis of the provided show.
-     */
-    func getShowMeta(imdb: String, completion: (synopsis: String, status: String, coverImageAsString: String, rating: Float) -> Void) {
-        Alamofire.request(.GET, "https://api.trakt.tv/shows/\(imdb)", parameters: ["extended": "full,images"], headers: ["trakt-api-key": clientId, "trakt-api-version": "2"]).validate().responseJSON { response in
-            guard response.result.isFailure else {
-                let responseDict = JSON(response.result.value!)
-                let synopsis = responseDict["overview"].string!
-                let rating = responseDict["rating"].float!/2
-                let status = responseDict["status"].string!.capitalizedString
-                var image: String
-                if UIDevice.currentDevice().userInterfaceIdiom == .Phone {
-                    image = responseDict["images"]["poster"]["medium"].string!
-                } else {
-                    image = responseDict["images"]["poster"]["full"].string!
-                }
-                completion(synopsis: synopsis, status: status, coverImageAsString: image, rating: rating)
-                return
-            }
-        }
-    }
-    /**
      Scrobbles current video.
      
      - Parameter item:      The imdbId of video that is playing.
@@ -102,7 +77,7 @@ class TraktTVAPI {
         dispatch_async(dispatch_get_global_queue(Int(QOS_CLASS_USER_INITIATED.rawValue), 0)) {
             if credential.expired {
                 do {
-                    credential = try OAuthCredential(URLString: "https://api.trakt.tv/oauth/token", refreshToken: credential.refreshToken!, clientID: self.clientId, clientSecret: self.clientSecret, useBasicAuthentication: false)
+                    credential = try OAuthCredential(URLString: "https://api.trakt.tv/oauth/token", refreshToken: credential.refreshToken!, clientID: self.clientId, clientSecret: self.clientSecret, useBasicAuthentication: false)!
                 } catch {
                     return
                 }
@@ -135,14 +110,14 @@ class TraktTVAPI {
      - Returns: The imageURLString and Imdb identification code of the epsiode.
      */
     func getEpisodeMeta(show: PCTShow, episode: PCTEpisode, completion:(imageURLAsString: String, imdbId: String?) -> Void) {
-        Alamofire.request(.GET, "https://api.trakt.tv/shows/\(show.imdbId)/seasons/\(episode.season)/episodes/\(episode.episode)?extended=images", headers: ["trakt-api-key": self.clientId, "trakt-api-version": "2"]).validate().responseJSON { response in
+        Alamofire.request(.GET, "https://api.trakt.tv/shows/\(show.slug)/seasons/\(episode.season)/episodes/\(episode.episode)?extended=images", headers: ["trakt-api-key": self.clientId, "trakt-api-version": "2"]).validate().responseJSON { response in
             guard response.result.isFailure else {
                 let responseDict = JSON(response.result.value!)
                 var image: String!
                 if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
-                    image = responseDict["images"]["screenshot"]["full"].string!
+                    image = responseDict["images"]["screenshot"]["full"].string ?? ""
                 } else if UIDevice.currentDevice().userInterfaceIdiom == .Phone {
-                    image = responseDict["images"]["screenshot"]["medium"].string!
+                    image = responseDict["images"]["screenshot"]["medium"].string ?? ""
                 }
                 if let imdbId = responseDict["ids"]["imdb"].string {
                     completion(imageURLAsString: image, imdbId: imdbId)
@@ -190,7 +165,7 @@ class TraktTVAPI {
         dispatch_async(dispatch_get_global_queue(Int(QOS_CLASS_USER_INITIATED.rawValue), 0)) {
             if credential.expired {
                 do {
-                    credential = try OAuthCredential(URLString: "https://api.trakt.tv/oauth/token", refreshToken: credential.refreshToken!, clientID: self.clientId, clientSecret: self.clientSecret, useBasicAuthentication: false)
+                    credential = try OAuthCredential(URLString: "https://api.trakt.tv/oauth/token", refreshToken: credential.refreshToken!, clientID: self.clientId, clientSecret: self.clientSecret, useBasicAuthentication: false)!
                 } catch {
                     return
                 }
@@ -243,7 +218,7 @@ class TraktTVAPI {
         dispatch_async(dispatch_get_global_queue(Int(QOS_CLASS_USER_INITIATED.rawValue), 0)) {
             if credential.expired {
                 do {
-                    credential = try OAuthCredential(URLString: "https://api.trakt.tv/oauth/token", refreshToken: credential.refreshToken!, clientID: self.clientId, clientSecret: self.clientSecret, useBasicAuthentication: false)
+                    credential = try OAuthCredential(URLString: "https://api.trakt.tv/oauth/token", refreshToken: credential.refreshToken!, clientID: self.clientId, clientSecret: self.clientSecret, useBasicAuthentication: false)!
                 } catch {
                     return
                 }
@@ -285,7 +260,7 @@ class TraktTVAPI {
         dispatch_async(dispatch_get_global_queue(Int(QOS_CLASS_USER_INITIATED.rawValue), 0)) {
             if credential.expired {
                 do {
-                    credential = try OAuthCredential(URLString: "https://api.trakt.tv/oauth/token", refreshToken: credential.refreshToken!, clientID: self.clientId, clientSecret: self.clientSecret, useBasicAuthentication: false)
+                    credential = try OAuthCredential(URLString: "https://api.trakt.tv/oauth/token", refreshToken: credential.refreshToken!, clientID: self.clientId, clientSecret: self.clientSecret, useBasicAuthentication: false)!
                 } catch {
                     return
                 }

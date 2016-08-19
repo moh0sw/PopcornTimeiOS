@@ -12,7 +12,8 @@ class OpenSubtitles {
      */
     static let sharedInstance = OpenSubtitles()
     
-    /// Private Variables.
+    // MARK: - Private Variables.
+    
     private let baseURL = "http://api.opensubtitles.org:80/xml-rpc"
     private let secureBaseURL = "https://api.opensubtitles.org:443/xml-rpc"
     private let userAgent = "Popcorn Time v1"

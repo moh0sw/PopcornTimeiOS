@@ -197,9 +197,9 @@ class PCTPlayerViewController: UIViewController, UIGestureRecognizerDelegate, UI
     var currentSubtitle: PCTSubtitle? {
         didSet {
             if let subtitle = currentSubtitle {
-                openSubtitles(NSURL(string: subtitle.link)!)
+                mediaplayer.numberOfChaptersForTitle(Int32(subtitles.indexOf(subtitle)!)) != NSNotFound ? mediaplayer.currentChapterIndex = Int32(subtitles.indexOf(subtitle)!) : openSubtitles(NSURL(string: subtitle.link)!)
             } else {
-                mediaplayer.addPlaybackSlave(NSURL(fileURLWithPath: ""), type: .Subtitle, enforce: true) // Remove all subtitles
+                mediaplayer.currentChapterIndex = NSNotFound // Remove all subtitles
             }
         }
     }
@@ -216,6 +216,7 @@ class PCTPlayerViewController: UIViewController, UIGestureRecognizerDelegate, UI
     private var startPosition: Float = 0.0
     private var idleTimer: NSTimer!
     private var shouldHideStatusBar = true
+    private let NSNotFound: Int32 = -1
     private var volumeView: MPVolumeView = {
        let view = MPVolumeView(frame: CGRectMake(-1000, -1000, 100, 100))
         view.sizeToFit()
@@ -242,9 +243,9 @@ class PCTPlayerViewController: UIViewController, UIGestureRecognizerDelegate, UI
     
     private func openSubtitles(filePath: NSURL) {
         if filePath.fileURL {
-            mediaplayer.addPlaybackSlave(NSURL(fileURLWithPath: filePath.relativePath!), type: .Subtitle, enforce: true)
+            mediaplayer.addPlaybackSlave(NSURL(fileURLWithPath: filePath.relativeString!), type: .Subtitle, enforce: true)
         } else {
-            downloadSubtitle(filePath.relativePath!, downloadDirectory: self.directory, covertToVTT: false, completion: { (subtitlePath) in
+            downloadSubtitle(filePath.relativeString!, downloadDirectory: self.directory, covertToVTT: false, completion: { [unowned self] subtitlePath in
                 self.mediaplayer.addPlaybackSlave(subtitlePath, type: .Subtitle, enforce: true)
             })
         }
@@ -282,6 +283,20 @@ class PCTPlayerViewController: UIViewController, UIGestureRecognizerDelegate, UI
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        if let font = NSUserDefaults.standardUserDefaults().stringForKey("PreferredSubtitleFont"),
+            let name = UIFont(name: font, size: 0)?.familyName {
+            (mediaplayer as VLCFontAppearance).setTextRendererFont!(name)
+        }
+        if let style = NSUserDefaults.standardUserDefaults().stringForKey("PreferredSubtitleFontStyle") {
+            (mediaplayer as VLCFontAppearance).setTextRendererFontForceBold!(NSNumber(bool: style == "Bold"))
+        }
+        if let size = NSUserDefaults.standardUserDefaults().stringForKey("PreferredSubtitleSize") {
+            (mediaplayer as VLCFontAppearance).setTextRendererFontSize!(NSNumber(float: Float(size.stringByReplacingOccurrencesOfString(" pt", withString: ""))!))
+        }
+        if let subtitleColor = NSUserDefaults.standardUserDefaults().stringForKey("PreferredSubtitleColor")?.camelCaseString,
+            let color = UIColor.performSelector(Selector(subtitleColor + "Color")).takeRetainedValue() as? UIColor {
+            (mediaplayer as VLCFontAppearance).setTextRendererFontColor!(NSNumber(unsignedInt: color.hexInt()))
+        }
         subtitleSwitcherButton.hidden = subtitles.count == 0
         subtitleSwitcherButtonWidthConstraint.constant = subtitleSwitcherButton.hidden == true ? 0 : 24
         mediaplayer.delegate = self
@@ -450,7 +465,6 @@ class PCTPlayerViewController: UIViewController, UIGestureRecognizerDelegate, UI
             } else if let episode = media as? PCTEpisode {
                 vc.castMetadata = PCTCastMetaData(episode: episode, duration: duration, startPosition: mediaplayer.time.numberValue.doubleValue/1000.0, url: url.relativeString!, mediaAssetsPath: directory)
             }
-            
         }
     }
     
@@ -499,18 +513,53 @@ class PCTPlayerViewController: UIViewController, UIGestureRecognizerDelegate, UI
     }
     
 }
+/**
+ Protocol wrapper for private subtitle appearance API in MobileVLCKit. Can be toll free bridged from VLCMediaPlayer. Example for changing font:
+ 
+        let mediaPlayer = VLCMediaPlayer()
+        (mediaPlayer as VLCFontAppearance).setTextRendererFont!("HelveticaNueve")
+ */
+@objc protocol VLCFontAppearance {
+    /**
+     Change color of subtitle font.
+     
+     [All colors available here]: http://www.nameacolor.com/Color%20numbers.htm
+     
+     - Parameter fontColor: An `NSNumber` wrapped hexInt(`UInt32`) indicating the color. Eg. Black: 0, White: 16777215, etc.
+     
+     - SeeAlso: [All colors available here]
+     */
+    optional func setTextRendererFontColor(fontColor: NSNumber)
+    /**
+     Toggle bold on subtitle font.
+     
+     - Parameter fontForceBold: `NSNumber` wrapped `Bool`.
+     */
+    optional func setTextRendererFontForceBold(fontForceBold: NSNumber)
+    /**
+     Change the subtitle font.
+     
+     - Parameter fontname: `NSString` representation of font name. Eg `UIFonts` familyName property.
+     */
+    optional func setTextRendererFont(fontname: NSString)
+    /**
+     Change the subtitle font size.
+     
+     - Parameter fontname: `NSNumber` wrapped `Int` of the fonts size.
+     
+     - Important: Provide the font in reverse size as `libvlc` sets the text matrix to the identity matrix which reverses the font size. Ie. 5pt is really big and 100pt is really small.
+     */
+    optional func setTextRendererFontSize(fontSize: NSNumber)
+}
+
+extension VLCMediaPlayer: VLCFontAppearance {}
 
 func downloadSubtitle(path: String, fileName suggestedName: String? = nil, downloadDirectory directory: NSURL, covertToVTT: Bool, completion: (subtitlePath: NSURL) -> Void) {
     var downloadDirectory: NSURL!
     var zippedFilePath: NSURL!
     var fileName: String!
-    Alamofire.download(.GET, path,
-        destination: { (temporaryURL, response) -> NSURL in
-            if let name = suggestedName {
-                fileName = name
-            } else {
-                fileName = response.suggestedFilename!
-            }
+    Alamofire.download(.GET, path, destination: { (temporaryURL, response) -> NSURL in
+            fileName = suggestedName != nil ? suggestedName! : response.suggestedFilename!
             downloadDirectory = directory.URLByAppendingPathComponent("Subtitles")
             if !NSFileManager.defaultManager().fileExistsAtPath(downloadDirectory.relativePath!) {
                 try! NSFileManager.defaultManager().createDirectoryAtURL(downloadDirectory, withIntermediateDirectories: true, attributes: nil)
@@ -525,11 +574,7 @@ func downloadSubtitle(path: String, fileName suggestedName: String? = nil, downl
         }
         let filePath = downloadDirectory.relativePath! + "/" + fileName.stringByReplacingOccurrencesOfString(".gz", withString: "")
         NSFileManager.defaultManager().createFileAtPath(filePath, contents: NSFileManager.defaultManager().contentsAtPath(zippedFilePath.relativePath!)?.gunzippedData(), attributes: nil)
-        if covertToVTT {
-            completion(subtitlePath: SRT.sharedConverter().convertFileToVTT(NSURL(fileURLWithPath: filePath)))
-        } else {
-            completion(subtitlePath: NSURL(fileURLWithPath: filePath))
-        }
+        covertToVTT ? completion(subtitlePath: SRT.sharedConverter().convertFileToVTT(NSURL(fileURLWithPath: filePath))) : completion(subtitlePath: NSURL(fileURLWithPath: filePath))
         
     }
 }

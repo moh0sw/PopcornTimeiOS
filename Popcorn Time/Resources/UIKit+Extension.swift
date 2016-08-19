@@ -43,9 +43,9 @@ import MediaPlayer
         let layer = self.layer as! CAGradientLayer
         let locations = [ 0.0, 1.0 ]
         layer.locations = locations
-        let color1 = topColor ?? self.tintColor as UIColor
-        let color2 = bottomColor ?? UIColor.blackColor() as UIColor
-        let colors: Array <AnyObject> = [ color1.CGColor, color2.CGColor ]
+        let color1: UIColor = topColor ?? self.tintColor
+        let color2: UIColor = bottomColor ?? UIColor.blackColor()
+        let colors = [ color1.CGColor, color2.CGColor ]
         layer.colors = colors
     }
     
@@ -124,24 +124,33 @@ extension UIView {
     @IBInspectable var borderColor: UIColor? {
         didSet {
             layer.borderColor = borderColor?.CGColor
-            tintColor = borderColor
             setTitleColor(borderColor, forState: .Normal)
         }
     }
     override var highlighted: Bool {
         didSet {
-            updateColor(highlighted)
+            updateColor(highlighted, borderColor)
         }
     }
     
-    func updateColor(tint: Bool) {
+    override func tintColorDidChange() {
+        if tintAdjustmentMode == .Dimmed {
+            updateColor(false)
+        } else {
+            updateColor(false, borderColor)
+        }
+    }
+    
+    func updateColor(highlighted: Bool, _ color: UIColor? = nil) {
         UIView.animateWithDuration(0.25) {
-            if tint {
-                self.backgroundColor =  self.borderColor ?? UIColor(red:0.37, green:0.41, blue:0.91, alpha:1.0)
+            if highlighted {
+                self.backgroundColor =  color ?? self.tintColor
+                self.layer.borderColor = color?.CGColor ?? self.tintColor?.CGColor
                 self.setTitleColor(UIColor.whiteColor(), forState: .Highlighted)
             } else {
                 self.backgroundColor = UIColor.clearColor()
-                self.setTitleColor(self.borderColor ?? UIColor(red:0.37, green:0.41, blue:0.91, alpha:1.0), forState: .Normal)
+                self.layer.borderColor = color?.CGColor ?? self.tintColor?.CGColor
+                self.setTitleColor(color ?? self.tintColor, forState: .Normal)
             }
         }
     }
@@ -258,7 +267,7 @@ extension String {
         return queryStringDictionary
     }
     
-    func sliceFrom(start: String, to: String) -> String? {
+    func sliceFrom(start: String, to: String) -> String {
         return (rangeOfString(start)?.endIndex).flatMap { sInd in
             let eInd = rangeOfString(to, range: sInd..<endIndex)
             if eInd != nil {
@@ -267,10 +276,24 @@ extension String {
                 }
             }
             return substringWithRange(sInd..<endIndex)
-        }
+        } ?? start
     }
+    
     func contains(aString: String) -> Bool{
         return self.rangeOfString(aString, options: NSStringCompareOptions.CaseInsensitiveSearch) != nil
+    }
+    /// Produce a string of which all spaces are removed.
+    var whiteSpacelessString: String {
+        return stringByReplacingOccurrencesOfString(" ", withString: "")
+    }
+    /// Produce a string of which all spaces are removed and all letters capitalised except for the first.
+    var camelCaseString: String {
+        guard characters.count < 1 else {
+            var camelString = capitalizedString.whiteSpacelessString
+            camelString.replaceRange(startIndex..<startIndex.advancedBy(1), with: String(capitalizedString.characters.first!).lowercaseString)
+            return camelString
+        }
+        return self
     }
 }
 
@@ -404,13 +427,10 @@ extension NSLocale {
 
 extension UITableViewCell {
     func relatedTableView() -> UITableView {
-        if let superview = self.superview as? UITableView {
-            return superview
-        } else if let superview = self.superview?.superview as? UITableView {
-            return superview
-        } else {
+        guard let superview = self.superview as? UITableView ?? self.superview?.superview as? UITableView else {
             fatalError("UITableView shall always be found.")
         }
+        return superview
     }
     
     // Fixes multiple color bugs in iPads because of interface builder
@@ -584,13 +604,12 @@ func cleanMagnet(url: String) -> String {
     var hash: String
     if !url.isEmpty {
         if url.containsString("&dn=") {
-            hash = url.sliceFrom("magnet:?xt=urn:btih:", to: "&dn=")!
+            hash = url.sliceFrom("magnet:?xt=urn:btih:", to: "&dn=")
         } else {
-            hash = url.sliceFrom("magnet:?xt=urn:btih:", to: "")!
+            hash = url.sliceFrom("magnet:?xt=urn:btih:", to: "")
         }
         return makeMagnetLink(hash)
     }
-    
     return url
 }
 
@@ -689,5 +708,135 @@ extension NSUserDefaults {
 extension UIColor {
     class func appColor() -> UIColor {
         return UIColor(red:0.37, green:0.41, blue:0.91, alpha:1.0)
+    }
+    
+    class func systemColors() -> [UIColor] {
+        return [UIColor.blackColor(), UIColor.darkGrayColor(), UIColor.lightGrayColor(), UIColor.whiteColor(), UIColor.grayColor(), UIColor.redColor(), UIColor.greenColor(), UIColor.blueColor(), UIColor.cyanColor(), UIColor.yellowColor(), UIColor.magentaColor(), UIColor.orangeColor(), UIColor.purpleColor(), UIColor.brownColor()]
+    }
+    
+    class func systemColorStrings() -> [String] {
+       return ["Black", "Dark Gray", "Light Gray", "White", "Gray", "Red", "Green", "Blue", "Cyan", "Yellow", "Magenta", "Orange", "Purple", "Brown"]
+    }
+    
+    func hexString() -> String {
+        let colorSpace = CGColorSpaceGetModel(CGColorGetColorSpace(self.CGColor))
+        let components = CGColorGetComponents(self.CGColor)
+        
+        var r, g, b: CGFloat!
+        
+        if (colorSpace == .Monochrome) {
+            r = components[0]
+            g = components[0]
+            b = components[0]
+        } else if (colorSpace == .RGB) {
+            r = components[0]
+            g = components[1]
+            b = components[2]
+        }
+        
+        return NSString(format: "#%02lX%02lX%02lX", lroundf(Float(r) * 255), lroundf(Float(g) * 255), lroundf(Float(b) * 255)) as String
+    }
+    
+    func hexInt() -> UInt32 {
+        let hex = hexString()
+        var rgb: UInt32 = 0
+        let s = NSScanner(string: hex)
+        s.scanLocation = 1
+        s.scanHexInt(&rgb)
+        return rgb
+    }
+}
+
+extension UIFont {
+    
+    func withTraits(traits:UIFontDescriptorSymbolicTraits...) -> UIFont {
+        let descriptor = self.fontDescriptor()
+            .fontDescriptorWithSymbolicTraits(UIFontDescriptorSymbolicTraits(traits))
+        return UIFont(descriptor: descriptor, size: 0)
+    }
+    
+    func boldItalic() -> UIFont {
+        return withTraits(.TraitBold, .TraitItalic)
+    }
+    
+    func bold() -> UIFont {
+        return withTraits(.TraitBold)
+    }
+    
+    func italic() -> UIFont {
+        return withTraits(.TraitItalic)
+    }
+}
+
+extension GCKMediaTextTrackStyle {
+    
+    class func pct_createDefault() -> Self {
+        let ud = NSUserDefaults.standardUserDefaults()
+        let windowType = GCKMediaTextTrackStyleWindowType.None
+        let windowColor = GCKColor(UIColor: UIColor.clearColor())
+        var fontFamily: String?
+        var edgeColor: GCKColor?
+        let edgeType: GCKMediaTextTrackStyleEdgeType
+        let fontScale: CGFloat
+        var foregroundColor: GCKColor?
+        if let font = ud.stringForKey("PreferredSubtitleFont") {
+            fontFamily = UIFont(name: font, size: 0)?.familyName
+        }
+        var fontStyle = GCKMediaTextTrackStyleFontStyle.Normal
+        if let style = ud.stringForKey("PreferredSubtitleFontStyle") {
+            switch style {
+            case "Bold":
+                fontStyle = .Bold
+            case "Italic":
+                fontStyle = .Italic
+            case "Bold-Italic":
+                fontStyle = .BoldItalic
+            default:
+                break
+            }
+        }
+        if let color = ud.stringForKey("PreferredSubtitleOutlineColor")?.camelCaseString {
+            edgeColor = GCKColor(UIColor: UIColor.performSelector(Selector(color + "Color")).takeRetainedValue() as! UIColor)
+        }
+        edgeType = edgeColor != nil ? .Outline : .DropShadow
+        var scale: CGFloat = 25
+        if let size = ud.stringForKey("PreferredSubtitleSize") {
+            scale = CGFloat(Float(size.stringByReplacingOccurrencesOfString(" pt", withString: ""))!)
+        }
+        fontScale = scale
+        var textColor = UIColor.whiteColor()
+        if let color = ud.stringForKey("PreferredSubtitleColor")?.camelCaseString {
+            textColor = UIColor.performSelector(Selector(color + "Color")).takeRetainedValue() as! UIColor
+        }
+        foregroundColor = GCKColor(UIColor: textColor)
+        let swizzledSelf = self.init()
+        swizzledSelf.windowType = windowType
+        swizzledSelf.windowColor = windowColor
+        swizzledSelf.fontFamily = fontFamily
+        swizzledSelf.edgeColor = edgeColor
+        swizzledSelf.edgeType = edgeType
+        swizzledSelf.fontScale = fontScale
+        swizzledSelf.foregroundColor = foregroundColor
+        swizzledSelf.fontStyle = fontStyle
+        return swizzledSelf
+    }
+    
+    public override class func initialize() {
+        struct Static {
+            static var token: dispatch_once_t = 0
+        }
+        
+        // make sure this isn't a subclass
+        if self !== GCKMediaTextTrackStyle.self {
+            return
+        }
+        
+        dispatch_once(&Static.token) {
+            let originalSelector = #selector(createDefault)
+            let swizzledSelector = #selector(pct_createDefault)
+            let originalMethod = class_getClassMethod(self, originalSelector)
+            let swizzledMethod = class_getClassMethod(self, swizzledSelector)
+            method_exchangeImplementations(originalMethod, swizzledMethod)
+        }
     }
 }

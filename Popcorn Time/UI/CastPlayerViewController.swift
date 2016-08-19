@@ -30,16 +30,24 @@ class CastPlayerViewController: UIViewController, GCKRemoteMediaClientListener, 
         hud.interactionType = .BlockAllTouches
         return hud
     }()
-    private var subtitleColors = ["Black":UIColor.blackColor(),"Dark Gray":UIColor.darkGrayColor(),"Light Gray":UIColor.lightGrayColor(),"White":UIColor.whiteColor(),"Gray":UIColor.grayColor(),"Red":UIColor.redColor(),"Green":UIColor.greenColor(),"Blue":UIColor.blueColor(),"Cyan":UIColor.cyanColor(),"Yellow":UIColor.yellowColor(),"Magenta":UIColor.magentaColor(),"Orange":UIColor.orangeColor(),"Purple":UIColor.purpleColor(),"Brown":UIColor.brownColor()]
+    private var subtitleColors: [String: UIColor] = {
+        var colorDict = [String: UIColor]()
+        for (index, color) in UIColor.systemColors().enumerate() {
+            colorDict[UIColor.systemColorStrings()[index]] = color
+        }
+        return colorDict
+    }()
     private var subtitleFonts: [String: UIFont] = {
         var fontDict = [String: UIFont]()
         for familyName in UIFont.familyNames() {
             for fontName in UIFont.fontNamesForFamilyName(familyName) {
-                if !fontName.contains("Bold") && !fontName.contains("Italic") && !fontName.contains("Medium") && !fontName.contains("Light") {
-                    fontDict[fontName] = UIFont(name: fontName, size: 20)
+                let font = UIFont(name: fontName, size: 25)!; let traits = font.fontDescriptor().symbolicTraits
+                if !traits.contains(.TraitCondensed) && !traits.contains(.TraitBold) && !traits.contains(.TraitItalic) && !fontName.contains("Thin") && !fontName.contains("Light") && !fontName.contains("Medium") && !fontName.contains("Black") {
+                    fontDict[fontName] = UIFont(name: fontName, size: 25)
                 }
             }
         }
+        fontDict["Default"] = UIFont.systemFontOfSize(25)
         return fontDict
     }()
     private var subtitles = ["None": ""]
@@ -54,6 +62,7 @@ class CastPlayerViewController: UIViewController, GCKRemoteMediaClientListener, 
                     subtitleDict[subtitle.language] = subtitle.link
                 }
                 self.subtitles += subtitleDict
+                self.selectedSubtitleMeta[0] = media.currentSubtitle?.language ?? NSUserDefaults.standardUserDefaults().stringForKey("PreferredSubtitleLanguage") ?? "None"
             }
         }
     }
@@ -213,7 +222,7 @@ class CastPlayerViewController: UIViewController, GCKRemoteMediaClientListener, 
     }
     
     required init?(coder aDecoder: NSCoder) {
-        selectedSubtitleMeta = [subtitles.keys.first!, "White", subtitleFonts.keys.filter({$0 == UIFont.systemFontOfSize(0).fontName}).first!]
+        selectedSubtitleMeta = ["None", NSUserDefaults.standardUserDefaults().stringForKey("PreferredSubtitleColor") ?? "White", NSUserDefaults.standardUserDefaults().stringForKey("PreferredSubtitleFont") ?? "Default"]
         super.init(coder: aDecoder)
         remoteMediaClient?.addListener(self)
     }
@@ -240,17 +249,17 @@ class CastPlayerViewController: UIViewController, GCKRemoteMediaClientListener, 
         volumeSlider?.setThumbImage(UIImage(named: "Scrubber Image"), forState: .Normal)
     }
     
-    func pickerView(pickerView: PCTPickerView, didClose selectedItems: [String: AnyObject]) {
-        selectedSubtitleMeta = Array(selectedItems.keys)
+    func pickerView(pickerView: PCTPickerView, didChange items: [String: AnyObject]) {
+        selectedSubtitleMeta = Array(items.keys)
         let trackStyle = GCKMediaTextTrackStyle.createDefault()
-        for (index, value) in selectedItems.values.enumerate() {
+        for (index, value) in items.values.enumerate() {
             if let font = value as? UIFont {
                 trackStyle.fontFamily = font.familyName
             } else if let color = value as? UIColor {
                 trackStyle.foregroundColor = GCKColor(UIColor: color)
             } else if let link = value as? String {
                 if link != "None" {
-                    downloadSubtitle(link, fileName: NSLocale.langs.allKeysForValue(Array(selectedItems.keys)[index]).first! + ".vtt", downloadDirectory: directory, covertToVTT: true, completion: { _ in
+                    downloadSubtitle(link, fileName: NSLocale.langs.allKeysForValue(Array(items.keys)[index]).first! + ".vtt", downloadDirectory: directory, covertToVTT: true, completion: { _ in
                         self.remoteMediaClient?.setActiveTrackIDs([NSNumber(integer: index)])
                     })
                 } else {

@@ -127,6 +127,4 @@ class AirPlayManager: NSObject {
     optional func routeDescriptionAtIndex(index: Int) -> [String: AnyObject]
 }
 
-extension NSObject : MPAVRoutingControllerProtocol, MPAVRouteProtocol, MPAudioDeviceControllerProtocol {
-    
-}
+extension NSObject: MPAVRoutingControllerProtocol, MPAVRouteProtocol, MPAudioDeviceControllerProtocol {}
