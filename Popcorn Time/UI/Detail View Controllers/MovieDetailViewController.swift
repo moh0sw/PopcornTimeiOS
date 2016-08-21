@@ -75,7 +75,7 @@ class MovieDetailViewController: DetailItemOverviewViewController, PCTTablePicke
                 if let link = self.currentItem.currentSubtitle?.link {
                     self.subtitlesTablePickerView.selectedItems = [link]
                 }
-                self.tabBarController?.view.addSubview(self.subtitlesTablePickerView!)
+                self.tabBarController?.view.addSubview(self.subtitlesTablePickerView)
             })
         })
         torrentHealth.backgroundColor = currentItem.currentTorrent.health.color()

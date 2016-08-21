@@ -27,11 +27,6 @@ class EpisodeDetailViewController: UIViewController, PCTTablePickerViewDelegate,
     weak var delegate: EpisodeDetailViewControllerDelegate?
     var interactor: PCTEpisodeDetailPercentDrivenInteractiveTransition?
     
-    override func viewWillLayoutSubviews() {
-        super.viewWillLayoutSubviews()
-        preferredContentSize = scrollView.contentSize
-    }
-    
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         if transitionCoordinator()?.viewControllerForKey(UITransitionContextToViewControllerKey) == self.presentingViewController {
@@ -43,6 +38,7 @@ class EpisodeDetailViewController: UIViewController, PCTTablePickerViewDelegate,
         super.viewDidLayoutSubviews()
         subtitlesTablePickerView?.setNeedsLayout()
         subtitlesTablePickerView?.layoutIfNeeded()
+        preferredContentSize = scrollView.contentSize
     }
 
     override func viewDidLoad() {
@@ -102,6 +98,9 @@ class EpisodeDetailViewController: UIViewController, PCTTablePickerViewDelegate,
             playNowBtn?.enabled = false
         }
         torrentHealth.backgroundColor = currentItem.currentTorrent.health.color()
+        scrollView.setNeedsLayout()
+        scrollView.layoutIfNeeded()
+        preferredContentSize = scrollView.contentSize
     }
     
     @IBAction func changeQualityTapped(sender: UIButton) {
@@ -156,7 +155,7 @@ class EpisodeDetailViewController: UIViewController, PCTTablePickerViewDelegate,
     }
     
     @IBAction func handleGesture(sender: UIPanGestureRecognizer) {
-        let percentThreshold: CGFloat = 0.09
+        let percentThreshold: CGFloat = 0.12
         let superview = sender.view!.superview!
         let translation = sender.translationInView(superview)
         let progress = translation.y/superview.bounds.height/3.0

@@ -269,9 +269,9 @@ public class PCTTablePickerView: UIView, UITableViewDataSource, UITableViewDeleg
 	}
     
     private func layoutView() {
-        frame = CGRect(x: 0, y: 0, width: superView.frame.width, height: self.superView.bounds.height)
+        frame = CGRect(x: 0, y: 0, width: superView.frame.width, height: superView.bounds.height)
         dimmingView.frame = superView.bounds
-        view.frame = CGRect(origin: CGPoint(x: 0, y: self.superView.bounds.height - (self.superView.bounds.height / 2.7)), size: CGSize(width: superView.bounds.width, height: self.superView.bounds.height / 2.7))
+        view.frame = CGRect(origin: CGPoint(x: 0, y: superView.bounds.height - (superView.bounds.height / 2.7)), size: CGSize(width: superView.bounds.width, height: superView.bounds.height / 2.7))
     }
 	
 	private func loadNib() {

@@ -81,8 +81,7 @@ public class PCTPickerView: UIView, UIPickerViewDataSource, UIPickerViewDelegate
      Parameter componentDataSources:        Data source dictionaries of the components in the picker.
      Parameter delegate:                    Register for `PCTPickerViewDelegate` notifications.
      Parameter selectedItems:               Data source keys that the pickerView will start on.
-     Parameter attributesForComponenets:    Array of keys for NSAttributedString to customize component text style. Value
-     for supplied key will be taken from the corresponding componentDataSource value.
+     Parameter attributesForComponenets:    Array of keys for NSAttributedString to customize component text style. Value for supplied key will be taken from the corresponding componentDataSource value.
      */
     public init(superView: UIView, componentDataSources: [[String: AnyObject]], delegate: PCTPickerViewDelegate?, selectedItems: [String], attributesForComponents: [String?]? = nil) {
         self.superView = superView
@@ -192,7 +191,7 @@ public class PCTPickerView: UIView, UIPickerViewDataSource, UIPickerViewDelegate
     
     // MARK: Private methods
     
-    @objc private func layoutView() {
+    private func layoutView() {
         frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: self.superView.bounds.height)
         dimmingView.frame = superView.bounds
         view.frame = CGRect(origin: CGPoint(x: 0, y: self.superView.bounds.height - (self.superView.bounds.height / 2.7)), size: CGSize(width: superView.bounds.width, height: self.superView.bounds.height / 2.7))
