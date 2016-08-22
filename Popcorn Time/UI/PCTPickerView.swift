@@ -22,13 +22,6 @@ import UIKit
                                 original selected items passed in.
      */
     optional func pickerView(pickerView: PCTPickerView, willClose items: [String: AnyObject])
-    /**
-     Called when the pickerView has been closed and it's selected items have been changed.
-     
-     - Parameter pickerView:    The pickerView.
-     - Parameter items:         The current selected item(s) in the pickerView.
-     */
-    optional func pickerView(pickerView: PCTPickerView, didChange items: [String: AnyObject])
 }
 /**
  A class based on UIPickerView that handles hiding and dismissing itself from the view its added to.
@@ -192,9 +185,9 @@ public class PCTPickerView: UIView, UIPickerViewDataSource, UIPickerViewDelegate
     // MARK: Private methods
     
     private func layoutView() {
-        frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: self.superView.bounds.height)
+        frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: superView.bounds.height)
         dimmingView.frame = superView.bounds
-        view.frame = CGRect(origin: CGPoint(x: 0, y: self.superView.bounds.height - (self.superView.bounds.height / 2.7)), size: CGSize(width: superView.bounds.width, height: self.superView.bounds.height / 2.7))
+        view.frame = CGRect(origin: CGPoint(x: 0, y: superView.bounds.height - (superView.bounds.height / 2.7)), size: CGSize(width: superView.bounds.width, height: superView.bounds.height / 2.7))
     }
     
     private func loadNib() {
@@ -209,12 +202,7 @@ public class PCTPickerView: UIView, UIPickerViewDataSource, UIPickerViewDelegate
             let value = componentDataSources[component][key]
             selected[key] = value
         }
-        if selectedItems != Array(selected.keys).reverse() {
-            selectedItems = Array(selected.keys).reverse()
-            delegate?.pickerView?(self, didChange: selected)
-        } else {
-            selectedItems = Array(selected.keys).reverse()
-        }
+        selectedItems = Array(selected.keys).reverse()
         hide()
     }
     

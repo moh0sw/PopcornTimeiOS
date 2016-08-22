@@ -53,13 +53,12 @@ class EpisodeDetailViewController: UIViewController, PCTTablePickerViewDelegate,
                 } else {
                     self.subtitlesButton.setTitle("None ▾", forState: .Normal)
                     self.subtitlesButton.userInteractionEnabled = true
-                    if let preferredSubtitle = NSUserDefaults.standardUserDefaults().objectForKey("PreferredSubtitleLanguage") as? String {
-                        for subtitle in subtitles {
-                            if subtitle.language == preferredSubtitle {
-                                self.currentItem.currentSubtitle = subtitle
-                                self.subtitlesButton.setTitle("\(subtitle.language) ▾", forState: .Normal)
-                            }
-                        }
+                    if let preferredSubtitle = NSUserDefaults.standardUserDefaults().objectForKey("PreferredSubtitleLanguage") as? String where preferredSubtitle != "None" {
+                        let languages = subtitles.map({$0.language})
+                        let index = languages.indexOf(languages.filter({$0 == preferredSubtitle}).first!)!
+                        let subtitle = self.currentItem.subtitles![index]
+                        self.currentItem.currentSubtitle = subtitle
+                        self.subtitlesButton.setTitle(subtitle.language + " ▾", forState: .Normal)
                     }
                 }
                 self.subtitlesTablePickerView = PCTTablePickerView(superView: self.view, sourceDict: PCTSubtitle.dictValue(subtitles), self)
@@ -140,17 +139,16 @@ class EpisodeDetailViewController: UIViewController, PCTTablePickerViewDelegate,
         }
     }
     
-    func tablePickerView(tablePickerView: PCTTablePickerView, didChange items: [String]) {
+    func tablePickerView(tablePickerView: PCTTablePickerView, didClose items: [String]) {
         if items.count == 0 {
             currentItem.currentSubtitle = nil
             subtitlesButton.setTitle("None ▾", forState: .Normal)
         } else {
-            for subtitle in currentItem.subtitles! {
-                if items[0] == subtitle.link {
-                    currentItem.currentSubtitle = subtitle
-                    subtitlesButton.setTitle(subtitle.language + " ▾", forState: .Normal)
-                }
-            }
+            let links = currentItem.subtitles!.map({$0.link})
+            let index = links.indexOf(links.filter({$0 == items.first!}).first!)!
+            let subtitle = currentItem.subtitles![index]
+            currentItem.currentSubtitle = subtitle
+            subtitlesButton.setTitle(subtitle.language + " ▾", forState: .Normal)
         }
     }
     
