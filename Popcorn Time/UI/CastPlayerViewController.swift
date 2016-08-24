@@ -279,6 +279,10 @@ class CastPlayerViewController: UIViewController, GCKRemoteMediaClientListener, 
         remoteMediaClient?.setTextTrackStyle(trackStyle)
     }
     
+    override func shouldAutorotate() -> Bool {
+        return UIDevice.currentDevice().userInterfaceIdiom == .Pad
+    }
+    
     override func preferredStatusBarStyle() -> UIStatusBarStyle {
         return .LightContent
     }

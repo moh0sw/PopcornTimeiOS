@@ -96,7 +96,9 @@ class SettingsTableViewController: UITableViewController, PCTTablePickerViewDele
             controller.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
             do {
                 let size = NSFileManager.defaultManager().folderSizeAtPath(downloadsDirectory)
-                try NSFileManager.defaultManager().removeItemAtURL(NSURL(fileURLWithPath: downloadsDirectory))
+                for path in NSFileManager.defaultManager().contentsOfDirectoryAtPath(downloadsDirectory) {
+                   try NSFileManager.defaultManager().removeItemAtPath(path)
+                }
                 controller.title = "Success"
                 if size == 0 {
                     controller.message = "Cache was already empty, no disk space was reclamed."
@@ -105,7 +107,7 @@ class SettingsTableViewController: UITableViewController, PCTTablePickerViewDele
                 }
             } catch {
                 controller.title = "Failed"
-                controller.message = "Error cleanining cache."
+                controller.message = "Error cleaning cache."
                 print("Error: \(error)")
             }
             presentViewController(controller, animated: true, completion: nil)
