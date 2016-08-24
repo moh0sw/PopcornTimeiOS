@@ -695,7 +695,7 @@
                         </collectionViewFlowLayout>
                         <cells>
                             <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="cell" id="bjK-3y-RkM" customClass="CoverCollectionViewCell" customModule="Popcorn_Time" customModuleProvider="target">
-                                <rect key="frame" x="5" y="55" width="195" height="280"/>
+                                <rect key="frame" x="5" y="119" width="195" height="280"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                     <rect key="frame" x="0.0" y="0.0" width="195" height="280"/>
@@ -768,7 +768,7 @@
                             </collectionViewCell>
                         </cells>
                         <collectionReusableView key="sectionHeaderView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="filter" id="tmo-4h-elz" customClass="FilterCollectionReusableView" customModule="Popcorn_Time" customModuleProvider="target">
-                            <rect key="frame" x="0.0" y="0.0" width="600" height="50"/>
+                            <rect key="frame" x="0.0" y="64" width="600" height="50"/>
                             <autoresizingMask key="autoresizingMask"/>
                             <subviews>
                                 <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yFG-sG-6lK">
@@ -1009,7 +1009,7 @@
         <!--Show Detail View Controller-->
         <scene sceneID="mnu-91-ngd">
             <objects>
-                <viewController storyboardIdentifier="TVShowDetailViewController" definesPresentationContext="YES" providesPresentationContextTransitionStyle="YES" modalPresentationStyle="currentContext" useStoryboardIdentifierAsRestorationIdentifier="YES" id="3Pb-Vl-Wuc" customClass="TVShowDetailViewController" customModule="Popcorn_Time" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="TVShowDetailViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="3Pb-Vl-Wuc" customClass="TVShowDetailViewController" customModule="Popcorn_Time" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="T5a-Qt-A5E"/>
                         <viewControllerLayoutGuide type="bottom" id="d4T-cS-69N"/>
@@ -1329,7 +1329,7 @@
         <!--TV Shows Collection View Controller-->
         <scene sceneID="Srh-eL-Jve">
             <objects>
-                <collectionViewController storyboardIdentifier="TVShowsCollectionViewController" title="TV Shows Collection View Controller" definesPresentationContext="YES" useStoryboardIdentifierAsRestorationIdentifier="YES" id="xaU-tV-opM" customClass="TVShowsCollectionViewController" customModule="Popcorn_Time" customModuleProvider="target" sceneMemberID="viewController">
+                <collectionViewController storyboardIdentifier="TVShowsCollectionViewController" title="TV Shows Collection View Controller" useStoryboardIdentifierAsRestorationIdentifier="YES" id="xaU-tV-opM" customClass="TVShowsCollectionViewController" customModule="Popcorn_Time" customModuleProvider="target" sceneMemberID="viewController">
                     <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="xOn-iu-d21">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1686,7 +1686,7 @@ By using 'Popcorn Time' or accessing this site you affirm that you are either mo
         <!--TV Shows-->
         <scene sceneID="CuB-9Y-GGP">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" definesPresentationContext="YES" modalPresentationStyle="currentContext" id="JPM-Hu-yl0" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="JPM-Hu-yl0" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="TV Shows" image="TV" id="xj0-2s-5ug"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" barStyle="black" id="5Qd-BT-yVX">
@@ -2749,7 +2749,7 @@ By using 'Popcorn Time' or accessing this site you affirm that you are either mo
         <!--Episode Detail View Controller-->
         <scene sceneID="xvZ-1m-D1q">
             <objects>
-                <viewController definesPresentationContext="YES" modalPresentationStyle="currentContext" id="Tqz-Ft-gWH" customClass="EpisodeDetailViewController" customModule="Popcorn_Time" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="Tqz-Ft-gWH" customClass="EpisodeDetailViewController" customModule="Popcorn_Time" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="ENK-yp-Xiz"/>
                         <viewControllerLayoutGuide type="bottom" id="yth-Rw-gJW"/>
@@ -3433,9 +3433,9 @@ By using 'Popcorn Time' or accessing this site you affirm that you are either mo
         <image name="onepassword-button" width="27" height="27"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="YQH-WD-agx"/>
         <segue reference="jyX-rC-zV6"/>
-        <segue reference="3RK-0d-T73"/>
+        <segue reference="miE-aS-Gnh"/>
+        <segue reference="b5H-CI-nwE"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" red="0.36862745098039218" green="0.40784313725490196" blue="0.90980392156862744" alpha="1" colorSpace="calibratedRGB"/>
 </document>
