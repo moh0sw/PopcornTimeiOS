@@ -97,7 +97,7 @@ class SettingsTableViewController: UITableViewController, PCTTablePickerViewDele
             do {
                 let size = NSFileManager.defaultManager().folderSizeAtPath(downloadsDirectory)
                 for path in try NSFileManager.defaultManager().contentsOfDirectoryAtPath(downloadsDirectory) {
-                   try NSFileManager.defaultManager().removeItemAtPath(path)
+                   try NSFileManager.defaultManager().removeItemAtPath(downloadsDirectory + "/\(path)")
                 }
                 controller.title = "Success"
                 if size == 0 {
