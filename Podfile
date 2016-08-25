@@ -2,7 +2,6 @@ platform :ios, '9.0'
 use_frameworks!
 
 source 'https://github.com/CocoaPods/Specs'
-source 'https://github.com/PopcornTimeTV/Specs'
 source 'https://github.com/angryDuck2/CocoaSpecs'
 
 target "Popcorn Time" do
@@ -21,7 +20,7 @@ target "Popcorn Time" do
     pod 'OBSlider'
     pod 'ColorArt'
     pod '1PasswordExtension'
-    pod 'PopcornTorrent/iOS'
+    pod 'PopcornTorrent', git: 'https://github.com/PopcornTimeTV/PopcornTorrent.git'
     pod 'MobileVLCKit-unstable', '3.0.0a10'
     pod 'SwiftyTimer'
     pod 'SRT2VTT'
