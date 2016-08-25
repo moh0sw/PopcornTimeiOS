@@ -170,17 +170,20 @@ class CastPlayerViewController: UIViewController, GCKRemoteMediaClientListener, 
                 bufferView.dismiss()
                 switch GCKMediaPlayerState(rawValue: newValue as! Int)! {
                 case .Paused:
+                    UIApplication.sharedApplication().idleTimerDisabled = false
                     TraktTVAPI.sharedInstance.scrobble(media.id, progress: progressSlider.value, type: type, status: .Paused)
                     playPauseButton.setImage(UIImage(named: "Play"), forState: .Normal)
                     elapsedTimer.invalidate()
                     elapsedTimer = nil
                 case .Playing:
+                    UIApplication.sharedApplication().idleTimerDisabled = true
                     TraktTVAPI.sharedInstance.scrobble(media.id, progress: progressSlider.value, type: type, status: .Watching)
                     playPauseButton.setImage(UIImage(named: "Pause"), forState: .Normal)
                     if elapsedTimer == nil {
                         elapsedTimer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: #selector(updateTime), userInfo: nil, repeats: true)
                     }
                 case .Buffering:
+                    UIApplication.sharedApplication().idleTimerDisabled = true
                     playPauseButton.setImage(UIImage(named: "Play"), forState: .Normal)
                     bufferView.showInView(view)
                 case .Idle:
@@ -225,6 +228,7 @@ class CastPlayerViewController: UIViewController, GCKRemoteMediaClientListener, 
         selectedSubtitleMeta = ["None", NSUserDefaults.standardUserDefaults().stringForKey("PreferredSubtitleColor") ?? "White", NSUserDefaults.standardUserDefaults().stringForKey("PreferredSubtitleFont") ?? "Default"]
         super.init(coder: aDecoder)
         remoteMediaClient?.addListener(self)
+        UIApplication.sharedApplication().idleTimerDisabled = true
     }
     
     override func viewDidLayoutSubviews() {
@@ -239,6 +243,7 @@ class CastPlayerViewController: UIViewController, GCKRemoteMediaClientListener, 
             imageView.image = image
             backgroundImageView.image = image
         }
+        titleLabel.text = title
         pickerView = PCTPickerView(superView: view, componentDataSources: [subtitles, subtitleColors, subtitleFonts], delegate: self, selectedItems: selectedSubtitleMeta, attributesForComponents: [nil, NSForegroundColorAttributeName, NSFontAttributeName])
         view.addSubview(pickerView)
         bufferView.showInView(view)
@@ -251,10 +256,8 @@ class CastPlayerViewController: UIViewController, GCKRemoteMediaClientListener, 
                         weakSelf.close()
                     })
                 }
-            }
-            
+            }            
         }
-        titleLabel.text = title
         volumeSlider?.setThumbImage(UIImage(named: "Scrubber Image"), forState: .Normal)
     }
     
@@ -277,6 +280,10 @@ class CastPlayerViewController: UIViewController, GCKRemoteMediaClientListener, 
             }
         }
         remoteMediaClient?.setTextTrackStyle(trackStyle)
+    }
+    
+    deinit {
+        UIApplication.sharedApplication().idleTimerDisabled = false
     }
     
     override func shouldAutorotate() -> Bool {

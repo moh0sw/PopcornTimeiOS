@@ -2557,7 +2557,7 @@ By using 'Popcorn Time' or accessing this site you affirm that you are either mo
                                         <constraint firstItem="UoZ-xq-0nq" firstAttribute="centerY" secondItem="F8F-JJ-yDV" secondAttribute="centerY" priority="249" constant="-30" id="j9E-ut-bnx"/>
                                         <constraint firstItem="bhR-tI-owX" firstAttribute="centerX" secondItem="F8F-JJ-yDV" secondAttribute="centerX" id="ndX-xb-kD7"/>
                                         <constraint firstItem="UoZ-xq-0nq" firstAttribute="centerX" secondItem="F8F-JJ-yDV" secondAttribute="centerX" id="noD-oO-clO"/>
-                                        <constraint firstItem="Tgk-yf-Lhx" firstAttribute="bottom" secondItem="UoZ-xq-0nq" secondAttribute="top" priority="249" constant="60" id="qGO-1M-meZ"/>
+                                        <constraint firstItem="UoZ-xq-0nq" firstAttribute="top" secondItem="Tgk-yf-Lhx" secondAttribute="bottom" priority="249" constant="60" id="qGO-1M-meZ"/>
                                         <constraint firstItem="UoZ-xq-0nq" firstAttribute="bottom" secondItem="dqp-3E-NWP" secondAttribute="centerY" id="v8b-Wp-onX"/>
                                         <constraint firstItem="UoZ-xq-0nq" firstAttribute="width" secondItem="Gng-sI-cdS" secondAttribute="width" priority="250" constant="20" id="vrO-hH-Pz5"/>
                                     </constraints>

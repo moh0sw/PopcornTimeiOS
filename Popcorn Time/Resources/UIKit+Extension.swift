@@ -575,8 +575,11 @@ class PCTProgressSlider: UISlider {
     }
     
     override func thumbRectForBounds(bounds: CGRect, trackRect rect: CGRect, value: Float) -> CGRect {
+        var rect = rect
+        rect.size.width -= 4
         var frame = super.thumbRectForBounds(bounds, trackRect: rect, value: value)
         frame.origin.y += rect.origin.y
+        frame.origin.x += 2
         return frame
     }
     
