@@ -140,7 +140,7 @@ class StreamToDevicesTableViewController: UITableViewController, GCKDeviceScanne
     func didConnectToDevice(deviceIsChromecast chromecast: Bool) {
         if chromecast, let playerViewController = presentingViewController as? PCTPlayerViewController {
             dismissViewControllerAnimated(false, completion: {
-                playerViewController.delegate?.presentCastPlayer(playerViewController.media, videoFilePath: playerViewController.directory)
+                playerViewController.delegate?.presentCastPlayer(playerViewController.media, videoFilePath: playerViewController.directory, startPosition: NSTimeInterval(playerViewController.positionSlider.value))
             })
         } else {
            dismissViewControllerAnimated(true, completion: nil)

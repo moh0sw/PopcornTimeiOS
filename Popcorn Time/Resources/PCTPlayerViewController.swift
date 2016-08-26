@@ -14,7 +14,7 @@ private enum videoDimensions: NSString {
 
 protocol PCTPlayerViewControllerDelegate: class {
     func playNext(episode: PCTEpisode)
-    func presentCastPlayer(media: PCTItem, videoFilePath: NSURL)
+    func presentCastPlayer(media: PCTItem, videoFilePath: NSURL, startPosition: NSTimeInterval)
 }
 
 class PCTPlayerViewController: UIViewController, UIGestureRecognizerDelegate, UIActionSheetDelegate, VLCMediaPlayerDelegate, SubtitlesTableViewControllerDelegate, UIPopoverPresentationControllerDelegate, UpNextViewDelegate {
@@ -40,7 +40,6 @@ class PCTPlayerViewController: UIViewController, UIGestureRecognizerDelegate, UI
     @IBOutlet var subtitleSwitcherButton: UIButton!
     @IBOutlet var tapOnVideoRecognizer: UITapGestureRecognizer!
     @IBOutlet var doubleTapToZoomOnVideoRecognizer: UITapGestureRecognizer!
-    @IBOutlet var playPauseRegularBottomConstraint: NSLayoutConstraint!
     @IBOutlet var regularConstraints: [NSLayoutConstraint]!
     @IBOutlet var compactConstraints: [NSLayoutConstraint]!
     @IBOutlet var duringScrubbingConstraints: NSLayoutConstraint!
@@ -251,7 +250,6 @@ class PCTPlayerViewController: UIViewController, UIGestureRecognizerDelegate, UI
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        view.addObserver(self, forKeyPath: "frame", options: NSKeyValueObservingOptions(rawValue: 0), context: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(orientationChanged), name: UIDeviceOrientationDidChangeNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(mediaPlayerStateChanged), name: VLCMediaPlayerStateChanged, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(mediaPlayerTimeChanged), name: VLCMediaPlayerTimeChanged, object: nil)
@@ -318,15 +316,9 @@ class PCTPlayerViewController: UIViewController, UIGestureRecognizerDelegate, UI
         }
         tapOnVideoRecognizer.requireGestureRecognizerToFail(doubleTapToZoomOnVideoRecognizer)
     }
-    
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        observeValueForKeyPath("frame", ofObject: view, change: nil, context: nil) // Fixes autolayout bug with Volume view
-    }
 
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
-        view.removeObserver(self, forKeyPath: "frame")
         mediaplayer.pause()
         NSNotificationCenter.defaultCenter().removeObserver(self)
         if idleTimer != nil {
@@ -399,27 +391,16 @@ class PCTPlayerViewController: UIViewController, UIGestureRecognizerDelegate, UI
     
     // MARK: - View changes
     
-    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
-        if object as? UIView == view && keyPath! == "frame" {
-            volumeSlider.removeConstraints()
-            if traitCollection.horizontalSizeClass == .Compact // Load compact volume view constraints
-            {
-                playPauseRegularBottomConstraint.active = false
-                for constraint in compactConstraints {
-                    constraint.active = true
-                }
-            } else if traitCollection.horizontalSizeClass == .Regular // Load regular constraints
-            {
-                playPauseRegularBottomConstraint.active = true
-                for constraint in regularConstraints {
-                    constraint.active = true
-                }
-            }
-            volumeSlider.setNeedsUpdateConstraints()
-            UIView.animateWithDuration(animationLength, animations: {
-                self.volumeSlider.layoutIfNeeded()
-            })
+    override func traitCollectionDidChange(previousTraitCollection: UITraitCollection?) {
+        for constraint in compactConstraints {
+            constraint.priority = traitCollection.horizontalSizeClass == .Compact ? 999 : 240
         }
+        for constraint in regularConstraints {
+            constraint.priority = traitCollection.horizontalSizeClass == .Compact ? 240 : 999
+        }
+        UIView.animateWithDuration(animationLength, animations: {
+            self.view.layoutIfNeeded()
+        })
     }
     
     @IBAction func toggleControlsVisible() {
@@ -455,11 +436,10 @@ class PCTPlayerViewController: UIViewController, UIGestureRecognizerDelegate, UI
             vc.delegate = self
         } else if segue.identifier == "showDevices" {
             let vc = (segue.destinationViewController as! UINavigationController).viewControllers.first! as! StreamToDevicesTableViewController
-            let duration: NSTimeInterval = mediaplayer.time.numberValue.doubleValue/1000.0 + fabs(mediaplayer.remainingTime.numberValue.doubleValue/1000.0)
             if let movie = media as? PCTMovie {
-                vc.castMetadata = PCTCastMetaData(movie: movie, duration: duration, startPosition: mediaplayer.time.numberValue.doubleValue/1000.0, url: url.relativeString!, mediaAssetsPath: directory)
+                vc.castMetadata = PCTCastMetaData(movie: movie, url: url.relativeString!, mediaAssetsPath: directory)
             } else if let episode = media as? PCTEpisode {
-                vc.castMetadata = PCTCastMetaData(episode: episode, duration: duration, startPosition: mediaplayer.time.numberValue.doubleValue/1000.0, url: url.relativeString!, mediaAssetsPath: directory)
+                vc.castMetadata = PCTCastMetaData(episode: episode, url: url.relativeString!, mediaAssetsPath: directory)
             }
         }
     }
@@ -469,6 +449,7 @@ class PCTPlayerViewController: UIViewController, UIGestureRecognizerDelegate, UI
         return controller.presentedViewController
         
     }
+    
     
     func dismiss() {
         dismissViewControllerAnimated(true, completion: nil)
@@ -555,16 +536,18 @@ func downloadSubtitle(path: String, fileName suggestedName: String? = nil, downl
     var zippedFilePath: NSURL!
     var fileName: String!
     Alamofire.download(.GET, path, destination: { (temporaryURL, response) -> NSURL in
-            fileName = suggestedName != nil ? suggestedName! : response.suggestedFilename!
-            downloadDirectory = directory.URLByAppendingPathComponent("Subtitles")
-            if !NSFileManager.defaultManager().fileExistsAtPath(downloadDirectory.relativePath!) {
-                try! NSFileManager.defaultManager().createDirectoryAtURL(downloadDirectory, withIntermediateDirectories: true, attributes: nil)
-            }
-            zippedFilePath = downloadDirectory.URLByAppendingPathComponent(fileName)
-            return zippedFilePath
+        fileName = suggestedName != nil ? suggestedName! : response.suggestedFilename!
+        downloadDirectory = directory.URLByAppendingPathComponent("Subtitles")
+        if !NSFileManager.defaultManager().fileExistsAtPath(downloadDirectory.relativePath!) {
+            try! NSFileManager.defaultManager().createDirectoryAtURL(downloadDirectory, withIntermediateDirectories: true, attributes: nil)
+        }
+        zippedFilePath = downloadDirectory.URLByAppendingPathComponent(fileName)
+        if NSFileManager.defaultManager().fileExistsAtPath(zippedFilePath.relativePath!) {
+            try! NSFileManager.defaultManager().removeItemAtPath(zippedFilePath.relativePath!)
+        }
+        return zippedFilePath
     }).validate().response { (_, _, _, error) in
-        if let error = error where error.code != 516 // Error 516 throws if file already exists.
-        {
+        if let error = error {
             print(error)
             return
         }

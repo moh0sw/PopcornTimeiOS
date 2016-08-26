@@ -283,5 +283,65 @@ class TraktTVAPI {
             })
         }
     }
-    
+    /**
+     Gets metadata for the cast of the provided media.
+     
+     - Parameter forMediaOfType:    The type of the item (movie or show **not anime**). Anime is supported but is referenced as a show not as its own type.
+     - Parameter id:                The id of the movie, show or anime.
+     
+     - Returns: Array of `PCTActors`.
+     */
+    func getCast(forMediaOfType type: TraktTVAPI.type, id: String, completion: (actors: [PCTActor]) -> Void) {
+        Alamofire.request(.GET, "https://api.trakt.tv/\(type.rawValue)/\(id)/people?extended=images", headers: ["trakt-api-key": self.clientId, "trakt-api-version": "2"]).validate().responseJSON { response in
+            guard let value = response.result.value else { return }
+            let responseDict = JSON(value)
+            var actors = [PCTActor]()
+            for (_, actor) in responseDict["cast"] {
+                let character = actor["character"].string!
+                let name = actor["person"]["name"].string!
+                let imdbId = actor["person"]["ids"]["imdb"].string!
+                let slug = actor["person"]["ids"]["slug"].string!
+                let image: String
+                if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
+                    image = actor["person"]["images"]["headshot"]["medium"].string ?? ""
+                } else if UIDevice.currentDevice().userInterfaceIdiom == .Phone {
+                    image = actor["person"]["images"]["headshot"]["thumb"].string ?? ""
+                } else {
+                    image = actor["person"]["images"]["headshot"]["full"].string ?? ""
+                }
+                actors.append(PCTActor(imdbId: imdbId, slug: slug, imageAsString: image, name: name, character: character))
+            }
+            completion(actors: actors)
+        }
+    }
+    /**
+     Gets related media.
+     
+     - Parameter forMediaOfType:    The type of the item (movie or show **not anime**). Anime is supported but is referenced as a show not as its own type.
+     - Parameter id:                The id of the movie, show or anime.
+     
+     - Returns: Array of `PCTItems`.
+     */
+    func getRelated(forMediaOfType type: TraktTVAPI.type, id: String, completion: (items: [PCTItem]) -> Void) {
+        Alamofire.request(.GET, "https://api.trakt.tv/\(type.rawValue)/\(id)/related?extended=images", headers: ["trakt-api-key": self.clientId, "trakt-api-version": "2"]).validate().responseJSON { response in
+            guard let value = response.result.value else { return }
+            let responseDict = JSON(value)
+            var items = [PCTItem]()
+            for (_, item) in responseDict {
+                let title = item["title"].string!
+                let imdbId = item["ids"]["imdb"].string!
+                let image: String
+                if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
+                    image = item["images"]["poster"]["medium"].string ?? ""
+                } else if UIDevice.currentDevice().userInterfaceIdiom == .Phone {
+                    image = item["images"]["poster"]["thumb"].string ?? ""
+                } else {
+                    image = item["images"]["poster"]["full"].string ?? ""
+                }
+                items.append(PCTItem(title: title, coverImageAsString: image, id: imdbId, torrents: [], currentTorrent: nil, subtitles: nil, currentSubtitle: nil, summary: ""))
+            }
+            completion(items: items)
+        }
+        
+    }
 }

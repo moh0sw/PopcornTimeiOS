@@ -167,12 +167,13 @@ class DetailItemOverviewViewController: UIViewController, UIGestureRecognizerDel
     // MARK: - PCTPlayerViewControllerDelegate
     
     func playNext(episode: PCTEpisode) {}
-    func presentCastPlayer(media: PCTItem, videoFilePath: NSURL) {
+    func presentCastPlayer(media: PCTItem, videoFilePath: NSURL, startPosition: NSTimeInterval) {
         dismissViewControllerAnimated(true, completion: nil)
         let castPlayerViewController = self.storyboard?.instantiateViewControllerWithIdentifier("CastPlayerViewController") as! CastPlayerViewController
         castPlayerViewController.backgroundImage = self.backgroundImageView.image
         castPlayerViewController.title = media.title
         castPlayerViewController.media = media
+        castPlayerViewController.startPosition = startPosition
         castPlayerViewController.directory = videoFilePath.URLByDeletingLastPathComponent!
         presentViewController(castPlayerViewController, animated: true, completion: nil)
     }

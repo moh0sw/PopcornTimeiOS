@@ -54,6 +54,7 @@ class CastPlayerViewController: UIViewController, GCKRemoteMediaClientListener, 
     private var selectedSubtitleMeta: [String]
     
     var backgroundImage: UIImage?
+    var startPosition: NSTimeInterval = 0.0
     var media: PCTItem! {
         didSet {
             if let subtitles = media.subtitles {
@@ -219,6 +220,7 @@ class CastPlayerViewController: UIViewController, GCKRemoteMediaClientListener, 
                 elapsedTimer = elapsedTimer ?? NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: #selector(updateTime), userInfo: nil, repeats: true)
                 mediaStatus.addObserver(self, forKeyPath: "playerState", options: .New, context: &classContext)
                 observingValues = true
+                streamPosition = startPosition * streamDuration
                 self.volumeSlider?.setValue(mediaStatus.volume, animated: true)
             }
         }

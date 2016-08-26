@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10116" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="49e-Tb-3d3">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10116" systemVersion="15G31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="49e-Tb-3d3">
     <dependencies>
         <development version="7000" identifier="xcode"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
@@ -2247,15 +2247,10 @@ By using 'Popcorn Time' or accessing this site you affirm that you are either mo
                                             <rect key="frame" x="15" y="52" width="497" height="33"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="32" id="ffK-Wk-qOM"/>
-                                                <constraint firstAttribute="width" relation="lessThanOrEqual" constant="220" id="qOX-hW-cVH"/>
+                                                <constraint firstAttribute="width" relation="lessThanOrEqual" priority="240" constant="220" id="qOX-hW-cVH"/>
                                             </constraints>
                                             <color key="minimumTrackTintColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                             <color key="maximumTrackTintColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                            <variation key="default">
-                                                <mask key="constraints">
-                                                    <exclude reference="qOX-hW-cVH"/>
-                                                </mask>
-                                            </variation>
                                             <connections>
                                                 <action selector="sliderDidDrag" destination="aWK-kY-qxl" eventType="touchDragInside" id="YSS-aK-DBY"/>
                                                 <action selector="sliderDidDrag" destination="aWK-kY-qxl" eventType="touchDragOutside" id="sXo-o3-aaD"/>
@@ -2264,39 +2259,26 @@ By using 'Popcorn Time' or accessing this site you affirm that you are either mo
                                         </slider>
                                     </subviews>
                                     <constraints>
-                                        <constraint firstItem="hp8-Yc-S9C" firstAttribute="centerY" secondItem="EDj-C7-H8u" secondAttribute="centerY" id="1WE-KR-dES"/>
+                                        <constraint firstItem="hp8-Yc-S9C" firstAttribute="centerY" secondItem="EDj-C7-H8u" secondAttribute="centerY" priority="999" id="1WE-KR-dES"/>
                                         <constraint firstItem="H0C-1y-ksm" firstAttribute="centerY" secondItem="hp8-Yc-S9C" secondAttribute="centerY" id="30i-Ec-aAV"/>
-                                        <constraint firstItem="EDj-C7-H8u" firstAttribute="leading" secondItem="bvl-3I-gwi" secondAttribute="leading" constant="17" id="5qZ-g5-YFZ"/>
-                                        <constraint firstItem="EDj-C7-H8u" firstAttribute="trailing" relation="lessThanOrEqual" secondItem="OiK-wA-SDT" secondAttribute="leading" priority="750" constant="55" id="66K-WD-bof"/>
-                                        <constraint firstAttribute="bottom" secondItem="EDj-C7-H8u" secondAttribute="bottom" id="FmY-ep-NsQ"/>
-                                        <constraint firstItem="H0C-1y-ksm" firstAttribute="leading" secondItem="EDj-C7-H8u" secondAttribute="trailing" constant="15" id="GoF-Dm-im8"/>
+                                        <constraint firstItem="EDj-C7-H8u" firstAttribute="leading" secondItem="bvl-3I-gwi" secondAttribute="leading" priority="999" constant="17" id="5qZ-g5-YFZ"/>
+                                        <constraint firstItem="OiK-wA-SDT" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="EDj-C7-H8u" secondAttribute="trailing" priority="240" constant="55" id="66K-WD-bof"/>
+                                        <constraint firstAttribute="bottom" secondItem="EDj-C7-H8u" secondAttribute="bottom" priority="999" id="FmY-ep-NsQ"/>
+                                        <constraint firstItem="H0C-1y-ksm" firstAttribute="leading" secondItem="EDj-C7-H8u" secondAttribute="trailing" priority="999" constant="15" id="GoF-Dm-im8"/>
                                         <constraint firstItem="OiK-wA-SDT" firstAttribute="centerY" secondItem="CNT-g3-DOo" secondAttribute="centerY" id="JSx-k1-HAp"/>
                                         <constraint firstItem="CNT-g3-DOo" firstAttribute="leading" secondItem="OiK-wA-SDT" secondAttribute="trailing" constant="55" id="KXl-bP-h5E"/>
-                                        <constraint firstItem="CNT-g3-DOo" firstAttribute="centerY" secondItem="bvl-3I-gwi" secondAttribute="centerY" id="NKE-lB-bbs"/>
                                         <constraint firstItem="CNT-g3-DOo" firstAttribute="top" secondItem="bvl-3I-gwi" secondAttribute="top" constant="15" id="Ww7-5g-I5f"/>
-                                        <constraint firstItem="EDj-C7-H8u" firstAttribute="centerY" secondItem="CNT-g3-DOo" secondAttribute="centerY" id="Ygk-u2-exl"/>
+                                        <constraint firstItem="EDj-C7-H8u" firstAttribute="centerY" secondItem="CNT-g3-DOo" secondAttribute="centerY" priority="240" id="Ygk-u2-exl"/>
                                         <constraint firstItem="CNT-g3-DOo" firstAttribute="centerX" secondItem="bvl-3I-gwi" secondAttribute="centerX" id="a3o-zF-3Ym"/>
-                                        <constraint firstItem="EDj-C7-H8u" firstAttribute="leading" secondItem="bvl-3I-gwi" secondAttribute="leading" constant="20" id="axe-6E-nZi"/>
-                                        <constraint firstItem="EDj-C7-H8u" firstAttribute="top" secondItem="CNT-g3-DOo" secondAttribute="bottom" constant="12" id="ew5-RS-rKz"/>
+                                        <constraint firstItem="EDj-C7-H8u" firstAttribute="leading" secondItem="bvl-3I-gwi" secondAttribute="leading" priority="240" constant="20" id="axe-6E-nZi"/>
+                                        <constraint firstItem="EDj-C7-H8u" firstAttribute="top" secondItem="CNT-g3-DOo" secondAttribute="bottom" priority="999" constant="12" id="ew5-RS-rKz"/>
                                         <constraint firstItem="hp8-Yc-S9C" firstAttribute="leading" secondItem="H0C-1y-ksm" secondAttribute="trailing" constant="10" id="fIh-ke-BSU"/>
                                         <constraint firstItem="qii-G5-LCn" firstAttribute="leading" secondItem="CNT-g3-DOo" secondAttribute="trailing" constant="55" id="gT1-JA-47A"/>
-                                        <constraint firstAttribute="bottom" secondItem="CNT-g3-DOo" secondAttribute="bottom" constant="15" identifier="bottomConstraint" id="hIO-dm-KQU"/>
-                                        <constraint firstItem="OiK-wA-SDT" firstAttribute="centerY" secondItem="bvl-3I-gwi" secondAttribute="centerY" id="nYv-we-IuM"/>
-                                        <constraint firstItem="hp8-Yc-S9C" firstAttribute="centerY" secondItem="CNT-g3-DOo" secondAttribute="centerY" id="ndL-gq-xyy"/>
+                                        <constraint firstAttribute="bottom" secondItem="CNT-g3-DOo" secondAttribute="bottom" priority="240" constant="15" id="hIO-dm-KQU"/>
+                                        <constraint firstItem="hp8-Yc-S9C" firstAttribute="centerY" secondItem="CNT-g3-DOo" secondAttribute="centerY" priority="240" id="ndL-gq-xyy"/>
                                         <constraint firstAttribute="trailing" secondItem="hp8-Yc-S9C" secondAttribute="trailing" constant="17" id="q9G-YP-YpG"/>
                                         <constraint firstItem="qii-G5-LCn" firstAttribute="centerY" secondItem="CNT-g3-DOo" secondAttribute="centerY" id="wNf-J6-4RD"/>
                                     </constraints>
-                                    <variation key="default">
-                                        <mask key="constraints">
-                                            <exclude reference="66K-WD-bof"/>
-                                            <exclude reference="Ygk-u2-exl"/>
-                                            <exclude reference="axe-6E-nZi"/>
-                                            <exclude reference="nYv-we-IuM"/>
-                                            <exclude reference="NKE-lB-bbs"/>
-                                            <exclude reference="hIO-dm-KQU"/>
-                                            <exclude reference="ndL-gq-xyy"/>
-                                        </mask>
-                                    </variation>
                                 </view>
                                 <color key="tintColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <blurEffect style="light"/>
@@ -2336,7 +2318,6 @@ By using 'Popcorn Time' or accessing this site you affirm that you are either mo
                         <outlet property="movieView" destination="k6H-dM-QeF" id="7dP-IF-0Nb"/>
                         <outlet property="navigationView" destination="5fE-Dm-ASP" id="jw6-oS-PUU"/>
                         <outlet property="playPauseButton" destination="CNT-g3-DOo" id="Iwn-Fk-xdI"/>
-                        <outlet property="playPauseRegularBottomConstraint" destination="hIO-dm-KQU" id="csb-SB-luj"/>
                         <outlet property="positionSlider" destination="Sns-ke-VPf" id="cXZ-JR-3Ym"/>
                         <outlet property="remainingTimeLabel" destination="Tq9-AC-tDI" id="NO6-bX-iBB"/>
                         <outlet property="scrubbingSpeedLabel" destination="0hh-pl-htD" id="YU9-sU-q6z"/>
@@ -2353,12 +2334,11 @@ By using 'Popcorn Time' or accessing this site you affirm that you are either mo
                         <outletCollection property="compactConstraints" destination="5qZ-g5-YFZ" collectionClass="NSMutableArray" id="CMd-x9-YNv"/>
                         <outletCollection property="regularConstraints" destination="66K-WD-bof" collectionClass="NSMutableArray" id="7hT-w7-mFK"/>
                         <outletCollection property="regularConstraints" destination="qOX-hW-cVH" collectionClass="NSMutableArray" id="hsp-3u-rha"/>
-                        <outletCollection property="compactConstraints" destination="ffK-Wk-qOM" collectionClass="NSMutableArray" id="BC9-2s-lLF"/>
                         <outletCollection property="compactConstraints" destination="ew5-RS-rKz" collectionClass="NSMutableArray" id="BKr-Ia-LtG"/>
                         <outletCollection property="regularConstraints" destination="axe-6E-nZi" collectionClass="NSMutableArray" id="GrM-yI-qJR"/>
-                        <outletCollection property="regularConstraints" destination="ffK-Wk-qOM" collectionClass="NSMutableArray" id="y56-0Y-Xhk"/>
                         <outletCollection property="regularConstraints" destination="ndL-gq-xyy" collectionClass="NSMutableArray" id="PDO-ds-l1a"/>
                         <outletCollection property="compactConstraints" destination="FmY-ep-NsQ" collectionClass="NSMutableArray" id="ghs-hc-Ydm"/>
+                        <outletCollection property="regularConstraints" destination="hIO-dm-KQU" collectionClass="NSMutableArray" id="a5V-JX-ecb"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="MQb-3l-9CU" userLabel="First Responder" sceneMemberID="firstResponder"/>

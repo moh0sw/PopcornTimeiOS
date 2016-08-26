@@ -162,11 +162,12 @@ class MovieDetailViewController: DetailItemOverviewViewController, PCTTablePicke
                                 GCKCastContext.sharedInstance().sessionManager.startSessionWithDevice(castDevice!)
                             }
                             let castPlayerViewController = self.storyboard?.instantiateViewControllerWithIdentifier("CastPlayerViewController") as! CastPlayerViewController
-                            let castMetadata = PCTCastMetaData(movie: media, startPosition: NSTimeInterval(currentProgress), url: videoFileURL.relativeString!, mediaAssetsPath: videoFilePath.URLByDeletingLastPathComponent!)
+                            let castMetadata = PCTCastMetaData(movie: media, url: videoFileURL.relativeString!, mediaAssetsPath: videoFilePath.URLByDeletingLastPathComponent!)
                             GoogleCastManager(castMetadata: castMetadata).sessionManager(GCKCastContext.sharedInstance().sessionManager, didStartSession: GCKCastContext.sharedInstance().sessionManager.currentSession!)
                             castPlayerViewController.backgroundImage = self.backgroundImageView.image
                             castPlayerViewController.title = media.title
                             castPlayerViewController.media = media
+                            castPlayerViewController.startPosition = NSTimeInterval(currentProgress)
                             castPlayerViewController.directory = videoFilePath.URLByDeletingLastPathComponent!
                             self.presentViewController(castPlayerViewController, animated: true, completion: nil)
                         } else {

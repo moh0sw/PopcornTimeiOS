@@ -182,9 +182,7 @@ struct PCTCastMetaData {
     let title: String
     let imageUrl: NSURL
     let contentType: String
-    let duration: NSTimeInterval
     let subtitles: [PCTSubtitle]?
-    let startPosition: NSTimeInterval
     let url: String
     let mediaAssetsPath: NSURL
     
@@ -192,39 +190,53 @@ struct PCTCastMetaData {
         title: String,
         imageUrl: NSURL,
         contentType: String,
-        duration: NSTimeInterval,
         subtitles: [PCTSubtitle]?,
-        startPosition: NSTimeInterval,
         url: String,
         mediaAssetsPath: NSURL
         ) {
         self.title = title
         self.imageUrl = imageUrl
         self.contentType = contentType
-        self.duration = duration
         self.subtitles = subtitles
-        self.startPosition = startPosition
         self.url = url
         self.mediaAssetsPath = mediaAssetsPath
     }
     
     init(
         movie: PCTMovie,
-        duration: NSTimeInterval = 0,
-        startPosition: NSTimeInterval,
         url: String,
         mediaAssetsPath: NSURL
         ) {
-        self.init(title: movie.title, imageUrl: NSURL(string: movie.coverImageAsString)!, contentType: "video/mp4", duration: duration, subtitles: movie.subtitles, startPosition: startPosition, url: url, mediaAssetsPath: mediaAssetsPath)
+        self.init(title: movie.title, imageUrl: NSURL(string: movie.coverImageAsString)!, contentType: "video/mp4", subtitles: movie.subtitles, url: url, mediaAssetsPath: mediaAssetsPath)
     }
     
     init(
         episode: PCTEpisode,
-        duration: NSTimeInterval = 0,
-        startPosition: NSTimeInterval,
         url: String,
         mediaAssetsPath: NSURL
         ) {
-        self.init(title: episode.title, imageUrl: NSURL(string: episode.show!.coverImageAsString)!, contentType: "video/x-matroska", duration: duration, subtitles: episode.subtitles, startPosition: startPosition, url: url, mediaAssetsPath: mediaAssetsPath)
+        self.init(title: episode.title, imageUrl: NSURL(string: episode.show!.coverImageAsString)!, contentType: "video/x-matroska", subtitles: episode.subtitles, url: url, mediaAssetsPath: mediaAssetsPath)
+    }
+}
+
+struct PCTActor {
+    let imdbId: String
+    let slug: String
+    let imageAsString: String
+    let name: String
+    let character: String
+    
+    init(
+        imdbId: String,
+        slug: String,
+        imageAsString: String,
+        name: String,
+        character: String
+        ) {
+        self.imdbId = imdbId
+        self.slug = slug
+        self.imageAsString = imageAsString
+        self.name = name
+        self.character = character
     }
 }
