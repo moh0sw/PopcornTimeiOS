@@ -120,5 +120,5 @@ run("-c","pod update")
 print("Opening Xcode...")
 run("-c", "open PopcornTime.xcworkspace")
 
-// Thank you message
+// Thank you message 
 print("Thanks for installing PopcornTime. When a new update is released re-run this script and select the new version.")
