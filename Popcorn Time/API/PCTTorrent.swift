@@ -28,12 +28,12 @@ enum Health {
 
 struct PCTTorrent: Comparable {
     let seeds, peers: Int
-    let url: String
+    let url: String?
     var health: Health = .Unknown
     var quality, size: String?
     
     init(
-        url: String,
+        url: String?,
         seeds: Int,
         peers: Int,
         quality: String? = nil,

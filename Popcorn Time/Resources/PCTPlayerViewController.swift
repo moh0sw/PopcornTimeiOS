@@ -7,11 +7,6 @@ import Alamofire
 import GZIP
 import SRT2VTT
 
-private enum videoDimensions: NSString {
-    case FourByThree = "4:3"
-    case SixteenByNine = "16:9"
-}
-
 protocol PCTPlayerViewControllerDelegate: class {
     func playNext(episode: PCTEpisode)
     func presentCastPlayer(media: PCTItem, videoFilePath: NSURL, startPosition: NSTimeInterval)
@@ -158,21 +153,18 @@ class PCTPlayerViewController: UIViewController, UIGestureRecognizerDelegate, UI
     
     @IBAction func switchVideoDimensions() {
         resetIdleTimer()
-        if videoDimensionsButton.imageView?.image == UIImage(named: "Scale To Fill") // Change to aspect to scale to fill
+        if mediaplayer.videoCropGeometry == nil // Change to aspect to scale to fill
         {
-            let screen = UIScreen.mainScreen()
-            let f_ar = screen.bounds.size.width / screen.bounds.size.height
-            if f_ar == 16.0/9.0 // All Landscape iPhones
-            {
-                videoDimensionsButton.setImage(UIImage(named: "Scale To Fit"), forState: .Normal)
-                currentVideoDimension = .SixteenByNine
-                mediaplayer.videoCropGeometry = UnsafeMutablePointer<Int8>(currentVideoDimension!.rawValue.UTF8String)
-            } else if f_ar == 4.0/3.0 // All Landscape iPads
-            {
-                videoDimensionsButton.setImage(UIImage(named: "Scale To Fit"), forState: .Normal)
-                currentVideoDimension = .FourByThree
-                mediaplayer.videoCropGeometry = UnsafeMutablePointer<Int8>(currentVideoDimension!.rawValue.UTF8String)
+            if movieView.bounds.width % 4 == 0 && movieView.bounds.height % 3 == 0 {
+                mediaplayer.videoCropGeometry = UnsafeMutablePointer<Int8>(("4:3" as NSString).UTF8String)
+            } else if movieView.bounds.width % 3 == 0 && movieView.bounds.height % 4 == 0 {
+                mediaplayer.videoCropGeometry = UnsafeMutablePointer<Int8>(("3:4" as NSString).UTF8String)
+            } else if movieView.bounds.width % 16 == 0 && movieView.bounds.height % 9 == 0 {
+                mediaplayer.videoCropGeometry = UnsafeMutablePointer<Int8>(("16:9" as NSString).UTF8String)
+            } else if movieView.bounds.width % 9 == 0 && movieView.bounds.height % 16 == 0 {
+                mediaplayer.videoCropGeometry = UnsafeMutablePointer<Int8>(("9:16" as NSString).UTF8String)
             }
+            videoDimensionsButton.setImage(UIImage(named: "Scale To Fit"), forState: .Normal)
         } else // Change aspect ratio to scale to fit
         {
             videoDimensionsButton.setImage(UIImage(named: "Scale To Fill"), forState: .Normal)
@@ -207,7 +199,6 @@ class PCTPlayerViewController: UIViewController, UIGestureRecognizerDelegate, UI
     
     private (set) var mediaplayer = VLCMediaPlayer()
     private var stateBeforeScrubbing: VLCMediaPlayerState!
-    private var currentVideoDimension: videoDimensions? = nil
     private (set) var url: NSURL!
     private (set) var directory: NSURL!
     private (set) var media: PCTItem!
@@ -246,11 +237,24 @@ class PCTPlayerViewController: UIViewController, UIGestureRecognizerDelegate, UI
         }
     }
     
+    private func screenshotAtTime(time: NSNumber, completion: (image: UIImage) -> Void) {
+        let imageGen = AVAssetImageGenerator(asset: AVAsset(URL: url))
+        imageGen.appliesPreferredTrackTransform = true
+        imageGen.requestedTimeToleranceAfter = kCMTimeZero
+        imageGen.requestedTimeToleranceBefore = kCMTimeZero
+        imageGen.cancelAllCGImageGeneration()
+        imageGen.generateCGImagesAsynchronouslyForTimes([NSValue(CMTime: CMTimeMakeWithSeconds(time.doubleValue,1000000000))]) { (_, image, _, _, error) in
+            if let image = image where error == nil {
+                completion(image: UIImage(CGImage: image))
+                
+            }
+        }
+    }
+    
     // MARK: - View Methods
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(orientationChanged), name: UIDeviceOrientationDidChangeNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(mediaPlayerStateChanged), name: VLCMediaPlayerStateChanged, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(mediaPlayerTimeChanged), name: VLCMediaPlayerTimeChanged, object: nil)
         
@@ -370,13 +374,6 @@ class PCTPlayerViewController: UIViewController, UIGestureRecognizerDelegate, UI
         }
     }
     
-    func orientationChanged() {
-        resetIdleTimer()
-        videoDimensionsButton.setImage(UIImage(named: "Scale To Fill"), forState: .Normal)
-        mediaplayer.videoAspectRatio = nil
-        mediaplayer.videoCropGeometry = nil
-    }
-    
     func volumeChanged() {
         if toolBarView.hidden {
             toggleControlsVisible()
@@ -392,6 +389,7 @@ class PCTPlayerViewController: UIViewController, UIGestureRecognizerDelegate, UI
     // MARK: - View changes
     
     override func traitCollectionDidChange(previousTraitCollection: UITraitCollection?) {
+        switchVideoDimensions()
         for constraint in compactConstraints {
             constraint.priority = traitCollection.horizontalSizeClass == .Compact ? 999 : 240
         }

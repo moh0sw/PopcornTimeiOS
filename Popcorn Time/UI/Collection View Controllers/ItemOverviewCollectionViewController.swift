@@ -22,6 +22,7 @@ class ItemOverviewCollectionViewController: UICollectionViewController, UISearch
     var currentPage: Int = 1
     
     let cache = NSCache()
+    private var classContext = 0
     
     var error: NSError?
     
@@ -39,7 +40,7 @@ class ItemOverviewCollectionViewController: UICollectionViewController, UISearch
         super.viewWillAppear(animated)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(reloadWithError), name: errorNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(reachabilityChanged(_:)), name: kReachabilityChangedNotification, object: nil)
-        collectionView?.addObserver(self, forKeyPath: "frame", options: NSKeyValueObservingOptions(rawValue: 0), context: nil) // Resize collection view cells when the view resizes. eg. when changing the size of the split view on iPads
+        collectionView?.addObserver(self, forKeyPath: "frame", options: .New, context: &classContext)
         searchController.searchBar.hidden = false
         searchController.searchBar.becomeFirstResponder()
     }
@@ -51,10 +52,16 @@ class ItemOverviewCollectionViewController: UICollectionViewController, UISearch
         collectionView?.addSubview(refreshControl)
     }
     
+    override func traitCollectionDidChange(previousTraitCollection: UITraitCollection?) {
+        collectionView?.performBatchUpdates(nil, completion: nil)
+    }
     
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
-        observeValueForKeyPath("frame", ofObject: collectionView, change: nil, context: nil) // If view size has changed while view isn't first responder, force a resize upon reappearing.
+    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+        if let keyPath = keyPath where keyPath == "frame" && context == &classContext {
+            collectionView?.performBatchUpdates(nil, completion: nil)
+        } else {
+            super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
+        }
     }
     
     func reachabilityChanged(notification: NSNotification) {
@@ -95,7 +102,7 @@ class ItemOverviewCollectionViewController: UICollectionViewController, UISearch
             let height = scrollView.contentSize.height
             let reloadDistance: CGFloat = 10
             if(y > height + reloadDistance && isLoading == false && hasNextPage == true) {
-                collectionView?.contentInset = UIEdgeInsetsMake(69, 0, 80, 0)
+                collectionView?.contentInset.bottom = 80
                 let background = UIView(frame: collectionView!.frame)
                 let indicator = UIActivityIndicatorView(activityIndicatorStyle: .White)
                 indicator.startAnimating()
@@ -122,16 +129,18 @@ class ItemOverviewCollectionViewController: UICollectionViewController, UISearch
     }
     
     func collectionView(collectionView: UICollectionView,layout collectionViewLayout: UICollectionViewLayout,sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
-        if collectionView.bounds.width/(195 * 4) >= 1 // Check if the view can fit more than 4 cells across
+        var width = (collectionView.bounds.width/CGFloat(2))-8
+        if traitCollection.horizontalSizeClass == .Regular
         {
-            return CGSizeMake(195, 280)
-        } else {
-            let wid = (collectionView.bounds.width/CGFloat(2))-8
-            let ratio = 230/wid
-            let hei = 345/ratio
-            
-            return CGSizeMake(wid, hei)
+            var items = 1
+            while (collectionView.bounds.width/CGFloat(items))-8 > 195 {
+                items += 1
+            }
+            width = (collectionView.bounds.width/CGFloat(items))-8
         }
+        let ratio = width/195.0
+        let height = 280.0 * ratio
+        return CGSizeMake(width, height)
     }
     
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {

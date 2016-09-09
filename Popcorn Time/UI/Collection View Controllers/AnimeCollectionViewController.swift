@@ -107,10 +107,9 @@ class AnimeCollectionViewController: ItemOverviewCollectionViewController, UIPop
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         fixIOS9PopOverAnchor(segue)
         if segue.identifier == "showDetail" {
-            let animeDetail = segue.destinationViewController as! TVShowDetailViewController
-            animeDetail.currentType = .Animes
-            let cell = sender as! CoverCollectionViewCell
-            animeDetail.currentItem = anime[(collectionView?.indexPathForCell(cell)?.row)!]
+            let vc = segue.destinationViewController as! TVShowContainerViewController
+            vc.currentItem = anime[(collectionView?.indexPathForCell(sender as! CoverCollectionViewCell)?.row)!]
+            vc.currentType = .Animes
         }
     }
     
@@ -146,7 +145,10 @@ class AnimeCollectionViewController: ItemOverviewCollectionViewController, UIPop
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("cell", forIndexPath: indexPath) as! CoverCollectionViewCell
         cell.titleLabel.text = anime[indexPath.row].title
         cell.yearLabel.text = anime[indexPath.row].year
-        cell.coverImage.af_setImageWithURL(NSURL(string: anime[indexPath.row].coverImageAsString)!, placeholderImage: UIImage(named: "Placeholder"), imageTransition: .CrossDissolve(animationLength))
+        if let image = anime[indexPath.row].coverImageAsString,
+            let url = NSURL(string: image) {
+            cell.coverImage.af_setImageWithURL(url, placeholderImage: UIImage(named: "Placeholder"), imageTransition: .CrossDissolve(animationLength))
+        }
         return cell
     }
     

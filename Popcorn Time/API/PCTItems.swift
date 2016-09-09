@@ -2,19 +2,21 @@
 
 import Foundation
 
-class PCTItem {
+class PCTItem: NSObject {
     let title: String
     let summary: String
-    let torrents: [PCTTorrent]
+    var torrents: [PCTTorrent]!
     var currentTorrent: PCTTorrent!
     var subtitles: [PCTSubtitle]?
     var currentSubtitle: PCTSubtitle?
-    var coverImageAsString: String!
+    var coverImageAsString: String?
+    var backgroundImageAsString: String?
     var id: String
     
     init (
         title: String,
         coverImageAsString: String?,
+        backgroundImageAsString: String?,
         id: String,
         torrents: [PCTTorrent],
         currentTorrent: PCTTorrent? = nil,
@@ -23,6 +25,7 @@ class PCTItem {
         summary: String) {
         self.title = title
         self.coverImageAsString = coverImageAsString
+        self.backgroundImageAsString = backgroundImageAsString
         self.id = id
         self.torrents = torrents
         self.currentTorrent = currentTorrent
@@ -36,43 +39,45 @@ class PCTMovie: PCTItem {
     let rating: Float
     let genres: [String]
     let runtime: String
-    let trailorURLString: String
+    let trailerURLString: String?
     let year: String
     
     init(
         title: String,
         year: String,
-        coverImageAsString: String,
+        coverImageAsString: String?,
+        backgroundImageAsString: String?,
         imdbId: String,
         rating: Float,
-        torrents: [PCTTorrent],
+        torrents: [PCTTorrent]? = nil,
         currentTorrent: PCTTorrent? = nil,
         genres: [String],
         summary: String,
         runtime: String,
-        trailorURLString: String,
+        trailerURLString: String?,
         subtitles: [PCTSubtitle]? = nil,
         currentSubtitle: PCTSubtitle? = nil) {
         self.rating = rating
         self.genres = genres
         self.year = year
         self.runtime = runtime
-        self.trailorURLString = trailorURLString
-        super.init(title: title, coverImageAsString: coverImageAsString, id: imdbId, torrents: torrents, currentTorrent: currentTorrent, subtitles: subtitles, currentSubtitle: currentSubtitle, summary: summary)
+        self.trailerURLString = trailerURLString
+        super.init(title: title, coverImageAsString: coverImageAsString, backgroundImageAsString: backgroundImageAsString, id: imdbId, torrents: torrents ?? [], currentTorrent: currentTorrent, subtitles: subtitles, currentSubtitle: currentSubtitle, summary: summary)
     }
     
-    var description: String {
+    override var description: String {
         get {
-            return "<\(self.dynamicType)> title: \"\(self.title)\"\n year: \"\(self.year)\"\n coverImageAsString:  \"\(self.coverImageAsString)\"\n imdbId: \"\(self.id)\"\n rating:  \"\(self.rating)\"\n torrents: \"\(self.torrents)\"\n genres: \"\(self.genres)\"\n summary: \"\(self.summary)\"\n runtime: \"\(self.runtime)\"\n trailorURLString: \"\(self.trailorURLString)\"\n"
+            return "<\(self.dynamicType)> title: \"\(self.title)\"\n year: \"\(self.year)\"\n coverImageAsString:  \"\(self.coverImageAsString)\"\n imdbId: \"\(self.id)\"\n rating:  \"\(self.rating)\"\n torrents: \"\(self.torrents)\"\n genres: \"\(self.genres)\"\n summary: \"\(self.summary)\"\n runtime: \"\(self.runtime)\"\n trailorURLString: \"\(self.trailerURLString)\"\n"
         }
     }
 }
 
-struct PCTShow {
+class PCTShow: NSObject {
     var id: String
     var title: String
     var year: String
-    var coverImageAsString: String
+    var coverImageAsString: String?
+    var backgroundImageAsString: String?
     var rating: Float
     var genres: [String]?
     var status: String?
@@ -83,7 +88,8 @@ struct PCTShow {
         id: String,
         title: String,
         year: String,
-        coverImageAsString: String,
+        coverImageAsString: String?,
+        backgroundImageAsString: String?,
         rating: Float,
         slug: String,
         genres: [String]? = nil,
@@ -94,6 +100,7 @@ struct PCTShow {
         self.title = title
         self.year = year
         self.coverImageAsString = coverImageAsString
+        self.backgroundImageAsString = backgroundImageAsString
         self.rating = rating
         self.slug = slug
         self.genres = genres
@@ -101,7 +108,7 @@ struct PCTShow {
         self.synopsis = synopsis
     }
     
-    var description: String {
+    override var description: String {
         get {
             return "<\(self.dynamicType)> title: \"\(self.title)\"\n year: \"\(self.year)\"\n coverImageAsString:  \"\(self.coverImageAsString)\"\n id: \"\(self.id)\"\n rating:  \"\(self.rating)\"\n genres: \"\(self.genres)\"\n status: \"\(self.status)\"\n synopsis: \"\(self.synopsis)\"\n"
         }
@@ -124,6 +131,7 @@ class PCTEpisode: PCTItem {
         torrents: [PCTTorrent],
         currentTorrent: PCTTorrent? = nil,
         coverImageAsString: String? = nil,
+        backgroundImageAsString: String? = nil,
         show: PCTShow? = nil,
         subtitles: [PCTSubtitle]? = nil,
         currentSubtitle: PCTSubtitle? = nil
@@ -132,10 +140,10 @@ class PCTEpisode: PCTItem {
         self.episode = episode
         self.show = show
         self.airedDate = airedDate
-        super.init(title: title, coverImageAsString: coverImageAsString, id: tvdbId, torrents: torrents, currentTorrent: currentTorrent, subtitles: subtitles, currentSubtitle: currentSubtitle, summary: summary)
+        super.init(title: title, coverImageAsString: coverImageAsString, backgroundImageAsString: backgroundImageAsString, id: tvdbId, torrents: torrents, currentTorrent: currentTorrent, subtitles: subtitles, currentSubtitle: currentSubtitle, summary: summary)
     }
     
-    var description: String {
+    override var description: String {
         get {
             return "<\(self.dynamicType)> title: \"\(self.title)\"\n season: \"\(self.season)\"\n episode:  \"\(self.episode)\"\n summary: \"\(self.summary)\"\n airedDate: \"\(self.airedDate)\"\n"
         }
@@ -180,7 +188,7 @@ func ==(lhs: PCTSubtitle, rhs: PCTSubtitle) -> Bool {
 
 struct PCTCastMetaData {
     let title: String
-    let imageUrl: NSURL
+    let imageUrl: NSURL?
     let contentType: String
     let subtitles: [PCTSubtitle]?
     let url: String
@@ -188,7 +196,7 @@ struct PCTCastMetaData {
     
     init(
         title: String,
-        imageUrl: NSURL,
+        imageUrl: NSURL?,
         contentType: String,
         subtitles: [PCTSubtitle]?,
         url: String,
@@ -207,7 +215,7 @@ struct PCTCastMetaData {
         url: String,
         mediaAssetsPath: NSURL
         ) {
-        self.init(title: movie.title, imageUrl: NSURL(string: movie.coverImageAsString)!, contentType: "video/mp4", subtitles: movie.subtitles, url: url, mediaAssetsPath: mediaAssetsPath)
+        self.init(title: movie.title, imageUrl: movie.coverImageAsString != nil ? NSURL(string: movie.coverImageAsString!) : nil, contentType: "video/mp4", subtitles: movie.subtitles, url: url, mediaAssetsPath: mediaAssetsPath)
     }
     
     init(
@@ -215,21 +223,21 @@ struct PCTCastMetaData {
         url: String,
         mediaAssetsPath: NSURL
         ) {
-        self.init(title: episode.title, imageUrl: NSURL(string: episode.show!.coverImageAsString)!, contentType: "video/x-matroska", subtitles: episode.subtitles, url: url, mediaAssetsPath: mediaAssetsPath)
+        self.init(title: episode.title, imageUrl: episode.show?.coverImageAsString != nil ? NSURL(string: episode.show!.coverImageAsString!) : nil, contentType: "video/x-matroska", subtitles: episode.subtitles, url: url, mediaAssetsPath: mediaAssetsPath)
     }
 }
 
 struct PCTActor {
-    let imdbId: String
+    let imdbId: String?
     let slug: String
-    let imageAsString: String
+    let imageAsString: String?
     let name: String
     let character: String
     
     init(
-        imdbId: String,
+        imdbId: String?,
         slug: String,
-        imageAsString: String,
+        imageAsString: String?,
         name: String,
         character: String
         ) {

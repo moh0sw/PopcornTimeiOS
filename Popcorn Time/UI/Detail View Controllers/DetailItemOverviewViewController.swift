@@ -10,7 +10,8 @@ class DetailItemOverviewViewController: UIViewController, UIGestureRecognizerDel
     var lastTranslation: CGFloat = 0.0
     var lastHeaderHeight: CGFloat = 0.0
     var minimumHeight: CGFloat {
-        return navigationController!.navigationBar.bounds.size.height + statusBarHeight()
+        if let navigationBar = navigationController?.navigationBar where navigationBar.hidden == false { return navigationBar.bounds.size.height + statusBarHeight() }
+        return statusBarHeight()
     }
     var maximumHeight: CGFloat {
         return view.bounds.height/1.6
@@ -25,7 +26,7 @@ class DetailItemOverviewViewController: UIViewController, UIGestureRecognizerDel
     @IBOutlet var castButton: CastIconBarButtonItem!
     @IBOutlet var titleLabel: UILabel!
     @IBOutlet var ratingView: FloatRatingView!
-    @IBOutlet var summaryView: UITextView!
+    @IBOutlet var summaryView: PCTTextView!
     @IBOutlet var infoLabel: UILabel!
 
     enum ScrollDirection {
@@ -38,11 +39,11 @@ class DetailItemOverviewViewController: UIViewController, UIGestureRecognizerDel
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(updateCastStatus), name: kGCKCastStateDidChangeNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(layoutNavigationBar), name: UIDeviceOrientationDidChangeNotification, object: nil)
         updateCastStatus()
-        self.navigationController!.navigationBar.setBackgroundImage(UIImage(), forBarMetrics:.Default)
-        self.navigationController!.navigationBar.shadowImage = UIImage()
-        self.navigationController!.navigationBar.backgroundColor = UIColor.clearColor()
-        self.navigationController!.navigationBar.tintColor = UIColor.whiteColor()
-        self.navigationController!.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor().colorWithAlphaComponent(self.progressiveness)]
+        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), forBarMetrics:.Default)
+        self.navigationController?.navigationBar.shadowImage = UIImage()
+        self.navigationController?.navigationBar.backgroundColor = UIColor.clearColor()
+        self.navigationController?.navigationBar.tintColor = UIColor.whiteColor()
+        self.navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor().colorWithAlphaComponent(self.progressiveness)]
         if transitionCoordinator()?.viewControllerForKey(UITransitionContextFromViewControllerKey) is PCTPlayerViewController || transitionCoordinator()?.viewControllerForKey(UITransitionContextFromViewControllerKey) is CastPlayerViewController {
             self.navigationController?.setNavigationBarHidden(false, animated: false)
             self.headerHeightConstraint.constant = self.lastHeaderHeight
@@ -65,8 +66,8 @@ class DetailItemOverviewViewController: UIViewController, UIGestureRecognizerDel
         super.viewWillDisappear(animated)
         NSNotificationCenter.defaultCenter().removeObserver(self)
         if transitionCoordinator()?.viewControllerForKey(UITransitionContextToViewControllerKey) == self.navigationController?.topViewController {
-            self.navigationController!.navigationBar.setBackgroundImage(nil, forBarMetrics:.Default)
-            self.navigationController!.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor()]
+            self.navigationController?.navigationBar.setBackgroundImage(nil, forBarMetrics:.Default)
+            self.navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor()]
         }
     }
     
@@ -87,9 +88,11 @@ class DetailItemOverviewViewController: UIViewController, UIGestureRecognizerDel
         if headerHeightConstraint.constant < minimumHeight || scrollingView.valueForKey("programaticScrollEnabled")!.boolValue
         {
             headerHeightConstraint.constant = minimumHeight
-        } else if headerHeightConstraint.constant > maximumHeight {
+        }
+        if headerHeightConstraint.constant > maximumHeight {
             headerHeightConstraint.constant = maximumHeight
-        } else if scrollingView.frame.size.height > scrollingView.contentSize.height + scrollingView.contentInset.bottom {
+        }
+        if scrollingView.frame.size.height > scrollingView.contentSize.height + scrollingView.contentInset.bottom {
             resetToEnd(scrollingView)
         }
         updateScrolling(true)
@@ -97,11 +100,11 @@ class DetailItemOverviewViewController: UIViewController, UIGestureRecognizerDel
     
     @IBAction func handleGesture(sender: UIPanGestureRecognizer) {
         let translation = sender.translationInView(sender.view!.superview!)
-        let offset = translation.y - lastTranslation
-        let scrollDirection: ScrollDirection = offset > 0 ? .Up : .Down
         let scrollingView: UIScrollView! = tableView ?? scrollView
-    
         if sender.state == .Changed || sender.state == .Began {
+            let offset = translation.y - lastTranslation
+            let scrollDirection: ScrollDirection = offset > 0 ? .Up : .Down
+            
             if (headerHeightConstraint.constant + offset) >= minimumHeight && scrollingView.valueForKey("programaticScrollEnabled")!.boolValue == false {
                 if ((headerHeightConstraint.constant + offset) - minimumHeight) <= 8.0 // Stops scrolling from sticking just before we transition to scroll view input.
                 {
@@ -137,14 +140,14 @@ class DetailItemOverviewViewController: UIViewController, UIGestureRecognizerDel
     func updateScrolling(animated: Bool) {
         self.progressiveness = 1.0 - (self.headerHeightConstraint.constant - self.minimumHeight)/(self.maximumHeight - self.minimumHeight)
         if animated {
-            UIView.animateWithDuration(animationLength, delay: 0.0, usingSpringWithDamping: 1.0, initialSpringVelocity: 1.0, options: .AllowUserInteraction, animations: { 
+            UIView.animateWithDuration(0.46, delay: 0.0, usingSpringWithDamping: 0.9, initialSpringVelocity: 0.2, options: [.AllowUserInteraction, .CurveEaseInOut], animations: {
                 self.view.layoutIfNeeded()
                 self.blurView.alpha = self.progressiveness
-                self.navigationController!.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor().colorWithAlphaComponent(self.progressiveness)]
+                self.navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor().colorWithAlphaComponent(self.progressiveness)]
                 }, completion: nil)
         } else {
             self.blurView.alpha = self.progressiveness
-            self.navigationController!.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor().colorWithAlphaComponent(self.progressiveness)]
+            self.navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor().colorWithAlphaComponent(self.progressiveness)]
         }
     }
     

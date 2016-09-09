@@ -44,15 +44,20 @@ class OpenSubtitles {
         let limit: XMLRPCStructure = ["limit": limit]
         let queue = dispatch_queue_create("com.popcorn-time.response.queue", DISPATCH_QUEUE_CONCURRENT)
         AlamofireXMLRPC.request(secureBaseURL, methodName: "SearchSubtitles", parameters: [token!, array, limit], headers: ["User-Agent": userAgent]).validate().response(queue: queue, responseSerializer: Request.XMLRPCResponseSerializer(), completionHandler: { response in
-            guard response.result.isSuccess && Int(response.result.value![0]["status"].string!.componentsSeparatedByString(" ").first!)! == 200 else {
+            guard let value = response.result.value,
+                let status = value[0]["status"].string?.componentsSeparatedByString(" ").first,
+                let data = value[0]["data"].array
+                where response.result.isSuccess && status == "200" else {
                 print("Error is \(response.result.error!)")
                 return
             }
             var subtitles = [PCTSubtitle]()
-            for info in response.result.value![0]["data"].array! {
-                if !subtitles.contains({ subtitle in subtitle.language == info["LanguageName"].string!}){
-                    subtitles.append(PCTSubtitle(language: info["LanguageName"].string!, link: info["SubDownloadLink"].string!, ISO639: info["ISO639"].string!))
-                }
+            for info in data {
+                guard let languageName = info["LanguageName"].string,
+                    let subDownloadLink = info["SubDownloadLink"].string,
+                    let ISO639 = info["ISO639"].string
+                    where !subtitles.contains({$0.language == languageName}) else { continue }
+                subtitles.append(PCTSubtitle(language: languageName, link: subDownloadLink, ISO639: ISO639))
             }
             subtitles.sortInPlace({ $0.language < $1.language })
             dispatch_async(dispatch_get_main_queue(), { 
@@ -71,16 +76,15 @@ class OpenSubtitles {
             password = credential.password!
         }
         AlamofireXMLRPC.request(secureBaseURL, methodName: "LogIn", parameters: [username, password, "en", userAgent]).validate().responseXMLRPC { response in
-            guard response.result.isSuccess && Int(response.result.value![0]["status"].string!.componentsSeparatedByString(" ").first!)! == 200 else {
-                var statusError = response.result.error
-                if statusError == nil {
-                    statusError = NSError(domain: "com.AlamofireXMLRPC.error", code: Int(response.result.value![0]["status"].string!.componentsSeparatedByString(" ").first!)!, userInfo: [NSLocalizedDescriptionKey: "Username or password is incorrect."])
-                }
-                print("Error is \(statusError!)")
-                error?(error: statusError!)
+            guard let value = response.result.value,
+                let status = value[0]["status"].string?.componentsSeparatedByString(" ").first
+                where response.result.isSuccess && status == "200" else {
+                let statusError = response.result.error ?? NSError(domain: "com.AlamofireXMLRPC.error", code: -403, userInfo: [NSLocalizedDescriptionKey: "Username or password is incorrect."])
+                print("Error is \(statusError)")
+                error?(error: statusError)
                 return
             }
-            self.token = response.result.value![0]["token"].string
+            self.token = value[0]["token"].string
             completion()
         }
     }

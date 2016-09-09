@@ -112,8 +112,44 @@ class SettingsTableViewController: UITableViewController, PCTTablePickerViewDele
             }
             presentViewController(controller, animated: true, completion: nil)
             tableView.deselectRowAtIndexPath(indexPath, animated: true)
-        case 4 where indexPath.row == 2:
-            openUrl("https://github.com/PopcornTimeTV/PopcornTimeiOS/blob/master/NOTICE.md")
+        case 4:
+            if indexPath.row == 2 {
+                let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
+                let loadingView: UIViewController = {
+                    let viewController = UIViewController()
+                    viewController.view.translatesAutoresizingMaskIntoConstraints = false
+                    let label = UILabel(frame: CGRect(origin: CGPointZero, size: CGSize(width: 200, height: 20)))
+                    label.translatesAutoresizingMaskIntoConstraints = false
+                    label.text = "Checking for updates..."
+                    label.font = UIFont.systemFontOfSize(16, weight: UIFontWeightBold)
+                    label.sizeToFit()
+                    let activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
+                    activityIndicator.translatesAutoresizingMaskIntoConstraints = false
+                    activityIndicator.startAnimating()
+                    viewController.view.addSubview(activityIndicator)
+                    viewController.view.addSubview(label)
+                    viewController.view.centerXAnchor.constraintEqualToAnchor(label.centerXAnchor, constant: -10).active = true
+                    viewController.view.centerYAnchor.constraintEqualToAnchor(label.centerYAnchor).active = true
+                    label.leadingAnchor.constraintEqualToAnchor(activityIndicator.trailingAnchor, constant: 7.0).active = true
+                    viewController.view.centerYAnchor.constraintEqualToAnchor(activityIndicator.centerYAnchor).active = true
+                    return viewController
+                }()
+                alert.setValue(loadingView, forKey: "contentViewController")
+                alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
+                presentViewController(alert, animated: true, completion: nil)
+                tableView.deselectRowAtIndexPath(indexPath, animated: true)
+                UpdateManager.sharedManager.checkVersion(.Immediately) { [weak self] success in
+                    alert.dismissViewControllerAnimated(true, completion: nil)
+                    self?.tableView.reloadData()
+                    if !success {
+                        let alert = UIAlertController(title: "No Updates Available", message: "There are no updates available for Popcorn Time at this time.", preferredStyle: .Alert)
+                        alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
+                        self?.presentViewController(alert, animated: true, completion: nil)
+                    }
+                }
+            } else if indexPath.row == 3 {
+                openUrl("https://github.com/PopcornTimeTV/PopcornTimeiOS/blob/master/NOTICE.md")
+            }
         default:
            break
         }
@@ -135,8 +171,17 @@ class SettingsTableViewController: UITableViewController, PCTTablePickerViewDele
             if let string = ud.stringForKey("PreferredSubtitle\(cell.textLabel!.text!.capitalizedString.whiteSpacelessString)") {
                 cell.detailTextLabel?.text = string
             }
-        case 4 where indexPath.row == 1:
-            cell.detailTextLabel?.text = "\(NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleShortVersionString")!).\(NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleVersion")!)"
+        case 4:
+            if indexPath.row == 1 {
+              cell.detailTextLabel?.text = "\(NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleShortVersionString")!).\(NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleVersion")!)"
+            } else if indexPath.row == 2 {
+                var date = "Never."
+                if let lastChecked = NSUserDefaults.standardUserDefaults().objectForKey("lastVersionCheckPerformedOnDate") as? NSDate {
+                    date = NSDateFormatter.localizedStringFromDate(lastChecked, dateStyle: .ShortStyle, timeStyle: .ShortStyle)
+                }
+                cell.detailTextLabel?.text = "Last checked: \(date)"
+            }
+            
         default:
             break
         }
@@ -255,27 +300,21 @@ class SettingsTableViewController: UITableViewController, PCTTablePickerViewDele
     
     func safariLogin(notification: NSNotification) {
         safariViewController.dismissViewControllerAnimated(true, completion: nil)
-        let url = notification.object as! NSURL
-        let query = url.query!.urlStringValues()
-        let state = query["state"]
-        guard state != self.state else {
-            dispatch_async(dispatch_get_global_queue(Int(QOS_CLASS_USER_INITIATED.rawValue), 0)) {
-                do {
-                    let credential = try OAuthCredential(URLString: "https://api-v2launch.trakt.tv/oauth/token", code: query["code"]!, redirectURI: "PopcornTime://trakt", clientID: TraktTVAPI.sharedInstance.clientId, clientSecret: TraktTVAPI.sharedInstance.clientSecret, useBasicAuthentication: false)
-                    OAuthCredential.storeCredential(credential!, identifier: "trakt")
-                    dispatch_async(dispatch_get_main_queue(), {
-                        self.ud.setBool(true, forKey: "AuthorizedTrakt")
-                        self.updateSignedInStatus(self.traktSignInButton, isSignedIn: true)
-                    })
-                } catch {}
-            }
-            return
+        guard let query = (notification.object as? NSURL)?.query?.urlStringValues() where query["state"] == self.state else {return}
+        dispatch_async(dispatch_get_global_queue(Int(QOS_CLASS_USER_INITIATED.rawValue), 0)) {
+            do {
+                let credential = try OAuthCredential(URLString: "https://api-v2launch.trakt.tv/oauth/token", code: query["code"]!, redirectURI: "PopcornTime://trakt", clientID: TraktTVAPI.sharedInstance.clientId, clientSecret: TraktTVAPI.sharedInstance.clientSecret, useBasicAuthentication: false)
+                OAuthCredential.storeCredential(credential!, identifier: "trakt")
+                dispatch_async(dispatch_get_main_queue(), {
+                    self.ud.setBool(true, forKey: "AuthorizedTrakt")
+                    self.updateSignedInStatus(self.traktSignInButton, isSignedIn: true)
+                })
+            } catch {}
         }
         let error = UIAlertController(title: "Error", message: "Uh Oh! It looks like your connection has been compromised. You may be a victim of Cross Site Request Forgery. If you are on a public WiFi network please disconnect immediately and contact the network administrator.", preferredStyle: .Alert)
         error.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
         error.addAction(UIAlertAction(title: "Learn More", style: .Default, handler: { action in
             UIApplication.sharedApplication().openURL(NSURL(string: "http://www.veracode.com/security/csrf")!)
-            self.dismissViewControllerAnimated(true, completion: nil)
         }))
         presentViewController(error, animated: true, completion: nil)
     }

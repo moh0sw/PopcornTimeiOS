@@ -40,12 +40,6 @@ class TVShowsCollectionViewController: ItemOverviewCollectionViewController, UIP
         loadNextPage(currentPage)
     }
     
-    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
-        if let collectionView = object as? UICollectionView where collectionView == self.collectionView! && keyPath! == "frame" {
-            collectionView.performBatchUpdates(nil, completion: nil)
-        }
-    }
-    
     func segmentedControlDidChangeSegment(segmentedControl: UISegmentedControl) {
         currentFilter = TVAPI.filters.arrayValue[segmentedControl.selectedSegmentIndex]
     }
@@ -107,9 +101,7 @@ class TVShowsCollectionViewController: ItemOverviewCollectionViewController, UIP
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         fixIOS9PopOverAnchor(segue)
         if segue.identifier == "showDetail" {
-            let showDetail = segue.destinationViewController as! TVShowDetailViewController
-            let cell = sender as! CoverCollectionViewCell
-            showDetail.currentItem = shows[(collectionView?.indexPathForCell(cell)?.row)!]
+            (segue.destinationViewController as! TVShowContainerViewController).currentItem = shows[(collectionView?.indexPathForCell(sender as! CoverCollectionViewCell)?.row)!]
         }
     }
     
@@ -144,8 +136,11 @@ class TVShowsCollectionViewController: ItemOverviewCollectionViewController, UIP
     override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("cell", forIndexPath: indexPath) as! CoverCollectionViewCell
         cell.titleLabel.text = shows[indexPath.row].title
-        cell.yearLabel.text = String(shows[indexPath.row].year)
-        cell.coverImage.af_setImageWithURL(NSURL(string: shows[indexPath.row].coverImageAsString)!, placeholderImage: UIImage(named: "Placeholder"), imageTransition: .CrossDissolve(animationLength))
+        cell.yearLabel.text = shows[indexPath.row].year
+        if let image = shows[indexPath.row].coverImageAsString,
+            let url = NSURL(string: image) {
+            cell.coverImage.af_setImageWithURL(url, placeholderImage: UIImage(named: "Placeholder"), imageTransition: .CrossDissolve(animationLength))
+        }
         return cell
     }
     
@@ -177,6 +172,24 @@ class TVShowsCollectionViewController: ItemOverviewCollectionViewController, UIP
     func populateDataSourceArray(inout array: [String]) {
         for genre in TVAPI.genres.arrayValue {
             array.append(genre.rawValue)
+        }
+    }
+}
+
+class TVShowContainerViewController: UIViewController {
+    
+    var currentItem: PCTShow!
+    var currentType: TraktTVAPI.type = .Shows
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if segue.identifier == "showDetail" {
+            let vc = (segue.destinationViewController as! UISplitViewController).viewControllers.first as! TVShowDetailViewController
+            vc.currentItem = currentItem
+            vc.currentType = currentType
+            vc.parentTabBarController = tabBarController
+            vc.parentNavigationController = navigationController
+            navigationItem.rightBarButtonItems = vc.navigationItem.rightBarButtonItems
+            vc.parentNavigationItem = navigationItem
         }
     }
 }

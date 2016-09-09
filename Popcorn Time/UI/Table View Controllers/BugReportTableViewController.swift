@@ -32,8 +32,8 @@ class BugReportTableViewController: UITableViewController, JGProgressHUDDelegate
             HUD.showInView(view)
             Alamofire.request(.POST, "https://api.github.com/repos/PopcornTimeTV/PopcornTimeiOS/issues", parameters: ["assignee": usernameField.text!, "body": descriptionField.text, "title": titleField.text!], encoding: .JSON).authenticate(user: usernameField.text!, password: passwordField.text!).validate().responseJSON(completionHandler: { response in
                 HUD.dismiss()
-                guard response.result.error == nil else {
-                    var message: String!
+                guard response.result.isSuccess else {
+                    var message = "An unknown error occured."
                     if let httpStatusCode = response.response?.statusCode {
                         switch httpStatusCode {
                         case 400:
@@ -66,8 +66,7 @@ class BugReportTableViewController: UITableViewController, JGProgressHUDDelegate
             })
             return
         }
-        
-        let error = UIAlertController(title: "Error", message: "All fields are required", preferredStyle: .Alert)
+        let error = UIAlertController(title: "Error", message: "All fields are required.", preferredStyle: .Alert)
         error.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
         presentViewController(error, animated: true, completion: nil)
     }

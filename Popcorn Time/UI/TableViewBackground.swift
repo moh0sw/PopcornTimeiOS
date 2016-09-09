@@ -8,7 +8,7 @@ class TableViewBackground: UIView {
     @IBOutlet var descriptionLabel: UILabel!
     
     
-    func setUpView(image image: UIImage, title: String, description: String) {
+    func setUpView(image image: UIImage, title: String? = nil, description: String? = nil) {
         imageView.image = image
         titleLabel.text = title
         descriptionLabel.text = description

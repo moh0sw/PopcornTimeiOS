@@ -5,7 +5,7 @@ import SwiftyJSON
 import Alamofire
 
 class TVAPI {
-    private let TVShowsAPIEndpoint = "https://api-fetch.website/tv/"
+    private let TVShowsAPIEndpoint = "https://tv-v2.api-fetch.website/"
     /**
      Creates new instance of TVAPI class.
      
@@ -109,24 +109,27 @@ class TVAPI {
             params["keywords"] = searchTerm
         }
         Alamofire.request(.GET, TVShowsAPIEndpoint + "shows/\(page)", parameters: params).validate().responseJSON { response in
-            guard response.result.isSuccess else {
+            guard let value = response.result.value else {
                 NSNotificationCenter.defaultCenter().postNotificationName(errorNotification, object: response.result.error!)
                 print("Error is: \(response.result.error!)")
                 return
             }
-            let shows =  JSON(response.result.value!)
-            var pctItems = [PCTShow]()
-            for (_, show) in shows {
-                let id = show["imdb_id"].string!
-                let title = show["title"].string!
-                let year = show["year"].string
-                let coverImage = show["images"]["poster"].string!.stringByReplacingOccurrencesOfString("original", withString: "thumb")
-                let rating = show["rating"]["percentage"].float!/20.0
-                let slug = show["slug"].string!
-                let pctItem = PCTShow(id: id, title: title, year: year ?? "", coverImageAsString: coverImage, rating: rating, slug: slug)
-                pctItems.append(pctItem)
+            let responseDict = JSON(value)
+            var shows = [PCTShow]()
+            for (_, show) in responseDict {
+                guard let id = show["imdb_id"].string,
+                    let title = show["title"].string,
+                    let year = show["year"].string,
+                    let rating = show["rating"]["percentage"].float,
+                    let slug = show["slug"].string else { continue }
+                var coverImage = show["images"]["poster"].string?.stringByReplacingOccurrencesOfString("original", withString: "thumb")
+                let backgroundImage = show["images"]["fanart"].string
+                if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
+                    coverImage = coverImage?.stringByReplacingOccurrencesOfString("thumb", withString: "medium")
+                }
+                shows.append(PCTShow(id: id, title: title, year: year, coverImageAsString: coverImage, backgroundImageAsString: backgroundImage, rating: rating/20.0, slug: slug))
             }
-            completion(items: pctItems)
+            completion(items: shows)
         }
     }
     
@@ -139,41 +142,41 @@ class TVAPI {
      */
     func getShowInfo(imdbId: String, completion: (genres: [String], status: String, synopsis: String, episodes: [PCTEpisode], seasonNumbers: [Int]) -> Void) {
         Alamofire.request(.GET, TVShowsAPIEndpoint + "show/\(imdbId)").validate().responseJSON { response in
-            guard response.result.isSuccess else {
+            guard let value = response.result.value else {
                 NSNotificationCenter.defaultCenter().postNotificationName(errorNotification, object: response.result.error!)
                 print("Error is: \(response.result.error!)")
                 return
             }
-            let show = JSON(response.result.value!)
-            let genres = show["genres"].arrayObject! as! [String]
-            let status = show["status"].string!
-            let synopsis = show["synopsis"].string!
-            var pctEpisodes = [PCTEpisode]()
+            let responseDict = JSON(value)
+            let genres = responseDict["genres"].arrayObject as? [String] ?? []
+            let status = responseDict["status"].string ?? "Ended"
+            let synopsis = responseDict["synopsis"].string ?? "No synopsis available"
+            var episodes = [PCTEpisode]()
             var seasons = [Int]()
-            for (_, episodes) in show["episodes"] {
-                let season = episodes["season"].int!
-                if !seasons.contains(season) {
-                    seasons.append(season)
+            for (_, episode) in responseDict["episodes"] {
+                guard let seasonNumber = episode["season"].int,
+                    let episodeNumber = episode["episode"].int,
+                    let tvdbId = episode["tvdb_id"].int,
+                    let firstAired = episode["first_aired"].int else { continue }
+                if !seasons.contains(seasonNumber) {
+                    seasons.append(seasonNumber)
                 }
-                let episode = episodes["episode"].int!
-                let title = episodes["title"].string!
-                let overview = episodes["overview"].string ?? "No synopsis available"
-                let tvdbId = String(episodes["tvdb_id"].int!)
-                let airedDate = NSDate(timeIntervalSince1970: Double(episodes["first_aired"].int!))
+                let title = episode["title"].string ?? "Episode \(episodeNumber)"
+                let overview = episode["overview"].string ?? "No synopsis available"
+                let airedDate = NSDate(timeIntervalSince1970: Double(firstAired))
                 var torrents = [PCTTorrent]()
-                for (index, torrent) in episodes["torrents"] {
+                for (index, torrent) in episode["torrents"] {
                     if index != "0" {
-                        let torrent = PCTTorrent(url: torrent["url"].string ?? "", seeds: torrent["seeds"].int!, peers: torrent["peers"].int!, quality: index)
+                        let torrent = PCTTorrent(url: torrent["url"].string, seeds: torrent["seeds"].int ?? 0, peers: torrent["peers"].int ?? 0, quality: index)
                         torrents.append(torrent)
                     }
                 }
                 torrents.sortInPlace(<)
-                let pctEpisode = PCTEpisode(season: season, episode: episode, title: title, summary: overview, airedDate: airedDate, tvdbId: tvdbId, torrents: torrents)
-                pctEpisodes.append(pctEpisode)
+                episodes.append(PCTEpisode(season: seasonNumber, episode: episodeNumber, title: title, summary: overview, airedDate: airedDate, tvdbId:  String(tvdbId), torrents: torrents))
             }
             seasons.sortInPlace(<)
-            pctEpisodes.sortInPlace({ $0.episode < $1.episode })
-            completion(genres: genres, status: status, synopsis: synopsis, episodes: pctEpisodes, seasonNumbers: seasons)
+            episodes.sortInPlace({ $0.episode < $1.episode })
+            completion(genres: genres, status: status, synopsis: synopsis, episodes: episodes, seasonNumbers: seasons)
         }
     }
     /**
@@ -183,7 +186,7 @@ class TVAPI {
      
      - Returns: ImageURL and subtitles. Completion block called twice. First time when imageURL has been recieved and second when subtitles have been recieved.
      */
-    func getEpisodeInfo(episode: PCTEpisode, completion: (imageURLAsString: String, subtitles: [PCTSubtitle]?) -> Void) {
+    func getEpisodeInfo(episode: PCTEpisode, completion: (imageURLAsString: String?, subtitles: [PCTSubtitle]?) -> Void) {
         TraktTVAPI.sharedInstance.getEpisodeMeta(episode.show!, episode: episode, completion: { (imageURLAsString, imdbId) in
             completion(imageURLAsString: imageURLAsString, subtitles: nil)
             OpenSubtitles.sharedInstance.login({

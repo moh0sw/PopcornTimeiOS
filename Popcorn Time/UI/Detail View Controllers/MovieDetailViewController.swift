@@ -13,13 +13,26 @@ class MovieDetailViewController: DetailItemOverviewViewController, PCTTablePicke
     @IBOutlet var subtitlesButton: UIButton!
     @IBOutlet var playButton: PCTBorderButton!
     @IBOutlet var watchedBtn: UIBarButtonItem!
+    @IBOutlet var trailerBtn: UIButton!
+    @IBOutlet var collectionView: UICollectionView!
+    @IBOutlet var regularConstraints: [NSLayoutConstraint]!
+    @IBOutlet var compactConstraints: [NSLayoutConstraint]!
     
     var currentItem: PCTMovie!
+    var relatedItems = [PCTMovie]()
+    var cast = [PCTActor]()
     var subtitlesTablePickerView: PCTTablePickerView!
+    private var classContext = 0
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         WatchlistManager.movieManager.getProgress()
+        view.addObserver(self, forKeyPath: "frame", options: .New, context: &classContext)
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        view.removeObserver(self, forKeyPath: "frame")
     }
     
     override func viewDidLayoutSubviews() {
@@ -31,6 +44,7 @@ class MovieDetailViewController: DetailItemOverviewViewController, PCTTablePicke
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.title = currentItem.title
+        currentItem.coverImageAsString = currentItem.coverImageAsString?.stringByReplacingOccurrencesOfString("thumb", withString: "medium")
         watchedBtn.image = getWatchedButtonImage()
         let adjustForTabbarInsets = UIEdgeInsetsMake(0, 0, CGRectGetHeight(tabBarController!.tabBar.frame), 0)
         scrollView.contentInset = adjustForTabbarInsets
@@ -39,20 +53,16 @@ class MovieDetailViewController: DetailItemOverviewViewController, PCTTablePicke
         summaryView.text = currentItem.summary
         ratingView.rating = Float(currentItem.rating)
         infoLabel.text = "\(currentItem.year) ● \(currentItem.runtime) min ● \(currentItem.genres[0].capitalizedString)"
-        currentItem.currentTorrent = currentItem.torrents.first!
-        for torrent in currentItem.torrents {
-            if torrent.quality == NSUserDefaults.standardUserDefaults().objectForKey("PreferredQuality") as? String {
-                currentItem.currentTorrent = torrent
-            }
-        }
-        if currentItem.torrents.count > 1 {
-            qualityBtn.setTitle("\(currentItem.currentTorrent.quality!) ▾", forState: .Normal)
-        } else {
-            qualityBtn.setTitle("\(currentItem.currentTorrent.quality!)", forState: .Normal)
-            qualityBtn.userInteractionEnabled = false
-        }
-        let colorArt = SLColorArt(image: backgroundImageView.image)
-        playButton.borderColor = colorArt.secondaryColor
+        playButton.borderColor = SLColorArt(image: backgroundImageView.image).secondaryColor
+        trailerBtn.enabled = currentItem.trailerURLString != nil
+        MovieAPI.sharedInstance.getMovieInfo(currentItem.id, completion: {
+            self.currentItem.torrents = $0
+            self.currentItem.currentTorrent = self.currentItem.torrents.filter({$0.quality == NSUserDefaults.standardUserDefaults().stringForKey("PreferredQuality")}).first ?? self.currentItem.torrents.first!
+            self.torrentHealth.backgroundColor = self.currentItem.currentTorrent.health.color()
+            self.playButton.enabled = self.currentItem.currentTorrent.url != nil
+            self.qualityBtn?.userInteractionEnabled = self.currentItem.torrents.count > 1
+            self.qualityBtn?.setTitle("\(self.currentItem.currentTorrent.quality! + (self.currentItem.torrents.count > 1 ? " ▾" : ""))", forState: .Normal)
+        })
         OpenSubtitles.sharedInstance.login({
             OpenSubtitles.sharedInstance.search(imdbId: self.currentItem.id, completion: {
                 subtitles in
@@ -77,25 +87,15 @@ class MovieDetailViewController: DetailItemOverviewViewController, PCTTablePicke
                 self.tabBarController?.view.addSubview(self.subtitlesTablePickerView)
             })
         })
-        torrentHealth.backgroundColor = currentItem.currentTorrent.health.color()
-        TraktTVAPI.sharedInstance.getMovieMeta(currentItem.id) { backgroundImageAsString in
-            self.currentItem.coverImageAsString = backgroundImageAsString
-            self.backgroundImageView.af_setImageWithURLRequest(NSURLRequest(URL: NSURL(string: backgroundImageAsString)!), placeholderImage: UIImage(named: "Placeholder"), imageTransition: .CrossDissolve(animationLength), completion: { response in
-                guard response.result.isFailure else {
-                    let colorArt = SLColorArt(image: response.result.value!)
-                    self.playButton.borderColor = colorArt.secondaryColor
-                    return
-                }
-            })
+        MovieAPI.sharedInstance.getDetailedMovieInfo(currentItem.id) { (actors, related) in
+            self.relatedItems = related as! [PCTMovie]
+            self.cast = actors
+            self.collectionView.reloadData()
         }
     }
     
     func getWatchedButtonImage() -> UIImage {
-        var watchedImage = UIImage(named: "WatchedOff")!.imageWithRenderingMode(.AlwaysOriginal)
-        if WatchlistManager.movieManager.isWatched(currentItem.id) {
-            watchedImage = UIImage(named: "WatchedOn")!.imageWithRenderingMode(.AlwaysOriginal)
-        }
-        return watchedImage
+        return WatchlistManager.movieManager.isWatched(currentItem.id) ? UIImage(named: "WatchedOn")! : UIImage(named: "WatchedOff")!
     }
     
     @IBAction func toggleWatched() {
@@ -108,6 +108,7 @@ class MovieDetailViewController: DetailItemOverviewViewController, PCTTablePicke
         for torrent in currentItem.torrents {
             quality.addAction(UIAlertAction(title: "\(torrent.quality!) \(torrent.size!)", style: .Default, handler: { action in
                 self.currentItem.currentTorrent = torrent
+                self.playButton.enabled = self.currentItem.currentTorrent.url != nil
                 self.qualityBtn.setTitle("\(torrent.quality!) ▾", forState: .Normal)
                 self.torrentHealth.backgroundColor = torrent.health.color()
             }))
@@ -129,10 +130,10 @@ class MovieDetailViewController: DetailItemOverviewViewController, PCTTablePicke
             loadMovieTorrent(currentItem)
         } else {
             let errorAlert = UIAlertController(title: "Cellular Data is Turned Off for streaming", message: "To enable it please go to settings.", preferredStyle: UIAlertControllerStyle.Alert)
-            errorAlert.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: { (action: UIAlertAction!) in }))
-            errorAlert.addAction(UIAlertAction(title: "Settings", style: .Default, handler: { (action: UIAlertAction!) in
+            errorAlert.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
+            errorAlert.addAction(UIAlertAction(title: "Settings", style: .Default, handler: { _ in
                 let settings = self.storyboard!.instantiateViewControllerWithIdentifier("SettingsTableViewController") as! SettingsTableViewController
-                self.navigationController!.pushViewController(settings, animated: true)
+                self.navigationController?.pushViewController(settings, animated: true)
             }))
             self.presentViewController(errorAlert, animated: true, completion: nil)
         }
@@ -143,7 +144,7 @@ class MovieDetailViewController: DetailItemOverviewViewController, PCTTablePicke
         loadingViewController.transitioningDelegate = self
         loadingViewController.backgroundImage = backgroundImageView.image
         presentViewController(loadingViewController, animated: true, completion: nil)
-        downloadTorrentFile(media.currentTorrent.url) { [unowned self] (url, error) in
+        downloadTorrentFile(media.currentTorrent.url!) { [unowned self] (url, error) in
             if let url = url {
                 let moviePlayer = self.storyboard!.instantiateViewControllerWithIdentifier("PCTPlayerViewController") as! PCTPlayerViewController
                 moviePlayer.delegate = self
@@ -192,8 +193,8 @@ class MovieDetailViewController: DetailItemOverviewViewController, PCTTablePicke
         }
     }
     
-	@IBAction func watchTrailorTapped(sender: AnyObject) {
-        let vc = XCDYouTubeVideoPlayerViewController(videoIdentifier: currentItem.trailorURLString)
+	@IBAction func watchTrailerTapped() {
+        let vc = XCDYouTubeVideoPlayerViewController(videoIdentifier: currentItem.trailerURLString)
         presentViewController(vc, animated: true, completion: nil)
 	}
     
@@ -216,5 +217,105 @@ class MovieDetailViewController: DetailItemOverviewViewController, PCTTablePicke
     
     func animationControllerForDismissedController(dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         return dismissed is LoadingViewController ? PCTLoadingViewAnimatedTransitioning(isPresenting: false, sourceController: self) : nil
+    }
+}
+
+extension MovieDetailViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
+        var sections = 0
+        if relatedItems.count > 0 {sections += 1}; if cast.count > 0 {sections += 1}
+        return sections
+    }
+    func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return section == 0 ? relatedItems.count : cast.count
+    }
+    
+    func collectionView(collectionView: UICollectionView,layout collectionViewLayout: UICollectionViewLayout,sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
+        var items = 1
+        while (collectionView.bounds.width/CGFloat(items))-8 > 195 {
+            items += 1
+        }
+        let width = (collectionView.bounds.width/CGFloat(items))-8
+        let ratio = width/195.0
+        let height = 280.0 * ratio
+        return CGSizeMake(width, height)
+    }
+    
+    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+        if &classContext == context && keyPath == "frame" {
+            collectionView.collectionViewLayout.invalidateLayout()
+        }
+    }
+    
+    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+        let cell: UICollectionViewCell
+        if indexPath.section == 0 {
+            cell = {
+               let coverCell = collectionView.dequeueReusableCellWithReuseIdentifier("relatedCell", forIndexPath: indexPath) as! CoverCollectionViewCell
+                coverCell.titleLabel.text = relatedItems[indexPath.row].title
+                coverCell.yearLabel.text = relatedItems[indexPath.row].year
+                if let image = relatedItems[indexPath.row].coverImageAsString,
+                    let url = NSURL(string: image) {
+                    coverCell.coverImage.af_setImageWithURL(url, placeholderImage: UIImage(named: "Placeholder"))
+                }
+                coverCell.watched = WatchlistManager.movieManager.isWatched(relatedItems[indexPath.row].id)
+                return coverCell
+            }()
+        } else {
+            cell = collectionView.dequeueReusableCellWithReuseIdentifier("castCell", forIndexPath: indexPath)
+            let imageView = cell.viewWithTag(1) as! UIImageView
+            if let image = cast[indexPath.row].imageAsString,
+                let url = NSURL(string: image) {
+                imageView.af_setImageWithURL(url, placeholderImage: UIImage(named: "Placeholder"))
+            }
+            imageView.layer.cornerRadius = self.collectionView(collectionView, layout: collectionView.collectionViewLayout, sizeForItemAtIndexPath: indexPath).width/2
+            (cell.viewWithTag(2) as! UILabel).text = cast[indexPath.row].name
+            (cell.viewWithTag(3) as! UILabel).text = cast[indexPath.row].character
+        }
+        return cell
+    }
+    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+        if indexPath.section == 0 {
+            let movieDetail = storyboard?.instantiateViewControllerWithIdentifier("MovieDetailViewController") as! MovieDetailViewController
+            movieDetail.currentItem = relatedItems[indexPath.row]
+            navigationController?.pushViewController(movieDetail, animated: true)
+        }
+    }
+    
+    override func traitCollectionDidChange(previousTraitCollection: UITraitCollection?) {
+        if let coverImageAsString = currentItem.coverImageAsString,
+            let backgroundImageAsString = currentItem.backgroundImageAsString {
+            backgroundImageView.af_setImageWithURLRequest(NSURLRequest(URL: NSURL(string: traitCollection.horizontalSizeClass == .Compact ? coverImageAsString : backgroundImageAsString)!), placeholderImage: UIImage(named: "Placeholder"), imageTransition: .CrossDissolve(animationLength), completion: {
+                if let value = $0.result.value {
+                    self.playButton.borderColor = SLColorArt(image: value).secondaryColor
+                }
+            })
+        }
+        
+        for constraint in compactConstraints {
+            constraint.priority = traitCollection.horizontalSizeClass == .Compact ? 999 : 240
+        }
+        for constraint in regularConstraints {
+            constraint.priority = traitCollection.horizontalSizeClass == .Compact ? 240 : 999
+        }
+        UIView.animateWithDuration(animationLength, animations: {
+            self.view.layoutIfNeeded()
+            self.collectionView.collectionViewLayout.invalidateLayout()
+        })
+    }
+    
+    func collectionView(collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, atIndexPath indexPath: NSIndexPath) -> UICollectionReusableView {
+        if kind == UICollectionElementKindSectionHeader {
+            return {
+               let element = collectionView.dequeueReusableSupplementaryViewOfKind(kind, withReuseIdentifier: "header", forIndexPath: indexPath)
+                (element.viewWithTag(1) as! UILabel).text = indexPath.section == 0 ? "RELATED" : "CAST"
+                return element
+            }()
+        }
+        return collectionView.dequeueReusableSupplementaryViewOfKind(kind, withReuseIdentifier: "footer", forIndexPath: indexPath)
+    }
+    
+    override func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return collectionView.gestureRecognizers?.filter({$0 == gestureRecognizer || $0 == otherGestureRecognizer}).first == nil
     }
 }

@@ -41,28 +41,6 @@ class TraktTVAPI {
     let clientId = "a3b34d7ce9a7f8c1bb216eed6c92b11f125f91ee0e711207e1030e7cdc965e19"
     let clientSecret = "22afa0081bea52793740395c6bc126d15e1f72b0bfb89bbd5729310079f1a01c"
     /**
-     Load movie metadata from API.
-     
-     - Parameter imbd: The imbd identification code used to lookup the movie.
-     
-     - Returns: The background art URL of the provided movie as a string.
-     */
-    func getMovieMeta(imdb: String, completion: (backgroundImageAsString: String) -> Void) {
-        Alamofire.request(.GET, "https://api.trakt.tv/movies/\(imdb)", parameters: ["extended": "images"], headers: ["trakt-api-key": clientId, "trakt-api-version": "2"]).validate().responseJSON { response in
-            guard response.result.isFailure else {
-                let responseDict = JSON(response.result.value!)
-                var image: String
-                if UIDevice.currentDevice().userInterfaceIdiom == .Phone {
-                    image = responseDict["images"]["poster"]["medium"].string!
-                } else {
-                    image = responseDict["images"]["poster"]["full"].string!
-                }
-                completion(backgroundImageAsString: image)
-                return
-            }
-        }
-    }
-    /**
      Scrobbles current video.
      
      - Parameter item:      The imdbId of video that is playing.
@@ -109,22 +87,21 @@ class TraktTVAPI {
      
      - Returns: The imageURLString and Imdb identification code of the epsiode.
      */
-    func getEpisodeMeta(show: PCTShow, episode: PCTEpisode, completion:(imageURLAsString: String, imdbId: String?) -> Void) {
+    func getEpisodeMeta(show: PCTShow, episode: PCTEpisode, completion:(imageURLAsString: String?, imdbId: String?) -> Void) {
         Alamofire.request(.GET, "https://api.trakt.tv/shows/\(show.slug)/seasons/\(episode.season)/episodes/\(episode.episode)?extended=images", headers: ["trakt-api-key": self.clientId, "trakt-api-version": "2"]).validate().responseJSON { response in
-            guard response.result.isFailure else {
-                let responseDict = JSON(response.result.value!)
-                var image: String!
-                if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
-                    image = responseDict["images"]["screenshot"]["full"].string ?? ""
-                } else if UIDevice.currentDevice().userInterfaceIdiom == .Phone {
-                    image = responseDict["images"]["screenshot"]["medium"].string ?? ""
+            if let value = response.result.value {
+                let responseDict = JSON(value)
+                let image: String?
+                if UIDevice.currentDevice().userInterfaceIdiom == .Phone {
+                    image = responseDict["images"]["screenshot"]["medium"].string
+                } else {
+                    image = responseDict["images"]["screenshot"]["medium"].string
                 }
                 if let imdbId = responseDict["ids"]["imdb"].string {
                     completion(imageURLAsString: image, imdbId: imdbId)
                 } else {
                     completion(imageURLAsString: image, imdbId: nil)
                 }
-                return
             }
         }
     }
@@ -137,14 +114,13 @@ class TraktTVAPI {
      
      - Returns: The tvdbid of the episode synchronously.
      */
-    private func getEpisodeId(showImdbId: String, episodeNumber: Int, seasonNumber: Int) -> Int {
+    private func getEpisodeId(showImdbId: String, episodeNumber: Int, seasonNumber: Int) -> Int? {
         let semaphore = dispatch_semaphore_create(0)
-        var id: Int!
+        var id: Int?
         Alamofire.request(.GET, "https://api.trakt.tv/shows/\(showImdbId)/seasons/\(seasonNumber)/episodes/\(episodeNumber)", headers: ["trakt-api-key": self.clientId, "trakt-api-version": "2"]).validate().responseJSON { response in
-            if response.result.isSuccess {
-                id = JSON(response.result.value!)["ids"]["tvdb"].int!
-            } else {
-                id = 0
+            if let value = response.result.value,
+                let tvdbId = JSON(value)["ids"]["tvdb"].int {
+                id = tvdbId
             }
             dispatch_semaphore_signal(semaphore)
         }
@@ -228,13 +204,15 @@ class TraktTVAPI {
                     let responseDict = JSON(response.result.value!)
                     var progressDict = [String: Float]()
                     for (_, item) in responseDict {
-                        let imdbId: String
-                        if type == .Movies {
-                            imdbId = item["movie"]["ids"]["imdb"].string!
-                        } else {
-                            imdbId = String(item["episode"]["ids"]["tvdb"].int!)
+                        var imdbId: String?
+                        if let id = item["movie"]["ids"]["imdb"].string {
+                            imdbId = id
+                        } else if let id = item["episode"]["ids"]["tvdb"].int {
+                            imdbId = String(id)
                         }
-                        progressDict[imdbId] = item["progress"].float!/100.0
+                        if let imdbId = imdbId, let progress = item["progress"].float {
+                            progressDict[imdbId] = progress/100.0
+                        }
                     }
                     completion(progressDict: progressDict)
                     return
@@ -297,17 +275,16 @@ class TraktTVAPI {
             let responseDict = JSON(value)
             var actors = [PCTActor]()
             for (_, actor) in responseDict["cast"] {
-                let character = actor["character"].string!
-                let name = actor["person"]["name"].string!
-                let imdbId = actor["person"]["ids"]["imdb"].string!
-                let slug = actor["person"]["ids"]["slug"].string!
-                let image: String
-                if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
-                    image = actor["person"]["images"]["headshot"]["medium"].string ?? ""
-                } else if UIDevice.currentDevice().userInterfaceIdiom == .Phone {
-                    image = actor["person"]["images"]["headshot"]["thumb"].string ?? ""
+                guard let character = actor["character"].string,
+                    let name = actor["person"]["name"].string,
+                    let imdbId = actor["person"]["ids"]["imdb"].string,
+                    let slug = actor["person"]["ids"]["slug"].string
+                    else { continue }
+                let image: String?
+                if UIDevice.currentDevice().userInterfaceIdiom == .Pad || UIDevice.currentDevice().userInterfaceIdiom == .Phone {
+                    image = actor["person"]["images"]["headshot"]["thumb"].string
                 } else {
-                    image = actor["person"]["images"]["headshot"]["full"].string ?? ""
+                    image = actor["person"]["images"]["headshot"]["full"].string
                 }
                 actors.append(PCTActor(imdbId: imdbId, slug: slug, imageAsString: image, name: name, character: character))
             }
@@ -320,28 +297,38 @@ class TraktTVAPI {
      - Parameter forMediaOfType:    The type of the item (movie or show **not anime**). Anime is supported but is referenced as a show not as its own type.
      - Parameter id:                The id of the movie, show or anime.
      
-     - Returns: Array of `PCTItems`.
+     - Returns: Array of imageUrls, titles and ids.
      */
-    func getRelated(forMediaOfType type: TraktTVAPI.type, id: String, completion: (items: [PCTItem]) -> Void) {
-        Alamofire.request(.GET, "https://api.trakt.tv/\(type.rawValue)/\(id)/related?extended=images", headers: ["trakt-api-key": self.clientId, "trakt-api-version": "2"]).validate().responseJSON { response in
+    func getRelated(forMediaOfType type: TraktTVAPI.type, id: String, completion: [NSObject] -> Void) {
+        Alamofire.request(.GET, "https://api.trakt.tv/\(type.rawValue)/\(id)/related?extended=full,images", headers: ["trakt-api-key": self.clientId, "trakt-api-version": "2"]).validate().responseJSON { response in
             guard let value = response.result.value else { return }
             let responseDict = JSON(value)
-            var items = [PCTItem]()
+            var items = [NSObject]()
             for (_, item) in responseDict {
-                let title = item["title"].string!
-                let imdbId = item["ids"]["imdb"].string!
-                let image: String
+                guard let title = item["title"].string,
+                    let imdbId = item["ids"]["imdb"].string,
+                    let slug = item["ids"]["slug"].string,
+                    let year = item["year"].int,
+                    let summary = item["overview"].string,
+                    let runtime = item["runtime"].int,
+                    let genres = item["genres"].arrayObject as? [String],
+                    let rating = item["rating"].float
+                    else { continue }
+                let image: String?
+                let backgroundImage: String?
                 if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
-                    image = item["images"]["poster"]["medium"].string ?? ""
+                    image = item["images"]["poster"]["medium"].string
+                    backgroundImage = item["images"]["fanart"]["full"].string
                 } else if UIDevice.currentDevice().userInterfaceIdiom == .Phone {
-                    image = item["images"]["poster"]["thumb"].string ?? ""
+                    image = item["images"]["poster"]["thumb"].string
+                    backgroundImage = item["images"]["fanart"]["medium"].string
                 } else {
-                    image = item["images"]["poster"]["full"].string ?? ""
+                    image = item["images"]["poster"]["full"].string
+                    backgroundImage = item["images"]["fanart"]["full"].string
                 }
-                items.append(PCTItem(title: title, coverImageAsString: image, id: imdbId, torrents: [], currentTorrent: nil, subtitles: nil, currentSubtitle: nil, summary: ""))
+                items.append(type == .Movies ? PCTMovie(title: title, year: String(year), coverImageAsString: image, backgroundImageAsString: backgroundImage, imdbId: imdbId, rating: rating/2.0, genres: genres, summary: summary, runtime: String(runtime), trailerURLString: item["trailer"].string?.sliceFrom("=", to: "")) : PCTShow(id: imdbId, title: title, year: String(year), coverImageAsString: image, backgroundImageAsString: backgroundImage, rating: rating/2.0, slug: slug, genres: genres, status: item["status"].string?.capitalizedString, synopsis: summary))
             }
-            completion(items: items)
+            completion(items)
         }
-        
     }
 }

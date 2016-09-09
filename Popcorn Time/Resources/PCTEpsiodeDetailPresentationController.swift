@@ -23,7 +23,7 @@ class PCTEpisodeDetailPresentationController: UIPresentationController {
     override func preferredContentSizeDidChangeForChildContentContainer(container: UIContentContainer) {
         super.preferredContentSizeDidChangeForChildContentContainer(container)
         containerContentSize = container.preferredContentSize
-        containerViewWillLayoutSubviews()
+        containerViewDidLayoutSubviews()
     }
     
     override func presentationTransitionWillBegin() {
@@ -55,7 +55,11 @@ class PCTEpisodeDetailPresentationController: UIPresentationController {
         if let bounds = containerView?.bounds {
             dimmingView.frame = bounds
         }
-        presentedView()?.frame = frameOfPresentedViewInContainerView()
+        if presentedView()?.frame != frameOfPresentedViewInContainerView() {
+            UIView.animateWithDuration(animationLength) { [unowned self] in
+                self.presentedView()?.frame = self.frameOfPresentedViewInContainerView()
+            }
+        }
     }
 }
 

@@ -249,12 +249,12 @@ func randomString(length length: Int) -> String {
 }
 
 let downloadsDirectory: String = {
-    let cachesPath = NSFileManager.defaultManager().URLsForDirectory(.CachesDirectory, inDomains: .UserDomainMask)[0]
+    let cachesPath = NSURL(fileURLWithPath: NSTemporaryDirectory())
     let downloadsDirectoryPath = cachesPath.URLByAppendingPathComponent("Downloads")
     if !NSFileManager.defaultManager().fileExistsAtPath(downloadsDirectoryPath.relativePath!) {
         try! NSFileManager.defaultManager().createDirectoryAtPath(downloadsDirectoryPath.relativePath!, withIntermediateDirectories: true, attributes: nil)
     }
-    return downloadsDirectoryPath.relativePath!
+    return downloadsDirectoryPath.absoluteString
 }()
 
 extension String {
@@ -270,7 +270,7 @@ extension String {
         return queryStringDictionary
     }
     
-    func sliceFrom(start: String, to: String) -> String {
+    func sliceFrom(start: String, to: String) -> String? {
         return (rangeOfString(start)?.endIndex).flatMap { sInd in
             let eInd = rangeOfString(to, range: sInd..<endIndex)
             if eInd != nil {
@@ -279,7 +279,7 @@ extension String {
                 }
             }
             return substringWithRange(sInd..<endIndex)
-        } ?? start
+        }
     }
     
     func contains(aString: String) -> Bool {
@@ -435,16 +435,6 @@ extension UITableViewCell {
         }
         return superview
     }
-    
-    // Fixes multiple color bugs in iPads because of interface builder
-    public override var backgroundColor: UIColor? {
-        get {
-            return backgroundView?.backgroundColor
-        }
-        set {
-            backgroundView?.backgroundColor = backgroundColor
-        }
-    }
 }
 
 
@@ -511,12 +501,9 @@ extension UIImage {
 extension NSFileManager {
     func fileSizeAtPath(path: String) -> Int64 {
         do {
-            let fileAttributes = try attributesOfItemAtPath(path)
-            let fileSizeNumber = fileAttributes[NSFileSize]
-            let fileSize = fileSizeNumber?.longLongValue
-            return fileSize!
+            return try attributesOfItemAtPath(path)[NSFileSize]!.longLongValue
         } catch {
-            print("error reading filesize, NSFileManager extension fileSizeAtPath")
+            print("Error reading filesize: \(error)")
             return 0
         }
     }
@@ -607,14 +594,8 @@ func makeMagnetLink(torrHash: String) -> String {
 }
 
 func cleanMagnet(url: String) -> String {
-    var hash: String
     if !url.isEmpty {
-        if url.containsString("&dn=") {
-            hash = url.sliceFrom("magnet:?xt=urn:btih:", to: "&dn=")
-        } else {
-            hash = url.sliceFrom("magnet:?xt=urn:btih:", to: "")
-        }
-        return makeMagnetLink(hash)
+        return makeMagnetLink(url.sliceFrom("magnet:?xt=urn:btih:", to: url.containsString("&dn=") ? "&dn=" : "")!)
     }
     return url
 }
@@ -623,14 +604,14 @@ func cleanMagnet(url: String) -> String {
 
 extension UITableView {
     func sizeHeaderToFit() {
-        if let header = tableHeaderView {
-            header.setNeedsLayout()
-            header.layoutIfNeeded()
-            let height = header.systemLayoutSizeFittingSize(UILayoutFittingCompressedSize).height
-            var frame = header.frame
-            frame.size.height = height
-            header.frame = frame
-            tableHeaderView = header
+        if let headerView = tableHeaderView {
+            let height = headerView.systemLayoutSizeFittingSize(UILayoutFittingCompressedSize).height
+            var headerFrame = headerView.frame
+            if height != headerFrame.size.height {
+                headerFrame.size.height = height
+                headerView.frame = headerFrame
+                tableHeaderView = headerView
+            }
         }
     }
     
@@ -685,6 +666,8 @@ extension UIViewController {
         })
     }
 }
+
+// MARK: UIScrollView
 
 extension UIScrollView {
     var isAtTop: Bool {
@@ -762,6 +745,8 @@ extension UIColor {
         return rgb
     }
 }
+
+// MARK: - UIFont
 
 extension UIFont {
     
@@ -854,5 +839,124 @@ extension GCKMediaTextTrackStyle {
             let swizzledMethod = class_getClassMethod(self, swizzledSelector)
             method_exchangeImplementations(originalMethod, swizzledMethod)
         }
+    }
+}
+
+// MARK: - UITextView
+
+@IBDesignable public class PCTTextView: UITextView {
+    
+    @IBInspectable var moreButtonText: String = "...more" {
+        didSet {
+            moreButton.setTitle(moreButtonText, forState: .Normal)
+        }
+    }
+    
+    @IBInspectable var maxHeight: CGFloat = 57 {
+        didSet {
+            heightConstraint.constant = maxHeight
+        }
+    }
+    
+    @IBInspectable var moreButtonBackgroundColor: UIColor? {
+        didSet {
+            moreButton.backgroundColor = moreButtonBackgroundColor
+        }
+    }
+    
+    private var heightConstraint: NSLayoutConstraint!
+    
+    public let moreButton = UIButton(type: .System)
+    
+    required public init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        moreButtonBackgroundColor = backgroundColor
+        heightConstraint = NSLayoutConstraint(item: self, attribute: .Height, relatedBy: .LessThanOrEqual, toItem: nil, attribute: .NotAnAttribute, multiplier: 1.0, constant: maxHeight)
+        loadButton()
+    }
+    
+    override init(frame: CGRect, textContainer: NSTextContainer?) {
+        super.init(frame: frame, textContainer: textContainer)
+        moreButtonBackgroundColor = backgroundColor
+        heightConstraint = NSLayoutConstraint(item: self, attribute: .Height, relatedBy: .LessThanOrEqual, toItem: nil, attribute: .NotAnAttribute, multiplier: 1.0, constant: maxHeight)
+        loadButton()
+    }
+    
+    private func loadButton() {
+        textContainer.maximumNumberOfLines = 0
+        textContainer.lineBreakMode = .ByWordWrapping
+        moreButton.frame = CGRect(origin: CGPointZero, size: CGSize.max)
+        moreButton.setTitle(moreButtonText, forState: .Normal)
+        moreButton.sizeToFit()
+        insertSubview(moreButton, aboveSubview: self)
+        moreButton.addTarget(self, action: #selector(expandView), forControlEvents: .TouchUpInside)
+        moreButton.hidden = true
+        addConstraint(heightConstraint)
+    }
+    
+    public func expandView() {
+        heightConstraint.active = false
+        self.superview?.setNeedsLayout()
+        UIView.animateWithDuration(animationLength, animations: {
+            self.superview?.layoutIfNeeded()
+        }) { _ in
+            self.superview?.parentViewController?.viewDidLayoutSubviews()
+        }
+    }
+    
+    
+    var totalNumberOfLines: Int {
+        let maxSize = CGSizeMake(frame.size.width, CGFloat.max)
+        let attributedText = NSAttributedString(string: text, attributes: [NSFontAttributeName: font ?? UIFont.systemFontOfSize(17)])
+        return Int(round((attributedText.boundingRectWithSize(maxSize, options: .UsesLineFragmentOrigin, context: nil).size.height - textContainerInset.top - textContainerInset.bottom) / (font ?? UIFont.systemFontOfSize(17)).lineHeight))
+    }
+    
+    var visibleNumberOfLines: Int {
+       return Int(round(contentSize.height - textContainerInset.top - textContainerInset.bottom) / (font ?? UIFont.systemFontOfSize(17)).lineHeight)
+    }
+    
+    
+    override public func layoutSubviews() {
+        super.layoutSubviews()
+        moreButton.frame.origin.x = bounds.width - moreButton.frame.width - 5
+        moreButton.frame.origin.y = bounds.height - moreButton.frame.height - 2.5
+        moreButton.hidden = totalNumberOfLines <= visibleNumberOfLines
+    }
+}
+
+extension UITextView {
+    /// When you disable selectable option on UITextView instance, text font property is reset. This bug has been in Xcode since 2013 and has yet to be fixed by apple.
+    @nonobjc var text: String! {
+        get {
+            return performSelector(Selector("text")).takeUnretainedValue() as? String ?? ""
+        } set {
+            let originalSelectableValue = selectable
+            selectable = true
+            performSelector(Selector("setText:"), withObject: newValue)
+            selectable = originalSelectableValue
+        }
+    }
+    
+}
+
+// MARK: - CollectionType
+
+extension CollectionType {
+    /// Returns the element at the specified index if it is within bounds, otherwise nil.
+    subscript (safe index: Index) -> Generator.Element? {
+        return indices.contains(index) ? self[index] : nil
+    }
+}
+
+// MARK: - UIAlertController
+
+extension UIAlertController {
+    func show() {
+        let window = UIWindow(frame: UIScreen.mainScreen().bounds)
+        window.rootViewController = UIViewController()
+        window.windowLevel = UIWindowLevelAlert + 1
+        window.makeKeyAndVisible()
+        if let presentedViewController = window.rootViewController?.presentedViewController where presentedViewController is UIAlertController {return}
+        window.rootViewController!.presentViewController(self, animated: true, completion: nil)
     }
 }

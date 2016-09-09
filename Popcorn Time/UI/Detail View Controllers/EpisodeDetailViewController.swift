@@ -20,12 +20,21 @@ class EpisodeDetailViewController: UIViewController, PCTTablePickerViewDelegate,
     @IBOutlet var subtitlesButton: UIButton!
     @IBOutlet var scrollView: UIScrollView!
     @IBOutlet var torrentHealth: CircularView!
+    @IBOutlet var heightConstraint: NSLayoutConstraint!
     
-    var currentItem: PCTEpisode!
+    var currentItem: PCTEpisode?
     var subtitlesTablePickerView: PCTTablePickerView!
     
     weak var delegate: EpisodeDetailViewControllerDelegate?
     var interactor: PCTEpisodeDetailPercentDrivenInteractiveTransition?
+    
+    override var navigationController: UINavigationController? {
+        return splitViewController?.viewControllers.first?.navigationController
+    }
+    
+    override var tabBarController: UITabBarController? {
+        return splitViewController?.viewControllers.first?.tabBarController
+    }
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
@@ -36,6 +45,11 @@ class EpisodeDetailViewController: UIViewController, PCTTablePickerViewDelegate,
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
+        let adjustForTabbarInsets = tabBarController?.tabBar.frame.height ?? 0
+        scrollView.contentInset.bottom = adjustForTabbarInsets
+        scrollView.scrollIndicatorInsets.bottom = adjustForTabbarInsets
+        subtitlesTablePickerView?.tableView.contentInset.bottom = adjustForTabbarInsets
+        heightConstraint.constant = UIScreen.mainScreen().bounds.height * 0.35
         subtitlesTablePickerView?.setNeedsLayout()
         subtitlesTablePickerView?.layoutIfNeeded()
         preferredContentSize = scrollView.contentSize
@@ -43,60 +57,58 @@ class EpisodeDetailViewController: UIViewController, PCTTablePickerViewDelegate,
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        TVAPI.sharedInstance.getEpisodeInfo(currentItem) { (imageURLAsString, subtitles) in
-            self.currentItem.coverImageAsString = imageURLAsString
-            self.backgroundImageView!.af_setImageWithURL(NSURL(string: imageURLAsString)!, placeholderImage: UIImage(named: "Placeholder"), imageTransition: .CrossDissolve(animationLength))
-            if let subtitles = subtitles {
-                self.currentItem.subtitles = subtitles
-                if subtitles.count == 0 {
-                    self.subtitlesButton.setTitle("No Subtitles Available", forState: .Normal)
-                } else {
-                    self.subtitlesButton.setTitle("None ▾", forState: .Normal)
-                    self.subtitlesButton.userInteractionEnabled = true
-                    if let preferredSubtitle = NSUserDefaults.standardUserDefaults().objectForKey("PreferredSubtitleLanguage") as? String where preferredSubtitle != "None" {
-                        let languages = subtitles.map({$0.language})
-                        let index = languages.indexOf(languages.filter({$0 == preferredSubtitle}).first!)!
-                        let subtitle = self.currentItem.subtitles![index]
-                        self.currentItem.currentSubtitle = subtitle
-                        self.subtitlesButton.setTitle(subtitle.language + " ▾", forState: .Normal)
+        heightConstraint.constant = UIScreen.mainScreen().bounds.height * 0.35
+        if let currentItem = currentItem {
+            TVAPI.sharedInstance.getEpisodeInfo(currentItem) { (imageURLAsString, subtitles) in
+                currentItem.coverImageAsString = imageURLAsString
+                if let imageURLAsString = imageURLAsString,
+                    url = NSURL(string: imageURLAsString) {
+                    self.backgroundImageView!.af_setImageWithURL(url, placeholderImage: UIImage(named: "Placeholder"), imageTransition: .CrossDissolve(animationLength))
+                }
+                if let subtitles = subtitles {
+                    currentItem.subtitles = subtitles
+                    if subtitles.isEmpty {
+                        self.subtitlesButton.setTitle("No Subtitles Available", forState: .Normal)
+                    } else {
+                        self.subtitlesButton.setTitle("None ▾", forState: .Normal)
+                        self.subtitlesButton.userInteractionEnabled = true
+                        if let preferredSubtitle = NSUserDefaults.standardUserDefaults().objectForKey("PreferredSubtitleLanguage") as? String where preferredSubtitle != "None" {
+                            let languages = subtitles.map({$0.language})
+                            let index = languages.indexOf(languages.filter({$0 == preferredSubtitle}).first!)!
+                            let subtitle = currentItem.subtitles![index]
+                            currentItem.currentSubtitle = subtitle
+                            self.subtitlesButton.setTitle(subtitle.language + " ▾", forState: .Normal)
+                        }
                     }
+                    self.subtitlesTablePickerView = PCTTablePickerView(superView: self.view, sourceDict: PCTSubtitle.dictValue(subtitles), self)
+                    if let link = currentItem.currentSubtitle?.link {
+                        self.subtitlesTablePickerView.selectedItems = [link]
+                    }
+                    self.view.addSubview(self.subtitlesTablePickerView)
                 }
-                self.subtitlesTablePickerView = PCTTablePickerView(superView: self.view, sourceDict: PCTSubtitle.dictValue(subtitles), self)
-                if let link = self.currentItem.currentSubtitle?.link {
-                    self.subtitlesTablePickerView.selectedItems = [link]
-                }
-                self.view.addSubview(self.subtitlesTablePickerView)
-                
             }
-        }
-        titleLabel.text = currentItem.title
-        var season = String(currentItem.season)
-        season = season.characters.count == 1 ? "0" + season: season
-        var episode = String(currentItem.episode)
-        episode = episode.characters.count == 1 ? "0" + episode: episode
-        episodeAndSeasonLabel.text = "S\(season)E\(episode)"
-        summaryView.text = currentItem.summary
-        let dateFormatter = NSDateFormatter()
-        dateFormatter.dateStyle = .MediumStyle
-        dateFormatter.timeStyle = .NoStyle
-        dateFormatter.locale = NSLocale(localeIdentifier: "en_US")
-        infoLabel.text = "Aired: " + dateFormatter.stringFromDate(currentItem.airedDate)
-        currentItem.currentTorrent = currentItem.torrents.first!
-        for torrent in currentItem.torrents {
-            if torrent.quality == NSUserDefaults.standardUserDefaults().objectForKey("PreferredQuality") as? String {
-                currentItem.currentTorrent = torrent
-            }
-        }
-        if currentItem.torrents.count > 1 {
-            qualityBtn?.setTitle("\(currentItem.currentTorrent.quality!) ▾", forState: .Normal)
+            titleLabel.text = currentItem.title
+            var season = String(currentItem.season)
+            season = season.characters.count == 1 ? "0" + season : season
+            var episode = String(currentItem.episode)
+            episode = episode.characters.count == 1 ? "0" + episode : episode
+            episodeAndSeasonLabel.text = "S\(season)E\(episode)"
+            summaryView.text = currentItem.summary
+            infoLabel.text = "Aired: " + NSDateFormatter.localizedStringFromDate(currentItem.airedDate, dateStyle: .MediumStyle, timeStyle: .NoStyle)
+            currentItem.currentTorrent = currentItem.torrents.filter({$0.quality == NSUserDefaults.standardUserDefaults().stringForKey("PreferredQuality")}).first ?? currentItem.torrents.first!
+            qualityBtn?.userInteractionEnabled = currentItem.torrents.count > 1
+            qualityBtn?.setTitle("\(currentItem.currentTorrent.quality! + (currentItem.torrents.count > 1 ? " ▾" : ""))", forState: .Normal)
+            playNowBtn?.enabled = currentItem.currentTorrent.url != nil
+            torrentHealth.backgroundColor = currentItem.currentTorrent.health.color()
         } else {
-            qualityBtn?.setTitle("\(currentItem.currentTorrent.quality!)", forState: .Normal)
-            qualityBtn?.userInteractionEnabled = false
+            let background = NSBundle.mainBundle().loadNibNamed("TableViewBackground", owner: self, options: nil).first as! TableViewBackground
+            background.frame = view.bounds
+            background.autoresizingMask = [.FlexibleHeight, .FlexibleWidth]
+            background.backgroundColor = UIColor(red: 30.0/255.0, green: 30.0/255.0, blue: 30.0/255.0, alpha: 1.0)
+            view.insertSubview(background, aboveSubview: view)
+            background.setUpView(image: UIImage(named: "AirTV")!.imageWithRenderingMode(.AlwaysTemplate), description: "No episode selected")
+            background.imageView.tintColor = UIColor.darkGrayColor()
         }
-        if currentItem.currentTorrent.url.isEmpty {
-            playNowBtn?.enabled = false
-        }
-        torrentHealth.backgroundColor = currentItem.currentTorrent.health.color()
         scrollView.setNeedsLayout()
         scrollView.layoutIfNeeded()
         preferredContentSize = scrollView.contentSize
@@ -104,9 +116,10 @@ class EpisodeDetailViewController: UIViewController, PCTTablePickerViewDelegate,
     
     @IBAction func changeQualityTapped(sender: UIButton) {
         let quality = UIAlertController(title:"Select Quality", message:nil, preferredStyle:UIAlertControllerStyle.ActionSheet)
-        for torrent in currentItem.torrents {
+        for torrent in currentItem!.torrents {
             quality.addAction(UIAlertAction(title: "\(torrent.quality!) \(torrent.size ?? "")", style: .Default, handler: { action in
-                self.currentItem.currentTorrent = torrent
+                self.currentItem?.currentTorrent = torrent
+                self.playNowBtn?.enabled = self.currentItem?.currentTorrent.url != nil
                 self.qualityBtn?.setTitle("\(torrent.quality!) ▾", forState: .Normal)
                 self.torrentHealth.backgroundColor = torrent.health.color()
             }))
@@ -125,9 +138,10 @@ class EpisodeDetailViewController: UIViewController, PCTTablePickerViewDelegate,
         let onWifi: Bool = (UIApplication.sharedApplication().delegate! as! AppDelegate).reachability!.isReachableViaWiFi()
         let wifiOnly: Bool = !NSUserDefaults.standardUserDefaults().boolForKey("StreamOnCellular")
         if !wifiOnly || onWifi {
-            dismissViewControllerAnimated(false, completion: { [weak self] in
-                self?.delegate?.loadMovieTorrent(self!.currentItem, animated: true, onChromecast: GCKCastContext.sharedInstance().castState == .Connected)
-            })
+            splitViewController?.collapseSecondaryViewController(self, forSplitViewController: splitViewController!)
+//            dismissViewControllerAnimated(false, completion: { [unowned self] in
+//                self.delegate?.loadMovieTorrent(self.currentItem!, animated: true, onChromecast: GCKCastContext.sharedInstance().castState == .Connected)
+//            })
         } else {
             let errorAlert = UIAlertController(title: "Cellular Data is Turned Off for streaming", message: "To enable it please go to settings.", preferredStyle: UIAlertControllerStyle.Alert)
             errorAlert.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: { (action: UIAlertAction!) in }))
@@ -141,13 +155,13 @@ class EpisodeDetailViewController: UIViewController, PCTTablePickerViewDelegate,
     
     func tablePickerView(tablePickerView: PCTTablePickerView, didClose items: [String]) {
         if items.count == 0 {
-            currentItem.currentSubtitle = nil
+            currentItem?.currentSubtitle = nil
             subtitlesButton.setTitle("None ▾", forState: .Normal)
         } else {
-            let links = currentItem.subtitles!.map({$0.link})
+            let links = currentItem!.subtitles!.map({$0.link})
             let index = links.indexOf(links.filter({$0 == items.first!}).first!)!
-            let subtitle = currentItem.subtitles![index]
-            currentItem.currentSubtitle = subtitle
+            let subtitle = currentItem!.subtitles![index]
+            currentItem?.currentSubtitle = subtitle
             subtitlesButton.setTitle(subtitle.language + " ▾", forState: .Normal)
         }
     }
@@ -196,7 +210,7 @@ class EpisodeDetailViewController: UIViewController, PCTTablePickerViewDelegate,
 
 extension TVShowDetailViewController: EpisodeDetailViewControllerDelegate {
     func didDismissViewController(vc: EpisodeDetailViewController) {
-        if let indexPath = self.tableView!.indexPathForSelectedRow {
+        if let indexPath = self.tableView!.indexPathForSelectedRow where splitViewController!.collapsed {
             self.tableView!.deselectRowAtIndexPath(indexPath, animated: false)
         }
     }

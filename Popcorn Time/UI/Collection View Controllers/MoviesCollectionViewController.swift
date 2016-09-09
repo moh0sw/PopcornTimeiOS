@@ -47,12 +47,6 @@ class MoviesCollectionViewController: ItemOverviewCollectionViewController, UIPo
         loadNextPage(currentPage)
     }
     
-    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
-         if let collectionView = object as? UICollectionView where collectionView == self.collectionView! && keyPath! == "frame" {
-            collectionView.performBatchUpdates(nil, completion: nil)
-        }
-    }
-    
     func segmentedControlDidChangeSegment(segmentedControl: UISegmentedControl) {
         currentFilter = MovieAPI.filters.arrayValue[segmentedControl.selectedSegmentIndex]
     }
@@ -150,7 +144,10 @@ class MoviesCollectionViewController: ItemOverviewCollectionViewController, UIPo
     
     override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("cell", forIndexPath: indexPath) as! CoverCollectionViewCell
-        cell.coverImage.af_setImageWithURL(NSURL(string: movies[indexPath.row].coverImageAsString)!, placeholderImage: UIImage(named: "Placeholder"), imageTransition: .CrossDissolve(animationLength))
+        if let image = movies[indexPath.row].coverImageAsString,
+            let url = NSURL(string: image) {
+            cell.coverImage.af_setImageWithURL(url, placeholderImage: UIImage(named: "Placeholder"), imageTransition: .CrossDissolve(animationLength))
+        }
         cell.titleLabel.text = movies[indexPath.row].title
         cell.yearLabel.text = movies[indexPath.row].year
         cell.watched = WatchlistManager.movieManager.isWatched(movies[indexPath.row].id)
