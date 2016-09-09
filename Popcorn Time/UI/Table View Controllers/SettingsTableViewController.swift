@@ -64,7 +64,7 @@ class SettingsTableViewController: UITableViewController, PCTTablePickerViewDele
                 pickerView.componentDataSources = [dict]
                 pickerView.selectedItems = [selectedItem ?? cell.detailTextLabel!.text!]
                 pickerView.attributesForComponents = [NSForegroundColorAttributeName]
-            } else if indexPath.row == 1 {
+            } else if indexPath.row == 1 {cell.accessoryView?.backgroundColor = cell.contentView.backgroundColor
                 for size in 16...40 {
                     dict["\(size) pt"] = UIFont.systemFontOfSize(CGFloat(size))
                 }
@@ -159,6 +159,9 @@ class SettingsTableViewController: UITableViewController, PCTTablePickerViewDele
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = super.tableView(tableView, cellForRowAtIndexPath: indexPath)
+        cell.backgroundColor = UIColor(white: 0, alpha: 0.1)
+        cell.contentView.backgroundColor = UIColor(white: 0, alpha: 0.1)
+        
         switch indexPath.section {
         case 0 where indexPath.row == 2:
             cell.detailTextLabel?.text = "None"
@@ -185,8 +188,13 @@ class SettingsTableViewController: UITableViewController, PCTTablePickerViewDele
         default:
             break
         }
+        
+        cell.layoutMargins = UIEdgeInsetsMake(0, 0, 0, 0)
+        
         return cell
     }
+    
+    
     
     func updateSignedInStatus(sender: UIButton, isSignedIn: Bool) {
         sender.setTitle(isSignedIn ? "Sign Out": "Authorize", forState: .Normal)

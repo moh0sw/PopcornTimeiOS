@@ -394,8 +394,8 @@
 		FA361B151D8344160055E3CC /* Settings */ = {
 			isa = PBXGroup;
 			children = (
-				4DC541921CFB5467001A531C /* BugReportTableViewController.swift */,
 				4DC5418F1CFB5467001A531C /* SettingsTableViewController.swift */,
+				4DC541921CFB5467001A531C /* BugReportTableViewController.swift */,
 			);
 			name = Settings;
 			sourceTree = "<group>";
