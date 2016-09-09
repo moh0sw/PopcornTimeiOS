@@ -533,7 +533,7 @@ struct R: Rswift.Validatable {
     private init() {}
   }
   
-  /// This `R.segue` struct is generated, and contains static references to 7 view controllers.
+  /// This `R.segue` struct is generated, and contains static references to 2 view controllers.
   struct segue {
     /// This struct is generated for `AnimeCollectionViewController`, and contains static references to 1 segues.
     struct animeCollectionViewController {
@@ -545,36 +545,6 @@ struct R: Rswift.Validatable {
       /// For use inside `prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?)`.
       static func showDetail(segue segue: UIStoryboardSegue) -> TypedStoryboardSegueInfo<UIStoryboardSegue, AnimeCollectionViewController, TVShowContainerViewController>? {
         return TypedStoryboardSegueInfo(segueIdentifier: R.segue.animeCollectionViewController.showDetail, segue: segue)
-      }
-      
-      private init() {}
-    }
-    
-    /// This struct is generated for `MovieDetailViewController`, and contains static references to 1 segues.
-    struct movieDetailViewController {
-      /// Segue identifier `showCasts`.
-      static let showCasts: StoryboardSegueIdentifier<UIStoryboardSegue, MovieDetailViewController, UINavigationController> = StoryboardSegueIdentifier(identifier: "showCasts")
-      
-      /// Optionally returns a typed version of segue `showCasts`.
-      /// Returns nil if either the segue identifier, the source, destination, or segue types don't match.
-      /// For use inside `prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?)`.
-      static func showCasts(segue segue: UIStoryboardSegue) -> TypedStoryboardSegueInfo<UIStoryboardSegue, MovieDetailViewController, UINavigationController>? {
-        return TypedStoryboardSegueInfo(segueIdentifier: R.segue.movieDetailViewController.showCasts, segue: segue)
-      }
-      
-      private init() {}
-    }
-    
-    /// This struct is generated for `MoviesCollectionViewController`, and contains static references to 1 segues.
-    struct moviesCollectionViewController {
-      /// Segue identifier `showDetail`.
-      static let showDetail: StoryboardSegueIdentifier<UIStoryboardSegue, MoviesCollectionViewController, MovieDetailViewController> = StoryboardSegueIdentifier(identifier: "showDetail")
-      
-      /// Optionally returns a typed version of segue `showDetail`.
-      /// Returns nil if either the segue identifier, the source, destination, or segue types don't match.
-      /// For use inside `prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?)`.
-      static func showDetail(segue segue: UIStoryboardSegue) -> TypedStoryboardSegueInfo<UIStoryboardSegue, MoviesCollectionViewController, MovieDetailViewController>? {
-        return TypedStoryboardSegueInfo(segueIdentifier: R.segue.moviesCollectionViewController.showDetail, segue: segue)
       }
       
       private init() {}
@@ -604,69 +574,39 @@ struct R: Rswift.Validatable {
       private init() {}
     }
     
-    /// This struct is generated for `TVShowContainerViewController`, and contains static references to 1 segues.
-    struct tVShowContainerViewController {
-      /// Segue identifier `showDetail`.
-      static let showDetail: StoryboardSegueIdentifier<UIStoryboardSegue, TVShowContainerViewController, UISplitViewController> = StoryboardSegueIdentifier(identifier: "showDetail")
-      
-      /// Optionally returns a typed version of segue `showDetail`.
-      /// Returns nil if either the segue identifier, the source, destination, or segue types don't match.
-      /// For use inside `prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?)`.
-      static func showDetail(segue segue: UIStoryboardSegue) -> TypedStoryboardSegueInfo<UIStoryboardSegue, TVShowContainerViewController, UISplitViewController>? {
-        return TypedStoryboardSegueInfo(segueIdentifier: R.segue.tVShowContainerViewController.showDetail, segue: segue)
-      }
-      
-      private init() {}
-    }
-    
-    /// This struct is generated for `TVShowDetailViewController`, and contains static references to 2 segues.
-    struct tVShowDetailViewController {
-      /// Segue identifier `showCasts`.
-      static let showCasts: StoryboardSegueIdentifier<UIStoryboardSegue, TVShowDetailViewController, UINavigationController> = StoryboardSegueIdentifier(identifier: "showCasts")
-      /// Segue identifier `showDetail`.
-      static let showDetail: StoryboardSegueIdentifier<UIStoryboardSegue, TVShowDetailViewController, EpisodeDetailViewController> = StoryboardSegueIdentifier(identifier: "showDetail")
-      
-      /// Optionally returns a typed version of segue `showCasts`.
-      /// Returns nil if either the segue identifier, the source, destination, or segue types don't match.
-      /// For use inside `prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?)`.
-      static func showCasts(segue segue: UIStoryboardSegue) -> TypedStoryboardSegueInfo<UIStoryboardSegue, TVShowDetailViewController, UINavigationController>? {
-        return TypedStoryboardSegueInfo(segueIdentifier: R.segue.tVShowDetailViewController.showCasts, segue: segue)
-      }
-      
-      /// Optionally returns a typed version of segue `showDetail`.
-      /// Returns nil if either the segue identifier, the source, destination, or segue types don't match.
-      /// For use inside `prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?)`.
-      static func showDetail(segue segue: UIStoryboardSegue) -> TypedStoryboardSegueInfo<UIStoryboardSegue, TVShowDetailViewController, EpisodeDetailViewController>? {
-        return TypedStoryboardSegueInfo(segueIdentifier: R.segue.tVShowDetailViewController.showDetail, segue: segue)
-      }
-      
-      private init() {}
-    }
-    
-    /// This struct is generated for `TVShowsCollectionViewController`, and contains static references to 1 segues.
-    struct tVShowsCollectionViewController {
-      /// Segue identifier `showDetail`.
-      static let showDetail: StoryboardSegueIdentifier<UIStoryboardSegue, TVShowsCollectionViewController, TVShowContainerViewController> = StoryboardSegueIdentifier(identifier: "showDetail")
-      
-      /// Optionally returns a typed version of segue `showDetail`.
-      /// Returns nil if either the segue identifier, the source, destination, or segue types don't match.
-      /// For use inside `prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?)`.
-      static func showDetail(segue segue: UIStoryboardSegue) -> TypedStoryboardSegueInfo<UIStoryboardSegue, TVShowsCollectionViewController, TVShowContainerViewController>? {
-        return TypedStoryboardSegueInfo(segueIdentifier: R.segue.tVShowsCollectionViewController.showDetail, segue: segue)
-      }
-      
-      private init() {}
-    }
-    
     private init() {}
   }
   
-  /// This `R.storyboard` struct is generated, and contains static references to 2 storyboards.
+  /// This `R.storyboard` struct is generated, and contains static references to 9 storyboards.
   struct storyboard {
+    /// Storyboard `Animes`.
+    static let animes = _R.storyboard.animes()
+    /// Storyboard `Commons`.
+    static let commons = _R.storyboard.commons()
     /// Storyboard `Launch Screen`.
     static let launchScreen = _R.storyboard.launchScreen()
     /// Storyboard `Main`.
     static let main = _R.storyboard.main()
+    /// Storyboard `Movies`.
+    static let movies = _R.storyboard.movies()
+    /// Storyboard `Player`.
+    static let player = _R.storyboard.player()
+    /// Storyboard `Settings`.
+    static let settings = _R.storyboard.settings()
+    /// Storyboard `TVShows`.
+    static let tVShows = _R.storyboard.tVShows()
+    /// Storyboard `Terms`.
+    static let terms = _R.storyboard.terms()
+    
+    /// `UIStoryboard(name: "Animes", bundle: ...)`
+    static func animes(_: Void) -> UIStoryboard {
+      return UIStoryboard(resource: R.storyboard.animes)
+    }
+    
+    /// `UIStoryboard(name: "Commons", bundle: ...)`
+    static func commons(_: Void) -> UIStoryboard {
+      return UIStoryboard(resource: R.storyboard.commons)
+    }
     
     /// `UIStoryboard(name: "Launch Screen", bundle: ...)`
     static func launchScreen(_: Void) -> UIStoryboard {
@@ -676,6 +616,31 @@ struct R: Rswift.Validatable {
     /// `UIStoryboard(name: "Main", bundle: ...)`
     static func main(_: Void) -> UIStoryboard {
       return UIStoryboard(resource: R.storyboard.main)
+    }
+    
+    /// `UIStoryboard(name: "Movies", bundle: ...)`
+    static func movies(_: Void) -> UIStoryboard {
+      return UIStoryboard(resource: R.storyboard.movies)
+    }
+    
+    /// `UIStoryboard(name: "Player", bundle: ...)`
+    static func player(_: Void) -> UIStoryboard {
+      return UIStoryboard(resource: R.storyboard.player)
+    }
+    
+    /// `UIStoryboard(name: "Settings", bundle: ...)`
+    static func settings(_: Void) -> UIStoryboard {
+      return UIStoryboard(resource: R.storyboard.settings)
+    }
+    
+    /// `UIStoryboard(name: "TVShows", bundle: ...)`
+    static func tVShows(_: Void) -> UIStoryboard {
+      return UIStoryboard(resource: R.storyboard.tVShows)
+    }
+    
+    /// `UIStoryboard(name: "Terms", bundle: ...)`
+    static func terms(_: Void) -> UIStoryboard {
+      return UIStoryboard(resource: R.storyboard.terms)
     }
     
     private init() {}
@@ -736,50 +701,36 @@ struct _R: Rswift.Validatable {
   
   struct storyboard: Rswift.Validatable {
     static func validate() throws {
-      try main.validate()
+      try movies.validate()
+      try animes.validate()
+      try commons.validate()
+      try player.validate()
+      try terms.validate()
+      try tVShows.validate()
+      try settings.validate()
     }
     
-    struct launchScreen: StoryboardResourceWithInitialControllerType {
-      typealias InitialController = UIViewController
+    struct animes: StoryboardResourceWithInitialControllerType, Rswift.Validatable {
+      typealias InitialController = UINavigationController
       
       let bundle = _R.hostingBundle
-      let name = "Launch Screen"
+      let name = "Animes"
+      
+      static func validate() throws {
+        if UIImage(named: "Anime") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Anime' is used in storyboard 'Animes', but couldn't be loaded.") }
+        if UIImage(named: "Filter") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Filter' is used in storyboard 'Animes', but couldn't be loaded.") }
+        if UIImage(named: "Placeholder") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Placeholder' is used in storyboard 'Animes', but couldn't be loaded.") }
+      }
       
       private init() {}
     }
     
-    struct main: StoryboardResourceWithInitialControllerType, Rswift.Validatable {
-      typealias InitialController = UITabBarController
-      
-      let bugReportTableViewController = StoryboardViewControllerResource<BugReportTableViewController>(identifier: "BugReportTableViewController")
+    struct commons: StoryboardResourceType, Rswift.Validatable {
       let bundle = _R.hostingBundle
-      let castPlayerViewController = StoryboardViewControllerResource<CastPlayerViewController>(identifier: "CastPlayerViewController")
-      let episodeDetailViewController = StoryboardViewControllerResource<EpisodeDetailViewController>(identifier: "EpisodeDetailViewController")
       let genresNavigationController = StoryboardViewControllerResource<UINavigationController>(identifier: "GenresNavigationController")
       let genresTableViewController = StoryboardViewControllerResource<GenresTableViewController>(identifier: "GenresTableViewController")
       let loadingViewController = StoryboardViewControllerResource<LoadingViewController>(identifier: "LoadingViewController")
-      let movieDetailViewController = StoryboardViewControllerResource<MovieDetailViewController>(identifier: "MovieDetailViewController")
-      let moviesCollectionViewController = StoryboardViewControllerResource<MoviesCollectionViewController>(identifier: "MoviesCollectionViewController")
-      let name = "Main"
-      let pCTPlayerViewController = StoryboardViewControllerResource<PCTPlayerViewController>(identifier: "PCTPlayerViewController")
-      let settingsTableViewController = StoryboardViewControllerResource<SettingsTableViewController>(identifier: "SettingsTableViewController")
-      let streamToDevicesTableViewController = StoryboardViewControllerResource<StreamToDevicesTableViewController>(identifier: "StreamToDevicesTableViewController")
-      let tVShowDetailViewController = StoryboardViewControllerResource<TVShowDetailViewController>(identifier: "TVShowDetailViewController")
-      let tVShowsCollectionViewController = StoryboardViewControllerResource<TVShowsCollectionViewController>(identifier: "TVShowsCollectionViewController")
-      let termsOfServiceNavigationController = StoryboardViewControllerResource<UINavigationController>(identifier: "TermsOfServiceNavigationController")
-      let termsOfServiceViewController = StoryboardViewControllerResource<TermsOfServiceViewController>(identifier: "TermsOfServiceViewController")
-      
-      func bugReportTableViewController(_: Void) -> BugReportTableViewController? {
-        return UIStoryboard(resource: self).instantiateViewController(bugReportTableViewController)
-      }
-      
-      func castPlayerViewController(_: Void) -> CastPlayerViewController? {
-        return UIStoryboard(resource: self).instantiateViewController(castPlayerViewController)
-      }
-      
-      func episodeDetailViewController(_: Void) -> EpisodeDetailViewController? {
-        return UIStoryboard(resource: self).instantiateViewController(episodeDetailViewController)
-      }
+      let name = "Commons"
       
       func genresNavigationController(_: Void) -> UINavigationController? {
         return UIStoryboard(resource: self).instantiateViewController(genresNavigationController)
@@ -793,6 +744,42 @@ struct _R: Rswift.Validatable {
         return UIStoryboard(resource: self).instantiateViewController(loadingViewController)
       }
       
+      static func validate() throws {
+        if UIImage(named: "Placeholder") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Placeholder' is used in storyboard 'Commons', but couldn't be loaded.") }
+        if _R.storyboard.commons().loadingViewController() == nil { throw Rswift.ValidationError(description:"[R.swift] ViewController with identifier 'loadingViewController' could not be loaded from storyboard 'Commons' as 'LoadingViewController'.") }
+        if _R.storyboard.commons().genresTableViewController() == nil { throw Rswift.ValidationError(description:"[R.swift] ViewController with identifier 'genresTableViewController' could not be loaded from storyboard 'Commons' as 'GenresTableViewController'.") }
+        if _R.storyboard.commons().genresNavigationController() == nil { throw Rswift.ValidationError(description:"[R.swift] ViewController with identifier 'genresNavigationController' could not be loaded from storyboard 'Commons' as 'UINavigationController'.") }
+      }
+      
+      private init() {}
+    }
+    
+    struct launchScreen: StoryboardResourceWithInitialControllerType {
+      typealias InitialController = UIViewController
+      
+      let bundle = _R.hostingBundle
+      let name = "Launch Screen"
+      
+      private init() {}
+    }
+    
+    struct main: StoryboardResourceWithInitialControllerType {
+      typealias InitialController = MainTabBarController
+      
+      let bundle = _R.hostingBundle
+      let name = "Main"
+      
+      private init() {}
+    }
+    
+    struct movies: StoryboardResourceWithInitialControllerType, Rswift.Validatable {
+      typealias InitialController = UINavigationController
+      
+      let bundle = _R.hostingBundle
+      let movieDetailViewController = StoryboardViewControllerResource<MovieDetailViewController>(identifier: "MovieDetailViewController")
+      let moviesCollectionViewController = StoryboardViewControllerResource<MoviesCollectionViewController>(identifier: "MoviesCollectionViewController")
+      let name = "Movies"
+      
       func movieDetailViewController(_: Void) -> MovieDetailViewController? {
         return UIStoryboard(resource: self).instantiateViewController(movieDetailViewController)
       }
@@ -801,16 +788,112 @@ struct _R: Rswift.Validatable {
         return UIStoryboard(resource: self).instantiateViewController(moviesCollectionViewController)
       }
       
+      static func validate() throws {
+        if UIImage(named: "Star") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Star' is used in storyboard 'Movies', but couldn't be loaded.") }
+        if UIImage(named: "Quality") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Quality' is used in storyboard 'Movies', but couldn't be loaded.") }
+        if UIImage(named: "StarOff") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'StarOff' is used in storyboard 'Movies', but couldn't be loaded.") }
+        if UIImage(named: "Placeholder") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Placeholder' is used in storyboard 'Movies', but couldn't be loaded.") }
+        if UIImage(named: "Filter") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Filter' is used in storyboard 'Movies', but couldn't be loaded.") }
+        if UIImage(named: "Subtitles") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Subtitles' is used in storyboard 'Movies', but couldn't be loaded.") }
+        if UIImage(named: "Movies") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Movies' is used in storyboard 'Movies', but couldn't be loaded.") }
+        if UIImage(named: "WatchedOff") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'WatchedOff' is used in storyboard 'Movies', but couldn't be loaded.") }
+        if _R.storyboard.movies().moviesCollectionViewController() == nil { throw Rswift.ValidationError(description:"[R.swift] ViewController with identifier 'moviesCollectionViewController' could not be loaded from storyboard 'Movies' as 'MoviesCollectionViewController'.") }
+        if _R.storyboard.movies().movieDetailViewController() == nil { throw Rswift.ValidationError(description:"[R.swift] ViewController with identifier 'movieDetailViewController' could not be loaded from storyboard 'Movies' as 'MovieDetailViewController'.") }
+      }
+      
+      private init() {}
+    }
+    
+    struct player: StoryboardResourceWithInitialControllerType, Rswift.Validatable {
+      typealias InitialController = PCTPlayerViewController
+      
+      let bundle = _R.hostingBundle
+      let castPlayerViewController = StoryboardViewControllerResource<CastPlayerViewController>(identifier: "CastPlayerViewController")
+      let name = "Player"
+      let pCTPlayerViewController = StoryboardViewControllerResource<PCTPlayerViewController>(identifier: "PCTPlayerViewController")
+      let streamToDevicesTableViewController = StoryboardViewControllerResource<StreamToDevicesTableViewController>(identifier: "StreamToDevicesTableViewController")
+      
+      func castPlayerViewController(_: Void) -> CastPlayerViewController? {
+        return UIStoryboard(resource: self).instantiateViewController(castPlayerViewController)
+      }
+      
       func pCTPlayerViewController(_: Void) -> PCTPlayerViewController? {
         return UIStoryboard(resource: self).instantiateViewController(pCTPlayerViewController)
+      }
+      
+      func streamToDevicesTableViewController(_: Void) -> StreamToDevicesTableViewController? {
+        return UIStoryboard(resource: self).instantiateViewController(streamToDevicesTableViewController)
+      }
+      
+      static func validate() throws {
+        if UIImage(named: "AirPlay") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'AirPlay' is used in storyboard 'Player', but couldn't be loaded.") }
+        if UIImage(named: "Volume Minimum") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Volume Minimum' is used in storyboard 'Player', but couldn't be loaded.") }
+        if UIImage(named: "SkipBack") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'SkipBack' is used in storyboard 'Player', but couldn't be loaded.") }
+        if UIImage(named: "Volume Maximum") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Volume Maximum' is used in storyboard 'Player', but couldn't be loaded.") }
+        if UIImage(named: "Play") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Play' is used in storyboard 'Player', but couldn't be loaded.") }
+        if UIImage(named: "Rewind") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Rewind' is used in storyboard 'Player', but couldn't be loaded.") }
+        if UIImage(named: "Scale To Fill") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Scale To Fill' is used in storyboard 'Player', but couldn't be loaded.") }
+        if UIImage(named: "Close") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Close' is used in storyboard 'Player', but couldn't be loaded.") }
+        if UIImage(named: "Pause") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Pause' is used in storyboard 'Player', but couldn't be loaded.") }
+        if UIImage(named: "Fast Forward") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Fast Forward' is used in storyboard 'Player', but couldn't be loaded.") }
+        if UIImage(named: "Media Selection") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Media Selection' is used in storyboard 'Player', but couldn't be loaded.") }
+        if UIImage(named: "SkipForward") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'SkipForward' is used in storyboard 'Player', but couldn't be loaded.") }
+        if UIImage(named: "Checkmark") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Checkmark' is used in storyboard 'Player', but couldn't be loaded.") }
+        if _R.storyboard.player().pCTPlayerViewController() == nil { throw Rswift.ValidationError(description:"[R.swift] ViewController with identifier 'pCTPlayerViewController' could not be loaded from storyboard 'Player' as 'PCTPlayerViewController'.") }
+        if _R.storyboard.player().streamToDevicesTableViewController() == nil { throw Rswift.ValidationError(description:"[R.swift] ViewController with identifier 'streamToDevicesTableViewController' could not be loaded from storyboard 'Player' as 'StreamToDevicesTableViewController'.") }
+        if _R.storyboard.player().castPlayerViewController() == nil { throw Rswift.ValidationError(description:"[R.swift] ViewController with identifier 'castPlayerViewController' could not be loaded from storyboard 'Player' as 'CastPlayerViewController'.") }
+      }
+      
+      private init() {}
+    }
+    
+    struct settings: StoryboardResourceWithInitialControllerType, Rswift.Validatable {
+      typealias InitialController = UINavigationController
+      
+      let bugReportTableViewController = StoryboardViewControllerResource<BugReportTableViewController>(identifier: "BugReportTableViewController")
+      let bundle = _R.hostingBundle
+      let name = "Settings"
+      let settingsTableViewController = StoryboardViewControllerResource<SettingsTableViewController>(identifier: "SettingsTableViewController")
+      
+      func bugReportTableViewController(_: Void) -> BugReportTableViewController? {
+        return UIStoryboard(resource: self).instantiateViewController(bugReportTableViewController)
       }
       
       func settingsTableViewController(_: Void) -> SettingsTableViewController? {
         return UIStoryboard(resource: self).instantiateViewController(settingsTableViewController)
       }
       
-      func streamToDevicesTableViewController(_: Void) -> StreamToDevicesTableViewController? {
-        return UIStoryboard(resource: self).instantiateViewController(streamToDevicesTableViewController)
+      static func validate() throws {
+        if UIImage(named: "Color") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Color' is used in storyboard 'Settings', but couldn't be loaded.") }
+        if UIImage(named: "Report Bug") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Report Bug' is used in storyboard 'Settings', but couldn't be loaded.") }
+        if UIImage(named: "onepassword-button") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'onepassword-button' is used in storyboard 'Settings', but couldn't be loaded.") }
+        if UIImage(named: "Subtitles") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Subtitles' is used in storyboard 'Settings', but couldn't be loaded.") }
+        if UIImage(named: "Open Source Licenses") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Open Source Licenses' is used in storyboard 'Settings', but couldn't be loaded.") }
+        if UIImage(named: "Stroke Color") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Stroke Color' is used in storyboard 'Settings', but couldn't be loaded.") }
+        if UIImage(named: "Size") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Size' is used in storyboard 'Settings', but couldn't be loaded.") }
+        if UIImage(named: "Stroke Width") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Stroke Width' is used in storyboard 'Settings', but couldn't be loaded.") }
+        if UIImage(named: "Font") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Font' is used in storyboard 'Settings', but couldn't be loaded.") }
+        if UIImage(named: "Version") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Version' is used in storyboard 'Settings', but couldn't be loaded.") }
+        if UIImage(named: "Settings") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Settings' is used in storyboard 'Settings', but couldn't be loaded.") }
+        if UIImage(named: "Check Updates") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Check Updates' is used in storyboard 'Settings', but couldn't be loaded.") }
+        if _R.storyboard.settings().settingsTableViewController() == nil { throw Rswift.ValidationError(description:"[R.swift] ViewController with identifier 'settingsTableViewController' could not be loaded from storyboard 'Settings' as 'SettingsTableViewController'.") }
+        if _R.storyboard.settings().bugReportTableViewController() == nil { throw Rswift.ValidationError(description:"[R.swift] ViewController with identifier 'bugReportTableViewController' could not be loaded from storyboard 'Settings' as 'BugReportTableViewController'.") }
+      }
+      
+      private init() {}
+    }
+    
+    struct tVShows: StoryboardResourceWithInitialControllerType, Rswift.Validatable {
+      typealias InitialController = UINavigationController
+      
+      let bundle = _R.hostingBundle
+      let episodeDetailViewController = StoryboardViewControllerResource<EpisodeDetailViewController>(identifier: "EpisodeDetailViewController")
+      let name = "TVShows"
+      let tVShowDetailViewController = StoryboardViewControllerResource<TVShowDetailViewController>(identifier: "TVShowDetailViewController")
+      let tVShowsCollectionViewController = StoryboardViewControllerResource<TVShowsCollectionViewController>(identifier: "TVShowsCollectionViewController")
+      
+      func episodeDetailViewController(_: Void) -> EpisodeDetailViewController? {
+        return UIStoryboard(resource: self).instantiateViewController(episodeDetailViewController)
       }
       
       func tVShowDetailViewController(_: Void) -> TVShowDetailViewController? {
@@ -821,6 +904,31 @@ struct _R: Rswift.Validatable {
         return UIStoryboard(resource: self).instantiateViewController(tVShowsCollectionViewController)
       }
       
+      static func validate() throws {
+        if UIImage(named: "Star") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Star' is used in storyboard 'TVShows', but couldn't be loaded.") }
+        if UIImage(named: "Quality") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Quality' is used in storyboard 'TVShows', but couldn't be loaded.") }
+        if UIImage(named: "StarOff") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'StarOff' is used in storyboard 'TVShows', but couldn't be loaded.") }
+        if UIImage(named: "Placeholder") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Placeholder' is used in storyboard 'TVShows', but couldn't be loaded.") }
+        if UIImage(named: "Filter") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Filter' is used in storyboard 'TVShows', but couldn't be loaded.") }
+        if UIImage(named: "Subtitles") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Subtitles' is used in storyboard 'TVShows', but couldn't be loaded.") }
+        if UIImage(named: "TV") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'TV' is used in storyboard 'TVShows', but couldn't be loaded.") }
+        if UIImage(named: "WatchedOff") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'WatchedOff' is used in storyboard 'TVShows', but couldn't be loaded.") }
+        if _R.storyboard.tVShows().tVShowDetailViewController() == nil { throw Rswift.ValidationError(description:"[R.swift] ViewController with identifier 'tVShowDetailViewController' could not be loaded from storyboard 'TVShows' as 'TVShowDetailViewController'.") }
+        if _R.storyboard.tVShows().tVShowsCollectionViewController() == nil { throw Rswift.ValidationError(description:"[R.swift] ViewController with identifier 'tVShowsCollectionViewController' could not be loaded from storyboard 'TVShows' as 'TVShowsCollectionViewController'.") }
+        if _R.storyboard.tVShows().episodeDetailViewController() == nil { throw Rswift.ValidationError(description:"[R.swift] ViewController with identifier 'episodeDetailViewController' could not be loaded from storyboard 'TVShows' as 'EpisodeDetailViewController'.") }
+      }
+      
+      private init() {}
+    }
+    
+    struct terms: StoryboardResourceWithInitialControllerType, Rswift.Validatable {
+      typealias InitialController = UINavigationController
+      
+      let bundle = _R.hostingBundle
+      let name = "Terms"
+      let termsOfServiceNavigationController = StoryboardViewControllerResource<UINavigationController>(identifier: "TermsOfServiceNavigationController")
+      let termsOfServiceViewController = StoryboardViewControllerResource<TermsOfServiceViewController>(identifier: "TermsOfServiceViewController")
+      
       func termsOfServiceNavigationController(_: Void) -> UINavigationController? {
         return UIStoryboard(resource: self).instantiateViewController(termsOfServiceNavigationController)
       }
@@ -830,55 +938,8 @@ struct _R: Rswift.Validatable {
       }
       
       static func validate() throws {
-        if UIImage(named: "Anime") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Anime' is used in storyboard 'Main', but couldn't be loaded.") }
-        if UIImage(named: "AirPlay") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'AirPlay' is used in storyboard 'Main', but couldn't be loaded.") }
-        if UIImage(named: "Quality") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Quality' is used in storyboard 'Main', but couldn't be loaded.") }
-        if UIImage(named: "Color") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Color' is used in storyboard 'Main', but couldn't be loaded.") }
-        if UIImage(named: "StarOff") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'StarOff' is used in storyboard 'Main', but couldn't be loaded.") }
-        if UIImage(named: "Volume Minimum") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Volume Minimum' is used in storyboard 'Main', but couldn't be loaded.") }
-        if UIImage(named: "Font") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Font' is used in storyboard 'Main', but couldn't be loaded.") }
-        if UIImage(named: "WatchedOff") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'WatchedOff' is used in storyboard 'Main', but couldn't be loaded.") }
-        if UIImage(named: "Scale To Fill") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Scale To Fill' is used in storyboard 'Main', but couldn't be loaded.") }
-        if UIImage(named: "Fast Forward") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Fast Forward' is used in storyboard 'Main', but couldn't be loaded.") }
-        if UIImage(named: "Media Selection") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Media Selection' is used in storyboard 'Main', but couldn't be loaded.") }
-        if UIImage(named: "Open Source Licenses") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Open Source Licenses' is used in storyboard 'Main', but couldn't be loaded.") }
-        if UIImage(named: "SkipForward") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'SkipForward' is used in storyboard 'Main', but couldn't be loaded.") }
-        if UIImage(named: "Size") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Size' is used in storyboard 'Main', but couldn't be loaded.") }
-        if UIImage(named: "Stroke Width") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Stroke Width' is used in storyboard 'Main', but couldn't be loaded.") }
-        if UIImage(named: "onepassword-button") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'onepassword-button' is used in storyboard 'Main', but couldn't be loaded.") }
-        if UIImage(named: "Checkmark") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Checkmark' is used in storyboard 'Main', but couldn't be loaded.") }
-        if UIImage(named: "Placeholder") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Placeholder' is used in storyboard 'Main', but couldn't be loaded.") }
-        if UIImage(named: "Filter") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Filter' is used in storyboard 'Main', but couldn't be loaded.") }
-        if UIImage(named: "SkipBack") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'SkipBack' is used in storyboard 'Main', but couldn't be loaded.") }
-        if UIImage(named: "Subtitles") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Subtitles' is used in storyboard 'Main', but couldn't be loaded.") }
-        if UIImage(named: "Stroke Color") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Stroke Color' is used in storyboard 'Main', but couldn't be loaded.") }
-        if UIImage(named: "Version") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Version' is used in storyboard 'Main', but couldn't be loaded.") }
-        if UIImage(named: "Volume Maximum") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Volume Maximum' is used in storyboard 'Main', but couldn't be loaded.") }
-        if UIImage(named: "Play") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Play' is used in storyboard 'Main', but couldn't be loaded.") }
-        if UIImage(named: "Rewind") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Rewind' is used in storyboard 'Main', but couldn't be loaded.") }
-        if UIImage(named: "Movies") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Movies' is used in storyboard 'Main', but couldn't be loaded.") }
-        if UIImage(named: "Close") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Close' is used in storyboard 'Main', but couldn't be loaded.") }
-        if UIImage(named: "Report Bug") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Report Bug' is used in storyboard 'Main', but couldn't be loaded.") }
-        if UIImage(named: "Star") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Star' is used in storyboard 'Main', but couldn't be loaded.") }
-        if UIImage(named: "Pause") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Pause' is used in storyboard 'Main', but couldn't be loaded.") }
-        if UIImage(named: "TV") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'TV' is used in storyboard 'Main', but couldn't be loaded.") }
-        if UIImage(named: "Settings") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Settings' is used in storyboard 'Main', but couldn't be loaded.") }
-        if UIImage(named: "Check Updates") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Check Updates' is used in storyboard 'Main', but couldn't be loaded.") }
-        if _R.storyboard.main().settingsTableViewController() == nil { throw Rswift.ValidationError(description:"[R.swift] ViewController with identifier 'settingsTableViewController' could not be loaded from storyboard 'Main' as 'SettingsTableViewController'.") }
-        if _R.storyboard.main().bugReportTableViewController() == nil { throw Rswift.ValidationError(description:"[R.swift] ViewController with identifier 'bugReportTableViewController' could not be loaded from storyboard 'Main' as 'BugReportTableViewController'.") }
-        if _R.storyboard.main().moviesCollectionViewController() == nil { throw Rswift.ValidationError(description:"[R.swift] ViewController with identifier 'moviesCollectionViewController' could not be loaded from storyboard 'Main' as 'MoviesCollectionViewController'.") }
-        if _R.storyboard.main().tVShowDetailViewController() == nil { throw Rswift.ValidationError(description:"[R.swift] ViewController with identifier 'tVShowDetailViewController' could not be loaded from storyboard 'Main' as 'TVShowDetailViewController'.") }
-        if _R.storyboard.main().tVShowsCollectionViewController() == nil { throw Rswift.ValidationError(description:"[R.swift] ViewController with identifier 'tVShowsCollectionViewController' could not be loaded from storyboard 'Main' as 'TVShowsCollectionViewController'.") }
-        if _R.storyboard.main().termsOfServiceViewController() == nil { throw Rswift.ValidationError(description:"[R.swift] ViewController with identifier 'termsOfServiceViewController' could not be loaded from storyboard 'Main' as 'TermsOfServiceViewController'.") }
-        if _R.storyboard.main().loadingViewController() == nil { throw Rswift.ValidationError(description:"[R.swift] ViewController with identifier 'loadingViewController' could not be loaded from storyboard 'Main' as 'LoadingViewController'.") }
-        if _R.storyboard.main().pCTPlayerViewController() == nil { throw Rswift.ValidationError(description:"[R.swift] ViewController with identifier 'pCTPlayerViewController' could not be loaded from storyboard 'Main' as 'PCTPlayerViewController'.") }
-        if _R.storyboard.main().castPlayerViewController() == nil { throw Rswift.ValidationError(description:"[R.swift] ViewController with identifier 'castPlayerViewController' could not be loaded from storyboard 'Main' as 'CastPlayerViewController'.") }
-        if _R.storyboard.main().streamToDevicesTableViewController() == nil { throw Rswift.ValidationError(description:"[R.swift] ViewController with identifier 'streamToDevicesTableViewController' could not be loaded from storyboard 'Main' as 'StreamToDevicesTableViewController'.") }
-        if _R.storyboard.main().episodeDetailViewController() == nil { throw Rswift.ValidationError(description:"[R.swift] ViewController with identifier 'episodeDetailViewController' could not be loaded from storyboard 'Main' as 'EpisodeDetailViewController'.") }
-        if _R.storyboard.main().movieDetailViewController() == nil { throw Rswift.ValidationError(description:"[R.swift] ViewController with identifier 'movieDetailViewController' could not be loaded from storyboard 'Main' as 'MovieDetailViewController'.") }
-        if _R.storyboard.main().genresTableViewController() == nil { throw Rswift.ValidationError(description:"[R.swift] ViewController with identifier 'genresTableViewController' could not be loaded from storyboard 'Main' as 'GenresTableViewController'.") }
-        if _R.storyboard.main().genresNavigationController() == nil { throw Rswift.ValidationError(description:"[R.swift] ViewController with identifier 'genresNavigationController' could not be loaded from storyboard 'Main' as 'UINavigationController'.") }
-        if _R.storyboard.main().termsOfServiceNavigationController() == nil { throw Rswift.ValidationError(description:"[R.swift] ViewController with identifier 'termsOfServiceNavigationController' could not be loaded from storyboard 'Main' as 'UINavigationController'.") }
+        if _R.storyboard.terms().termsOfServiceViewController() == nil { throw Rswift.ValidationError(description:"[R.swift] ViewController with identifier 'termsOfServiceViewController' could not be loaded from storyboard 'Terms' as 'TermsOfServiceViewController'.") }
+        if _R.storyboard.terms().termsOfServiceNavigationController() == nil { throw Rswift.ValidationError(description:"[R.swift] ViewController with identifier 'termsOfServiceNavigationController' could not be loaded from storyboard 'Terms' as 'UINavigationController'.") }
       }
       
       private init() {}

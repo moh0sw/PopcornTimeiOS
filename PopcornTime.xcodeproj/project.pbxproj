@@ -60,6 +60,14 @@
 		7E3CFB7B1B62B20B002F9E8C /* PCTTorrent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3CFB7A1B62B20B002F9E8C /* PCTTorrent.swift */; };
 		85F38AE05A2DF856A465302E /* Pods_Popcorn_Time.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DC067E4CCF06825BB4ADA281 /* Pods_Popcorn_Time.framework */; };
 		FA361B0A1D83430E0055E3CC /* R.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA361B091D83430E0055E3CC /* R.generated.swift */; };
+		FA5696DD1D8354CE0090B0F3 /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5696DC1D8354CE0090B0F3 /* MainTabBarController.swift */; };
+		FA5696DF1D8355720090B0F3 /* Movies.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA5696DE1D8355720090B0F3 /* Movies.storyboard */; };
+		FA5696E11D8355820090B0F3 /* TVShows.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA5696E01D8355820090B0F3 /* TVShows.storyboard */; };
+		FA5696E31D8355900090B0F3 /* Animes.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA5696E21D8355900090B0F3 /* Animes.storyboard */; };
+		FA5696E51D83559A0090B0F3 /* Settings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA5696E41D83559A0090B0F3 /* Settings.storyboard */; };
+		FA5696E71D8357500090B0F3 /* Commons.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA5696E61D8357500090B0F3 /* Commons.storyboard */; };
+		FA5696E91D83575A0090B0F3 /* Player.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA5696E81D83575A0090B0F3 /* Player.storyboard */; };
+		FA5696EB1D8357720090B0F3 /* Terms.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA5696EA1D8357720090B0F3 /* Terms.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -136,6 +144,14 @@
 		7EA9DF081B61A19A00BAC6AF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DC067E4CCF06825BB4ADA281 /* Pods_Popcorn_Time.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Popcorn_Time.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA361B091D83430E0055E3CC /* R.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = R.generated.swift; sourceTree = "<group>"; };
+		FA5696DC1D8354CE0090B0F3 /* MainTabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainTabBarController.swift; sourceTree = "<group>"; };
+		FA5696DE1D8355720090B0F3 /* Movies.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Movies.storyboard; sourceTree = "<group>"; };
+		FA5696E01D8355820090B0F3 /* TVShows.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = TVShows.storyboard; sourceTree = "<group>"; };
+		FA5696E21D8355900090B0F3 /* Animes.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Animes.storyboard; sourceTree = "<group>"; };
+		FA5696E41D83559A0090B0F3 /* Settings.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Settings.storyboard; sourceTree = "<group>"; };
+		FA5696E61D8357500090B0F3 /* Commons.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Commons.storyboard; sourceTree = "<group>"; };
+		FA5696E81D83575A0090B0F3 /* Player.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Player.storyboard; sourceTree = "<group>"; };
+		FA5696EA1D8357720090B0F3 /* Terms.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Terms.storyboard; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -252,6 +268,7 @@
 		FA361B0C1D8343380055E3CC /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				FA5696DC1D8354CE0090B0F3 /* MainTabBarController.swift */,
 				FA361B111D8343F90055E3CC /* Commons */,
 				FA361B121D8344030055E3CC /* Movies */,
 				FA361B131D83440A0055E3CC /* TVShows */,
@@ -303,8 +320,15 @@
 		FA361B101D8343730055E3CC /* Storyboards */ = {
 			isa = PBXGroup;
 			children = (
-				4D0668301D809634004869F6 /* Main.storyboard */,
 				4D849B571D3059FC0008AD51 /* Launch Screen.storyboard */,
+				4D0668301D809634004869F6 /* Main.storyboard */,
+				FA5696EA1D8357720090B0F3 /* Terms.storyboard */,
+				FA5696DE1D8355720090B0F3 /* Movies.storyboard */,
+				FA5696E01D8355820090B0F3 /* TVShows.storyboard */,
+				FA5696E21D8355900090B0F3 /* Animes.storyboard */,
+				FA5696E41D83559A0090B0F3 /* Settings.storyboard */,
+				FA5696E81D83575A0090B0F3 /* Player.storyboard */,
+				FA5696E61D8357500090B0F3 /* Commons.storyboard */,
 			);
 			name = Storyboards;
 			sourceTree = "<group>";
@@ -383,6 +407,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 7EA9DF251B61A19A00BAC6AF /* Build configuration list for PBXNativeTarget "Popcorn Time" */;
 			buildPhases = (
+				FA5CD3041D83426B00278E09 /* RSwift */,
 				0024328ABAB9F15E60CCA559 /* [CP] Check Pods Manifest.lock */,
 				7EA9DF001B61A19A00BAC6AF /* Sources */,
 				7EA9DF011B61A19A00BAC6AF /* Frameworks */,
@@ -390,7 +415,6 @@
 				7EFFD98A1BA4964C0071910B /* Embed Frameworks */,
 				0D7F983D2003320E48C78AD1 /* [CP] Embed Pods Frameworks */,
 				EDC5BA72AC85EF2BF793347C /* [CP] Copy Pods Resources */,
-				FA5CD3041D83426B00278E09 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -442,11 +466,18 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FA5696EB1D8357720090B0F3 /* Terms.storyboard in Resources */,
 				4D0668311D809634004869F6 /* Main.storyboard in Resources */,
 				4D849B581D3059FC0008AD51 /* Launch Screen.storyboard in Resources */,
+				FA5696E51D83559A0090B0F3 /* Settings.storyboard in Resources */,
 				7E2AD00F1B61D299001B24BE /* Images.xcassets in Resources */,
+				FA5696E11D8355820090B0F3 /* TVShows.storyboard in Resources */,
+				FA5696E91D83575A0090B0F3 /* Player.storyboard in Resources */,
+				FA5696DF1D8355720090B0F3 /* Movies.storyboard in Resources */,
 				4DCFA56C1CD2206F005246DC /* TableViewBackground.xib in Resources */,
 				4DA7BA5A1D5BE14400229B14 /* Entitlements.plist in Resources */,
+				FA5696E31D8355900090B0F3 /* Animes.storyboard in Resources */,
+				FA5696E71D8357500090B0F3 /* Commons.storyboard in Resources */,
 				4DA7BA511D5A686B00229B14 /* PCTPickerView.xib in Resources */,
 				4DC5419C1CFB5491001A531C /* PCTTablePickerView.xib in Resources */,
 			);
@@ -500,13 +531,14 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Popcorn Time/Pods-Popcorn Time-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		FA5CD3041D83426B00278E09 /* ShellScript */ = {
+		FA5CD3041D83426B00278E09 /* RSwift */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
+			name = RSwift;
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -526,6 +558,7 @@
 				4DC5417F1CFB5441001A531C /* CoverCollectionViewCell.swift in Sources */,
 				4DC541841CFB544D001A531C /* MovieDetailViewController.swift in Sources */,
 				4D5B6A5E1D537198004D98D4 /* CastPlayerViewController.swift in Sources */,
+				FA5696DD1D8354CE0090B0F3 /* MainTabBarController.swift in Sources */,
 				4DC541851CFB544D001A531C /* EpisodeDetailViewController.swift in Sources */,
 				4DC541861CFB544D001A531C /* TVShowDetailViewController.swift in Sources */,
 				4DC541781CFB540D001A531C /* FavouritesHeaderCollectionReusableView.swift in Sources */,

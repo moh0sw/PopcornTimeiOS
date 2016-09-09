@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="16A294a" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="V5Z-il-uze">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+        <capability name="Alignment constraints with different attributes" minToolsVersion="5.1"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+    </dependencies>
+    <scenes>
+        <!--Terms Of Service-->
+        <scene sceneID="C7Y-Zb-FWN">
+            <objects>
+                <viewController storyboardIdentifier="TermsOfServiceViewController" title="Terms Of Service" useStoryboardIdentifierAsRestorationIdentifier="YES" id="nH4-Vq-TX1" customClass="TermsOfServiceViewController" customModule="Popcorn_Time" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="MqY-ov-UsR"/>
+                        <viewControllerLayoutGuide type="bottom" id="Hnd-Wg-Nvp"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="XZo-PQ-4Hg">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="l0H-Hi-Qlo">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="w67-De-bde" userLabel="Content View">
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="1399"/>
+                                        <subviews>
+                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="SNN-tb-lIW">
+                                                <rect key="frame" x="10" y="0.0" width="355" height="1319.5"/>
+                                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                <string key="text">Your Acceptance
+
+By using the ‘Popcorn Time’ app you signify your agreement to (1) these terms and conditions (the 'Terms of Service').
+
+Privacy Policy
+
+You understand that by using ‘Popcorn Time’ you may encounter material that you may deem to be offensive, indecent, or objectionable, and that such content may or may not be identified as having explicit material. 'Popcorn Time' will have no liability to you for such material – you agree that your use of 'Popcorn Time' is at your sole risk.
+
+Disclaimers
+
+YOU EXPRESSLY AGREE THAT YOUR USE OF ‘POPCORN TIME’ IS AT YOUR SOLE RISK. 'POPCORN TIME’' AND ALL PRODUCTS ARE PROVIDED TO YOU 'AS IS' WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED. 'POPCORN TIME' MAKES ABSOLUTELY NO WARRANTIES WHATSOEVER, EXPRESS OR IMPLIED. TO THE FULLEST EXTENT POSSIBLE UNDER APPLICABLE LAWS, YIFY DISCLAIMS ALL WARRANTIES, EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, NON-INFRINGEMENT, OR OTHER VIOLATIONS OF RIGHTS.
+
+Limitation of Liability
+
+'POPCORN TIME' IS NOT RESPONSIBLE FOR ANY PROBLEMS OR TECHNICAL MALFUNCTION OF ANY WEBSITE, NETWORK, COMPUTER SYSTEMS, SERVERS, PROVIDERS, COMPUTER EQUIPMENT, OR SOFTWARE, OR FOR ANY FAILURE DUE TO TECHNICAL PROBLEMS OR TRAFFIC CONGESTION ON THE INTERNET OR 'POPCORN TIME’ OR COMBINATION THEREOF, INCLUDING ANY INJURY OR DAMAGE TO USERS OR TO ANY COMPUTER OR OTHER DEVICE ON OR THROUGH WHICH 'POPCORN TIME' IS PROVIDED. UNDER NO CIRCUMSTANCES WILL 'POPCORN TIME' BE LIABLE FOR ANY LOSS OR DAMAGE, INCLUDING PERSONAL INJURY OR DEATH, RESULTING FROM YOUR USE OF 'POPCORN TIME'.
+
+Source Material
+
+ALL MOVIES ARE NOT HOSTED IN ANY SERVER AND ARE STREAMED USING THE P2P BIT TORRENT PROTOCOL. ALL MOVIES ARE PULLED IN FROM THE OPEN PUBLIC APIS. BY WATCHING A MOVIE WITH THIS APPLICATION YOU MIGHT BE COMMITING COPYRIGHT VIOLATIONS DEPENDING ON YOUR COUNTRY'S LAWS. WE DO NOT TAKE ANY RESPONSABILITIES.
+
+Ability to Accept Terms of Service
+
+By using 'Popcorn Time' or accessing this site you affirm that you are either more than 18 years of age, or an emancipated minor, or possess legal parental or guardian consent, and are fully able and competent to enter into the terms, conditions, obligations, affirmations, representations, and warranties set forth in these Terms of Service, and to abide by and comply with these Terms of Service. In any case, you affirm that you are over the age of 13, as the Service is not intended for children under 13. If you are under 13 years of age, then please do not use the Service. There are lots of other great web sites for you. Talk to your parents about what sites are appropriate for you.</string>
+                                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                            </textView>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="f6r-AK-WX3" customClass="PCTBorderButton" customModule="Popcorn_Time" customModuleProvider="target">
+                                                <rect key="frame" x="197" y="1339" width="157.5" height="40"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="40" id="5FD-17-zcs"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="15"/>
+                                                <color key="tintColor" red="0.39746556020000001" green="0.44591424140000002" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                <state key="normal" title="ACCEPT"/>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
+                                                        <real key="value" value="1"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                                        <real key="value" value="4"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="color" keyPath="borderColor">
+                                                        <color key="value" red="0.39746556020000001" green="0.44591424140000002" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                </userDefinedRuntimeAttributes>
+                                                <connections>
+                                                    <action selector="accepted:" destination="nH4-Vq-TX1" eventType="touchUpInside" id="z4Z-L2-VeM"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NR6-RJ-Bu8" customClass="PCTBorderButton" customModule="Popcorn_Time" customModuleProvider="target">
+                                                <rect key="frame" x="20" y="1339" width="157.5" height="40"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="40" id="Gq3-aO-06r"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="15"/>
+                                                <color key="tintColor" red="0.39746556020000001" green="0.44591424140000002" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                <state key="normal" title="LEAVE"/>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                                        <real key="value" value="4"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="color" keyPath="borderColor">
+                                                        <color key="value" red="0.39746556020000001" green="0.44591424140000002" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
+                                                        <real key="value" value="1"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                </userDefinedRuntimeAttributes>
+                                                <connections>
+                                                    <action selector="canceled:" destination="nH4-Vq-TX1" eventType="touchUpInside" id="NEM-3n-Bhx"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        <constraints>
+                                            <constraint firstItem="f6r-AK-WX3" firstAttribute="leading" secondItem="w67-De-bde" secondAttribute="centerX" constant="10" id="18Y-vi-dcs"/>
+                                            <constraint firstItem="SNN-tb-lIW" firstAttribute="leading" secondItem="w67-De-bde" secondAttribute="leading" constant="10" id="FeX-Mg-HoN"/>
+                                            <constraint firstItem="NR6-RJ-Bu8" firstAttribute="top" secondItem="SNN-tb-lIW" secondAttribute="bottom" constant="20" id="KZj-6l-yFg"/>
+                                            <constraint firstAttribute="trailing" secondItem="SNN-tb-lIW" secondAttribute="trailing" constant="10" id="Kdi-W0-OD4"/>
+                                            <constraint firstItem="SNN-tb-lIW" firstAttribute="top" secondItem="w67-De-bde" secondAttribute="top" id="LEY-HF-PeY"/>
+                                            <constraint firstAttribute="bottom" secondItem="f6r-AK-WX3" secondAttribute="bottom" constant="20" id="Mcn-Tu-LsK"/>
+                                            <constraint firstItem="NR6-RJ-Bu8" firstAttribute="leading" secondItem="w67-De-bde" secondAttribute="leading" constant="20" id="NY0-iA-MLi"/>
+                                            <constraint firstItem="f6r-AK-WX3" firstAttribute="top" secondItem="SNN-tb-lIW" secondAttribute="bottom" constant="20" id="liD-Lg-FSQ"/>
+                                            <constraint firstAttribute="trailing" secondItem="f6r-AK-WX3" secondAttribute="trailing" constant="20" id="mHt-GY-hTe"/>
+                                            <constraint firstItem="NR6-RJ-Bu8" firstAttribute="trailing" secondItem="w67-De-bde" secondAttribute="centerX" constant="-10" id="o3E-Wa-HGK"/>
+                                            <constraint firstAttribute="bottom" secondItem="NR6-RJ-Bu8" secondAttribute="bottom" constant="20" id="s37-xS-XQI"/>
+                                        </constraints>
+                                    </view>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="w67-De-bde" firstAttribute="top" secondItem="l0H-Hi-Qlo" secondAttribute="top" id="GAH-TD-85z"/>
+                                    <constraint firstAttribute="trailing" secondItem="w67-De-bde" secondAttribute="trailing" id="VFK-Rt-Zdn"/>
+                                    <constraint firstItem="w67-De-bde" firstAttribute="width" secondItem="l0H-Hi-Qlo" secondAttribute="width" id="nbI-of-yc6"/>
+                                    <constraint firstItem="w67-De-bde" firstAttribute="leading" secondItem="l0H-Hi-Qlo" secondAttribute="leading" id="tGY-ak-Con"/>
+                                    <constraint firstItem="w67-De-bde" firstAttribute="height" secondItem="l0H-Hi-Qlo" secondAttribute="height" id="yxR-0G-JgT"/>
+                                    <constraint firstAttribute="bottom" secondItem="w67-De-bde" secondAttribute="bottom" id="ztN-jU-48x"/>
+                                </constraints>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="yxR-0G-JgT"/>
+                                    </mask>
+                                </variation>
+                            </scrollView>
+                        </subviews>
+                        <color key="backgroundColor" red="0.1176470588" green="0.1176470588" blue="0.1176470588" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="l0H-Hi-Qlo" secondAttribute="trailing" id="96Q-qs-Ouh"/>
+                            <constraint firstItem="l0H-Hi-Qlo" firstAttribute="top" secondItem="XZo-PQ-4Hg" secondAttribute="topMargin" id="VXW-4T-bCz"/>
+                            <constraint firstAttribute="bottomMargin" secondItem="l0H-Hi-Qlo" secondAttribute="bottom" id="agP-zf-jZ5"/>
+                            <constraint firstItem="l0H-Hi-Qlo" firstAttribute="leading" secondItem="XZo-PQ-4Hg" secondAttribute="leading" id="hRh-DW-jb1"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" title="Terms Of Service" id="wau-FG-gz5"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="jz3-Nd-gfT" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-248.5" y="-1015.5"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="xqA-dO-80M">
+            <objects>
+                <navigationController storyboardIdentifier="TermsOfServiceNavigationController" automaticallyAdjustsScrollViewInsets="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" id="V5Z-il-uze" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="black" prompted="NO"/>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" barStyle="black" id="lxe-bG-gDY">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="nH4-Vq-TX1" kind="relationship" relationship="rootViewController" id="hYg-pC-BBr"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ZR7-AU-cUT" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-804" y="-1015"/>
+        </scene>
+    </scenes>
+</document>

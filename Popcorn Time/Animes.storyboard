@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="16A294a" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="gov-kl-ZBm">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <capability name="Navigation items with more than one left or right bar item" minToolsVersion="7.0"/>
+    </dependencies>
+    <scenes>
+        <!--Anime Collection View Controller-->
+        <scene sceneID="Pbh-ND-lrs">
+            <objects>
+                <collectionViewController title="Anime Collection View Controller" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Ytt-ok-3yz" customClass="AnimeCollectionViewController" customModule="Popcorn_Time" customModuleProvider="target" sceneMemberID="viewController">
+                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="Kfp-bz-M82">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" red="0.1176470593" green="0.1176470593" blue="0.1176470593" alpha="1" colorSpace="calibratedRGB"/>
+                        <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="5" minimumInteritemSpacing="2.5" id="zkz-BJ-RF7">
+                            <size key="itemSize" width="195" height="280"/>
+                            <size key="headerReferenceSize" width="50" height="50"/>
+                            <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                            <inset key="sectionInset" minX="5" minY="5" maxX="5" maxY="0.0"/>
+                        </collectionViewFlowLayout>
+                        <cells>
+                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="cell" id="cmw-vG-Ypq" customClass="CoverCollectionViewCell" customModule="Popcorn_Time" customModuleProvider="target">
+                                <rect key="frame" x="90" y="119" width="195" height="280"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                    <rect key="frame" x="0.0" y="0.0" width="195" height="280"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Placeholder" translatesAutoresizingMaskIntoConstraints="NO" id="2gJ-2S-i4f">
+                                            <rect key="frame" x="0.0" y="0.0" width="195" height="280"/>
+                                        </imageView>
+                                        <view userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YaU-Vl-4x6" customClass="GradientView" customModule="Popcorn_Time" customModuleProvider="target">
+                                            <rect key="frame" x="0.0" y="224" width="195" height="56"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Year" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1mB-p0-Ymc">
+                                                    <rect key="frame" x="8" y="34" width="179" height="17"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                    <color key="textColor" red="0.602715373" green="0.602715373" blue="0.602715373" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Title" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pFg-qG-Agg">
+                                                    <rect key="frame" x="8" y="12" width="179" height="17"/>
+                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
+                                                    <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="calibratedRGB"/>
+                                            <constraints>
+                                                <constraint firstAttribute="trailing" secondItem="1mB-p0-Ymc" secondAttribute="trailing" constant="8" id="5zx-IE-uwx"/>
+                                                <constraint firstAttribute="trailing" secondItem="pFg-qG-Agg" secondAttribute="trailing" constant="8" id="BwA-ZN-wjT"/>
+                                                <constraint firstItem="1mB-p0-Ymc" firstAttribute="leading" secondItem="YaU-Vl-4x6" secondAttribute="leading" constant="8" id="Ddo-LB-Qoh"/>
+                                                <constraint firstAttribute="bottom" secondItem="1mB-p0-Ymc" secondAttribute="bottom" constant="5" id="IMg-T8-HDj"/>
+                                                <constraint firstItem="pFg-qG-Agg" firstAttribute="leading" secondItem="YaU-Vl-4x6" secondAttribute="leading" constant="8" id="T0v-ce-GX1"/>
+                                                <constraint firstItem="pFg-qG-Agg" firstAttribute="top" secondItem="YaU-Vl-4x6" secondAttribute="top" constant="12" id="XIK-4I-7Hy"/>
+                                                <constraint firstItem="1mB-p0-Ymc" firstAttribute="top" secondItem="pFg-qG-Agg" secondAttribute="bottom" constant="5" id="pJB-E2-Ob0"/>
+                                            </constraints>
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="color" keyPath="topColor">
+                                                    <color key="value" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="calibratedRGB"/>
+                                                </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="color" keyPath="bottomColor">
+                                                    <color key="value" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                </userDefinedRuntimeAttribute>
+                                            </userDefinedRuntimeAttributes>
+                                        </view>
+                                    </subviews>
+                                </view>
+                                <constraints>
+                                    <constraint firstAttribute="bottomMargin" secondItem="2gJ-2S-i4f" secondAttribute="bottom" constant="-8" id="FB7-7t-99L"/>
+                                    <constraint firstItem="2gJ-2S-i4f" firstAttribute="leading" secondItem="cmw-vG-Ypq" secondAttribute="leadingMargin" constant="-8" id="FFs-8J-OpM"/>
+                                    <constraint firstAttribute="trailingMargin" secondItem="2gJ-2S-i4f" secondAttribute="trailing" constant="-8" id="HOg-sS-8Ll"/>
+                                    <constraint firstItem="2gJ-2S-i4f" firstAttribute="top" secondItem="cmw-vG-Ypq" secondAttribute="topMargin" constant="-8" id="gAk-aJ-ksM"/>
+                                    <constraint firstItem="YaU-Vl-4x6" firstAttribute="leading" secondItem="cmw-vG-Ypq" secondAttribute="leadingMargin" constant="-8" id="le8-Fv-0Py"/>
+                                    <constraint firstAttribute="trailingMargin" secondItem="YaU-Vl-4x6" secondAttribute="trailing" constant="-8" id="qi6-NA-28r"/>
+                                    <constraint firstAttribute="bottomMargin" secondItem="YaU-Vl-4x6" secondAttribute="bottom" constant="-8" id="qij-UR-TUJ"/>
+                                </constraints>
+                                <connections>
+                                    <outlet property="coverImage" destination="2gJ-2S-i4f" id="lkZ-uB-Pac"/>
+                                    <outlet property="titleLabel" destination="pFg-qG-Agg" id="XgC-ak-zO6"/>
+                                    <outlet property="yearLabel" destination="1mB-p0-Ymc" id="ZYX-rg-8Ac"/>
+                                    <segue destination="A0c-4q-rWQ" kind="show" identifier="showDetail" id="Erc-2l-Rsi">
+                                        <nil key="action"/>
+                                    </segue>
+                                </connections>
+                            </collectionViewCell>
+                        </cells>
+                        <collectionReusableView key="sectionHeaderView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="filter" id="rCR-5i-ypS" customClass="FilterCollectionReusableView" customModule="Popcorn_Time" customModuleProvider="target">
+                            <rect key="frame" x="0.0" y="64" width="375" height="50"/>
+                            <autoresizingMask key="autoresizingMask"/>
+                            <subviews>
+                                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6Fv-b9-k6R">
+                                    <rect key="frame" x="8" y="0.0" width="359" height="50"/>
+                                    <subviews>
+                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0h5-dS-8Bc" userLabel="Content View">
+                                            <rect key="frame" x="0.0" y="0.0" width="121" height="50"/>
+                                            <subviews>
+                                                <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="pCa-jV-2zF">
+                                                    <rect key="frame" x="0.0" y="11" width="121" height="29"/>
+                                                    <segments>
+                                                        <segment title="First"/>
+                                                        <segment title="Second"/>
+                                                    </segments>
+                                                </segmentedControl>
+                                            </subviews>
+                                            <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="calibratedRGB"/>
+                                            <constraints>
+                                                <constraint firstItem="pCa-jV-2zF" firstAttribute="width" secondItem="0h5-dS-8Bc" secondAttribute="width" id="43E-e4-36L"/>
+                                                <constraint firstItem="pCa-jV-2zF" firstAttribute="centerX" secondItem="0h5-dS-8Bc" secondAttribute="centerX" id="xHp-8H-dws"/>
+                                                <constraint firstItem="pCa-jV-2zF" firstAttribute="centerY" secondItem="0h5-dS-8Bc" secondAttribute="centerY" id="ybE-yx-jW4"/>
+                                            </constraints>
+                                        </view>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="0h5-dS-8Bc" firstAttribute="top" secondItem="6Fv-b9-k6R" secondAttribute="top" id="5ek-eC-Mo8"/>
+                                        <constraint firstAttribute="trailing" secondItem="0h5-dS-8Bc" secondAttribute="trailing" id="8ka-mX-L9v"/>
+                                        <constraint firstItem="0h5-dS-8Bc" firstAttribute="height" secondItem="6Fv-b9-k6R" secondAttribute="height" id="F0t-AK-D7s"/>
+                                        <constraint firstAttribute="bottom" secondItem="0h5-dS-8Bc" secondAttribute="bottom" id="FT4-ZK-5KE"/>
+                                        <constraint firstItem="0h5-dS-8Bc" firstAttribute="leading" secondItem="6Fv-b9-k6R" secondAttribute="leading" id="iIl-kH-ciz"/>
+                                    </constraints>
+                                </scrollView>
+                            </subviews>
+                            <constraints>
+                                <constraint firstAttribute="trailingMargin" secondItem="6Fv-b9-k6R" secondAttribute="trailing" id="313-z0-9Xy"/>
+                                <constraint firstItem="6Fv-b9-k6R" firstAttribute="centerX" secondItem="rCR-5i-ypS" secondAttribute="centerX" id="JkG-7N-QEd"/>
+                                <constraint firstItem="6Fv-b9-k6R" firstAttribute="leading" secondItem="rCR-5i-ypS" secondAttribute="leadingMargin" id="cOO-y1-FWK"/>
+                                <constraint firstItem="6Fv-b9-k6R" firstAttribute="height" secondItem="rCR-5i-ypS" secondAttribute="height" id="jPR-SI-XHm"/>
+                                <constraint firstItem="6Fv-b9-k6R" firstAttribute="centerY" secondItem="rCR-5i-ypS" secondAttribute="centerY" id="s1e-A3-9Xj"/>
+                            </constraints>
+                            <connections>
+                                <outlet property="contentView" destination="0h5-dS-8Bc" id="K8C-wp-pc3"/>
+                                <outlet property="scrollView" destination="6Fv-b9-k6R" id="Q0j-NJ-PDc"/>
+                                <outlet property="segmentedControl" destination="pCa-jV-2zF" id="Znh-mw-65r"/>
+                            </connections>
+                        </collectionReusableView>
+                        <connections>
+                            <outlet property="dataSource" destination="Ytt-ok-3yz" id="Fxq-bq-ooJ"/>
+                            <outlet property="delegate" destination="Ytt-ok-3yz" id="O2f-fc-wWQ"/>
+                        </connections>
+                    </collectionView>
+                    <navigationItem key="navigationItem" title="Anime" id="R9R-4D-IDo">
+                        <barButtonItem key="leftBarButtonItem" title="Genres" id="hHm-rn-qR5">
+                            <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                            <connections>
+                                <action selector="genresButtonTapped:" destination="Ytt-ok-3yz" id="byI-km-PXt"/>
+                            </connections>
+                        </barButtonItem>
+                        <rightBarButtonItems>
+                            <barButtonItem systemItem="search" id="8AL-KP-mt8">
+                                <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <connections>
+                                    <action selector="searchBtnPressed:" destination="Ytt-ok-3yz" id="Mfk-Cf-lqf"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem image="Filter" id="HRP-2G-C2o">
+                                <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <connections>
+                                    <action selector="filter:" destination="Ytt-ok-3yz" id="shu-TW-sI4"/>
+                                </connections>
+                            </barButtonItem>
+                        </rightBarButtonItems>
+                    </navigationItem>
+                </collectionViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="vHv-zH-iY9" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1411.5" y="229.5"/>
+        </scene>
+        <!--Anime-->
+        <scene sceneID="NT2-oe-xax">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="gov-kl-ZBm" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Anime" image="Anime" id="oVY-UA-pHT"/>
+                    <toolbarItems/>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" barStyle="black" id="TsB-tL-OaF">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="Ytt-ok-3yz" kind="relationship" relationship="rootViewController" id="NfX-oS-UYg"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Rof-GH-vXc" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="882" y="230"/>
+        </scene>
+        <!--Show Container View Controller-->
+        <scene sceneID="lzO-QQ-X8T">
+            <objects>
+                <viewController id="A0c-4q-rWQ" customClass="TVShowContainerViewController" customModule="Popcorn_Time" customModuleProvider="target" sceneMemberID="viewController">
+                    <containerView key="view" opaque="NO" contentMode="scaleToFill" id="I2Q-ut-KE3">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                    </containerView>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="4SB-vR-2Ra" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1937.5" y="229.5"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="Anime" width="30" height="25"/>
+        <image name="Filter" width="19" height="20"/>
+        <image name="Placeholder" width="2048" height="3072"/>
+    </resources>
+</document>
