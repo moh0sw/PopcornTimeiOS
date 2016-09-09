@@ -134,13 +134,11 @@ class TVShowsCollectionViewController: ItemOverviewCollectionViewController, UIP
     }
     
     override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("cell", forIndexPath: indexPath) as! CoverCollectionViewCell
-        cell.titleLabel.text = shows[indexPath.row].title
-        cell.yearLabel.text = shows[indexPath.row].year
-        if let image = shows[indexPath.row].coverImageAsString,
-            let url = NSURL(string: image) {
-            cell.coverImage.af_setImageWithURL(url, placeholderImage: UIImage(named: "Placeholder"), imageTransition: .CrossDissolve(animationLength))
-        }
+        let cell = collectionView.dequeueReusableCellWithReuseIdentifier(R.reuseIdentifier.tVShowCell, forIndexPath: indexPath)! as TVShowCell
+        
+        let show = shows[indexPath.row]
+        cell.show = show
+        cell.watched = WatchlistManager.movieManager.isWatched(show.id)
         return cell
     }
     

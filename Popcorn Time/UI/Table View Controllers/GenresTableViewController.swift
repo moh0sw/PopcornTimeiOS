@@ -31,7 +31,7 @@ class GenresTableViewController: UITableViewController, NSDiscardableContent {
     }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath)
+        let cell = tableView.dequeueReusableCellWithIdentifier("GenreCell", forIndexPath: indexPath)
         cell.textLabel?.text = genres[indexPath.row]
         if selectedRow == indexPath.row {
             cell.accessoryType = .Checkmark

@@ -143,14 +143,12 @@ class MoviesCollectionViewController: ItemOverviewCollectionViewController, UIPo
     }
     
     override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("cell", forIndexPath: indexPath) as! CoverCollectionViewCell
-        if let image = movies[indexPath.row].coverImageAsString,
-            let url = NSURL(string: image) {
-            cell.coverImage.af_setImageWithURL(url, placeholderImage: UIImage(named: "Placeholder"), imageTransition: .CrossDissolve(animationLength))
-        }
-        cell.titleLabel.text = movies[indexPath.row].title
-        cell.yearLabel.text = movies[indexPath.row].year
-        cell.watched = WatchlistManager.movieManager.isWatched(movies[indexPath.row].id)
+        let cell = collectionView.dequeueReusableCellWithReuseIdentifier(R.reuseIdentifier.movieCell, forIndexPath: indexPath)! as MovieCell
+        
+        let movie = movies[indexPath.row]
+        cell.movie = movie
+        cell.watched = WatchlistManager.movieManager.isWatched(movie.id)
+        
         return cell
     }
     

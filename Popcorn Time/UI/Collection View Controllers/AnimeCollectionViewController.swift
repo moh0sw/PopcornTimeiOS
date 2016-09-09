@@ -5,11 +5,11 @@ import AlamofireImage
 
 class AnimeCollectionViewController: ItemOverviewCollectionViewController, UIPopoverPresentationControllerDelegate, GenresDelegate, ItemOverviewDelegate {
     
-    var anime = [PCTShow]()
+    var animes = [PCTShow]()
     
     var currentGenre = AnimeAPI.genres.All {
         didSet {
-            anime.removeAll()
+            animes.removeAll()
             collectionView?.reloadData()
             currentPage = 1
             loadNextPage(currentPage)
@@ -17,7 +17,7 @@ class AnimeCollectionViewController: ItemOverviewCollectionViewController, UIPop
     }
     var currentFilter = AnimeAPI.filters.Popularity {
         didSet {
-            anime.removeAll()
+            animes.removeAll()
             collectionView?.reloadData()
             currentPage = 1
             loadNextPage(currentPage)
@@ -59,9 +59,9 @@ class AnimeCollectionViewController: ItemOverviewCollectionViewController, UIPop
             AnimeAPI.sharedInstance.load(currentPage, filterBy: .Popularity, searchTerm: searchTerm) { items in
                 self.isLoading = false
                 if removeCurrentData {
-                    self.anime.removeAll()
+                    self.animes.removeAll()
                 }
-                self.anime += items
+                self.animes += items
                 if items.isEmpty // If the array passed in is empty, there are no more results so the content inset of the collection view is reset.
                 {
                     self.collectionView?.contentInset = UIEdgeInsetsMake(69, 0, 0, 0)
@@ -75,21 +75,21 @@ class AnimeCollectionViewController: ItemOverviewCollectionViewController, UIPop
     }
     
     func didDismissSearchController(searchController: UISearchController) {
-        self.anime.removeAll()
+        self.animes.removeAll()
         collectionView?.reloadData()
         self.currentPage = 1
         loadNextPage(self.currentPage)
     }
     
     func search(text: String) {
-        self.anime.removeAll()
+        self.animes.removeAll()
         collectionView?.reloadData()
         self.currentPage = 1
         self.loadNextPage(self.currentPage, searchTerm: text)
     }
     
     func shouldRefreshCollectionView() -> Bool {
-        return anime.isEmpty
+        return animes.isEmpty
     }
     
     // MARK: - Navigation
@@ -108,7 +108,7 @@ class AnimeCollectionViewController: ItemOverviewCollectionViewController, UIPop
         fixIOS9PopOverAnchor(segue)
         if segue.identifier == "showDetail" {
             let vc = segue.destinationViewController as! TVShowContainerViewController
-            vc.currentItem = anime[(collectionView?.indexPathForCell(sender as! CoverCollectionViewCell)?.row)!]
+            vc.currentItem = animes[(collectionView?.indexPathForCell(sender as! CoverCollectionViewCell)?.row)!]
             vc.currentType = .Animes
         }
     }
@@ -117,7 +117,7 @@ class AnimeCollectionViewController: ItemOverviewCollectionViewController, UIPop
     
     override func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
         collectionView.backgroundView = nil
-        if anime.count == 0 {
+        if animes.count == 0 {
             if error != nil {
                 let background = NSBundle.mainBundle().loadNibNamed("TableViewBackground", owner: self, options: nil).first as! TableViewBackground
                 background.setUpView(error: error!)
@@ -138,17 +138,15 @@ class AnimeCollectionViewController: ItemOverviewCollectionViewController, UIPop
     }
     
     override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return anime.count
+        return animes.count
     }
     
     override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("cell", forIndexPath: indexPath) as! CoverCollectionViewCell
-        cell.titleLabel.text = anime[indexPath.row].title
-        cell.yearLabel.text = anime[indexPath.row].year
-        if let image = anime[indexPath.row].coverImageAsString,
-            let url = NSURL(string: image) {
-            cell.coverImage.af_setImageWithURL(url, placeholderImage: UIImage(named: "Placeholder"), imageTransition: .CrossDissolve(animationLength))
-        }
+        let cell = collectionView.dequeueReusableCellWithReuseIdentifier(R.reuseIdentifier.animeCell, forIndexPath: indexPath)! as AnimeCell
+        
+        let anime = animes[indexPath.row]
+        cell.anime = anime
+        cell.watched = WatchlistManager.movieManager.isWatched(anime.id)
         return cell
     }
     

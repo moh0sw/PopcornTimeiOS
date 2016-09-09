@@ -159,7 +159,7 @@ class TVShowDetailViewController: DetailItemOverviewViewController, UITableViewD
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! TVShowDetailTableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier("EpisodeCell", forIndexPath: indexPath) as! TVShowDetailTableViewCell
         cell.titleLabel.text = currentSeasonArray[indexPath.row].title
         cell.seasonLabel.text = "E" + String(currentSeasonArray[indexPath.row].episode)
         cell.tvdbId = currentSeasonArray[indexPath.row].id

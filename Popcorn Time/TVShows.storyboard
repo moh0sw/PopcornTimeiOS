@@ -226,7 +226,7 @@
                                     </constraints>
                                 </view>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="cell" id="ccp-vC-Yl7" customClass="TVShowDetailTableViewCell" customModule="Popcorn_Time" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="EpisodeCell" id="ccp-vC-Yl7" customClass="TVShowDetailTableViewCell" customModule="Popcorn_Time" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="168" width="375" height="50"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ccp-vC-Yl7" id="sXc-1R-1Qd">
@@ -347,7 +347,7 @@
                             <inset key="sectionInset" minX="5" minY="5" maxX="5" maxY="0.0"/>
                         </collectionViewFlowLayout>
                         <cells>
-                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="cell" id="k8f-0H-WFA" customClass="CoverCollectionViewCell" customModule="Popcorn_Time" customModuleProvider="target">
+                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" restorationIdentifier="TVShowCell" reuseIdentifier="TVShowCell" id="k8f-0H-WFA" customClass="TVShowCell" customModule="Popcorn_Time" customModuleProvider="target">
                                 <rect key="frame" x="90" y="119" width="195" height="280"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">

@@ -517,10 +517,24 @@ struct R: Rswift.Validatable {
     private init() {}
   }
   
-  /// This `R.reuseIdentifier` struct is generated, and contains static references to 5 reuse identifiers.
+  /// This `R.reuseIdentifier` struct is generated, and contains static references to 12 reuse identifiers.
   struct reuseIdentifier {
+    /// Reuse identifier `AnimeCell`.
+    static let animeCell: ReuseIdentifier<AnimeCell> = ReuseIdentifier(identifier: "AnimeCell")
+    /// Reuse identifier `DeviceCell`.
+    static let deviceCell: ReuseIdentifier<AirPlayTableViewCell> = ReuseIdentifier(identifier: "DeviceCell")
+    /// Reuse identifier `EpisodeCell`.
+    static let episodeCell: ReuseIdentifier<TVShowDetailTableViewCell> = ReuseIdentifier(identifier: "EpisodeCell")
+    /// Reuse identifier `GenreCell`.
+    static let genreCell: ReuseIdentifier<UITableViewCell> = ReuseIdentifier(identifier: "GenreCell")
+    /// Reuse identifier `MovieCell`.
+    static let movieCell: ReuseIdentifier<MovieCell> = ReuseIdentifier(identifier: "MovieCell")
+    /// Reuse identifier `TVShowCell`.
+    static let tVShowCell: ReuseIdentifier<TVShowCell> = ReuseIdentifier(identifier: "TVShowCell")
     /// Reuse identifier `castCell`.
     static let castCell: ReuseIdentifier<UIView> = ReuseIdentifier(identifier: "castCell")
+    /// Reuse identifier `cell`.
+    static let cell: ReuseIdentifier<UITableViewCell> = ReuseIdentifier(identifier: "cell")
     /// Reuse identifier `filter`.
     static let filter: ReuseIdentifier<FilterCollectionReusableView> = ReuseIdentifier(identifier: "filter")
     /// Reuse identifier `footer`.

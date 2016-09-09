@@ -19,7 +19,7 @@ class SubtitlesTableViewController: UITableViewController {
     }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath)
+        let cell = tableView.dequeueReusableCellWithIdentifier("SubtitleCell", forIndexPath: indexPath)
         cell.textLabel?.text = dataSourceArray[indexPath.row].language
         if let currentSubtitle = selectedSubtitle where currentSubtitle.link == dataSourceArray[indexPath.row].link {
             cell.accessoryType = .Checkmark

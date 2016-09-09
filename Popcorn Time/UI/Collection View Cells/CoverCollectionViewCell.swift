@@ -3,8 +3,8 @@
 import UIKit
 
 class CoverCollectionViewCell: UICollectionViewCell {
-    @IBOutlet weak var coverImage: UIImageView!
     
+    @IBOutlet weak var coverImage: UIImageView!
     @IBOutlet weak var gradientView: UIView!
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var yearLabel: UILabel!
@@ -21,8 +21,5 @@ class CoverCollectionViewCell: UICollectionViewCell {
         }
     }
     
-    override func awakeFromNib() {
-        self.gradientView.hidden = true
-    }
     
 }

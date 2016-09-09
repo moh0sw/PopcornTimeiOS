@@ -87,7 +87,7 @@ class StreamToDevicesTableViewController: UITableViewController, GCKDeviceScanne
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! AirPlayTableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier("DeviceCell", forIndexPath: indexPath) as! AirPlayTableViewCell
         if indexPath.section == 0 {
             cell.picked = airPlayDevices[indexPath.row].isPicked!()
             if let mirroringRoute = airPlayDevices[indexPath.row].wirelessDisplayRoute?() where mirroringRoute.isPicked!() {
