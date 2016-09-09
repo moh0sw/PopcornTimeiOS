@@ -64,6 +64,7 @@
 		FA4D0C4F1D836C3D002C2F99 /* MovieCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4D0C4E1D836C3D002C2F99 /* MovieCell.swift */; };
 		FA4D0C511D836C51002C2F99 /* TVShowCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4D0C501D836C51002C2F99 /* TVShowCell.swift */; };
 		FA4D0C531D836C75002C2F99 /* AnimeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4D0C521D836C75002C2F99 /* AnimeCell.swift */; };
+		FA4D0C551D8379ED002C2F99 /* WobblyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4D0C541D8379ED002C2F99 /* WobblyCell.swift */; };
 		FA5696DD1D8354CE0090B0F3 /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5696DC1D8354CE0090B0F3 /* MainTabBarController.swift */; };
 		FA5696DF1D8355720090B0F3 /* Movies.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA5696DE1D8355720090B0F3 /* Movies.storyboard */; };
 		FA5696E11D8355820090B0F3 /* TVShows.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA5696E01D8355820090B0F3 /* TVShows.storyboard */; };
@@ -153,6 +154,7 @@
 		FA4D0C4E1D836C3D002C2F99 /* MovieCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MovieCell.swift; sourceTree = "<group>"; };
 		FA4D0C501D836C51002C2F99 /* TVShowCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TVShowCell.swift; sourceTree = "<group>"; };
 		FA4D0C521D836C75002C2F99 /* AnimeCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnimeCell.swift; sourceTree = "<group>"; };
+		FA4D0C541D8379ED002C2F99 /* WobblyCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WobblyCell.swift; sourceTree = "<group>"; };
 		FA5696DC1D8354CE0090B0F3 /* MainTabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainTabBarController.swift; sourceTree = "<group>"; };
 		FA5696DE1D8355720090B0F3 /* Movies.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Movies.storyboard; sourceTree = "<group>"; };
 		FA5696E01D8355820090B0F3 /* TVShows.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = TVShows.storyboard; sourceTree = "<group>"; };
@@ -355,6 +357,7 @@
 				4DA7BA501D5A686B00229B14 /* PCTPickerView.xib */,
 				4D3FE2861D4380B100707065 /* UpNextView.swift */,
 				4D0668321D81E3D0004869F6 /* HeaderScrollView.swift */,
+				FA4D0C541D8379ED002C2F99 /* WobblyCell.swift */,
 			);
 			name = Commons;
 			sourceTree = "<group>";
@@ -593,6 +596,7 @@
 				4DC5418D1CFB545A001A531C /* ItemOverviewCollectionViewController.swift in Sources */,
 				4DC5419F1CFB54A3001A531C /* UIKit+Extension.swift in Sources */,
 				4DB3B8EF1CC3B1760096FEA0 /* CastIconButton.swift in Sources */,
+				FA4D0C551D8379ED002C2F99 /* WobblyCell.swift in Sources */,
 				FA4D0C511D836C51002C2F99 /* TVShowCell.swift in Sources */,
 				4DC5418C1CFB545A001A531C /* MoviesCollectionViewController.swift in Sources */,
 				4DCFA56E1CD25D04005246DC /* TableViewBackground.swift in Sources */,
