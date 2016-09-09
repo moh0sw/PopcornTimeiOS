@@ -26,9 +26,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if !NSUserDefaults.standardUserDefaults().boolForKey("TOSAccepted") {
             self.window?.makeKeyAndVisible()
             self.window?.rootViewController?.presentViewController(R.storyboard.terms.initialViewController()!, animated: false, completion: nil)
-            
         }
+        
         UIApplication.sharedApplication().windows.first?.rootViewController
+        
         GCKCastContext.setSharedInstanceWithOptions(GCKCastOptions(receiverApplicationID: kGCKMediaDefaultReceiverApplicationID))
         mkdir("/var/mobile/Library/Popcorn Time", 0755)
         return true
