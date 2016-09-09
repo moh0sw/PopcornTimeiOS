@@ -275,13 +275,6 @@
 				FA361B141D8344100055E3CC /* Animes */,
 				FA361B151D8344160055E3CC /* Settings */,
 				FA361B161D8344560055E3CC /* Player */,
-				4DC541711CFB540D001A531C /* FilterCollectionReusableView.swift */,
-				4DC541721CFB540D001A531C /* FavouritesHeaderCollectionReusableView.swift */,
-				4DC5417D1CFB5441001A531C /* CoverCollectionViewCell.swift */,
-				4DC541891CFB545A001A531C /* ItemOverviewCollectionViewController.swift */,
-				4D936BC91D3506D0004F2B40 /* DetailItemOverviewViewController.swift */,
-				4DC541901CFB5467001A531C /* SubtitlesTableViewController.swift */,
-				4DC541911CFB5467001A531C /* GenresTableViewController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -336,6 +329,13 @@
 		FA361B111D8343F90055E3CC /* Commons */ = {
 			isa = PBXGroup;
 			children = (
+				4DC541711CFB540D001A531C /* FilterCollectionReusableView.swift */,
+				4DC541721CFB540D001A531C /* FavouritesHeaderCollectionReusableView.swift */,
+				4DC5417D1CFB5441001A531C /* CoverCollectionViewCell.swift */,
+				4DC541891CFB545A001A531C /* ItemOverviewCollectionViewController.swift */,
+				4D936BC91D3506D0004F2B40 /* DetailItemOverviewViewController.swift */,
+				4DC541901CFB5467001A531C /* SubtitlesTableViewController.swift */,
+				4DC541911CFB5467001A531C /* GenresTableViewController.swift */,
 				4D2C20CC1D2ECCD900E3862E /* TermsOfServiceViewController.swift */,
 				4DCFA56D1CD25D04005246DC /* TableViewBackground.swift */,
 				4DCFA56B1CD2206F005246DC /* TableViewBackground.xib */,
