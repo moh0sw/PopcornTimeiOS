@@ -24,4 +24,5 @@ target "Popcorn Time" do
     pod 'MobileVLCKit-unstable', '3.0.0a10'
     pod 'SwiftyTimer'
     pod 'SRT2VTT'
+    pod 'R.swift', '~> 2.5'
 end

@@ -59,6 +59,7 @@
 		7E2D47411B65520D00611019 /* TraktTVAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E2D47401B65520D00611019 /* TraktTVAPI.swift */; };
 		7E3CFB7B1B62B20B002F9E8C /* PCTTorrent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3CFB7A1B62B20B002F9E8C /* PCTTorrent.swift */; };
 		85F38AE05A2DF856A465302E /* Pods_Popcorn_Time.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DC067E4CCF06825BB4ADA281 /* Pods_Popcorn_Time.framework */; };
+		FA361B0A1D83430E0055E3CC /* R.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA361B091D83430E0055E3CC /* R.generated.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -134,6 +135,7 @@
 		7EA9DF041B61A19A00BAC6AF /* Popcorn Time.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Popcorn Time.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7EA9DF081B61A19A00BAC6AF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DC067E4CCF06825BB4ADA281 /* Pods_Popcorn_Time.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Popcorn_Time.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		FA361B091D83430E0055E3CC /* R.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = R.generated.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -157,63 +159,6 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
-		4D3FE2841D43804700707065 /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				4DCFA56D1CD25D04005246DC /* TableViewBackground.swift */,
-				4DCFA56B1CD2206F005246DC /* TableViewBackground.xib */,
-				4DC541971CFB5491001A531C /* PCTTablePickerView.swift */,
-				4DC541991CFB5491001A531C /* PCTTablePickerView.xib */,
-				4DA7BA4E1D5A629400229B14 /* PCTPickerView.swift */,
-				4DA7BA501D5A686B00229B14 /* PCTPickerView.xib */,
-				4D3FE2861D4380B100707065 /* UpNextView.swift */,
-				4D0668321D81E3D0004869F6 /* HeaderScrollView.swift */,
-			);
-			name = Views;
-			sourceTree = "<group>";
-		};
-		4D3FE2851D43807800707065 /* View Controllers */ = {
-			isa = PBXGroup;
-			children = (
-				4DC541981CFB5491001A531C /* LoadingViewController.swift */,
-				4D02E74A1CE261C600AC4588 /* PCTPlayerViewController.swift */,
-				4DC5419E1CFB54A3001A531C /* PCTEpsiodeDetailPresentationController.swift */,
-				4DCA0F121D4A4A91003FC58E /* PCTLoadingViewAnimatedTransitioning.swift */,
-				4D2C20CC1D2ECCD900E3862E /* TermsOfServiceViewController.swift */,
-				4D5B6A5D1D537198004D98D4 /* CastPlayerViewController.swift */,
-			);
-			name = "View Controllers";
-			sourceTree = "<group>";
-		};
-		4D936BCC1D354F1E004F2B40 /* Models */ = {
-			isa = PBXGroup;
-			children = (
-				4DC541671CFB53E3001A531C /* PCTItems.swift */,
-				7E3CFB7A1B62B20B002F9E8C /* PCTTorrent.swift */,
-			);
-			name = Models;
-			sourceTree = "<group>";
-		};
-		4DD7593E1CE8FBCC0091AA9B /* Table View Controllers */ = {
-			isa = PBXGroup;
-			children = (
-				4DC5418F1CFB5467001A531C /* SettingsTableViewController.swift */,
-				4DC541901CFB5467001A531C /* SubtitlesTableViewController.swift */,
-				4DC541911CFB5467001A531C /* GenresTableViewController.swift */,
-				4DC541921CFB5467001A531C /* BugReportTableViewController.swift */,
-				4D74C21A1D23CEC500FB81CA /* StreamToDevicesTableViewController.swift */,
-			);
-			name = "Table View Controllers";
-			sourceTree = "<group>";
-		};
-		7E01FAFC1B645C35008DB976 /* Collection View Cells */ = {
-			isa = PBXGroup;
-			children = (
-				4DC5417D1CFB5441001A531C /* CoverCollectionViewCell.swift */,
-			);
-			name = "Collection View Cells";
-			sourceTree = "<group>";
-		};
 		7E2D47391B653EAF00611019 /* Providers */ = {
 			isa = PBXGroup;
 			children = (
@@ -224,28 +169,6 @@
 				4D33E8761CF3957500E65498 /* OpenSubtitles.swift */,
 			);
 			name = Providers;
-			sourceTree = "<group>";
-		};
-		7E3CFB751B62A662002F9E8C /* API */ = {
-			isa = PBXGroup;
-			children = (
-				7E2D47391B653EAF00611019 /* Providers */,
-				4D936BCC1D354F1E004F2B40 /* Models */,
-				4DC541651CFA4E95001A531C /* WatchlistManager.swift */,
-				4D0005651D3C3CAD0075706C /* AirPlayManager.swift */,
-				4D580A071D3CFAF500963F10 /* GoogleCastManager.swift */,
-				4D2F71BA1D737A01001EF02E /* UpdateManager.swift */,
-			);
-			name = API;
-			sourceTree = "<group>";
-		};
-		7E5BA38A1BBD32F7004701E3 /* Collection Reusable Views */ = {
-			isa = PBXGroup;
-			children = (
-				4DC541711CFB540D001A531C /* FilterCollectionReusableView.swift */,
-				4DC541721CFB540D001A531C /* FavouritesHeaderCollectionReusableView.swift */,
-			);
-			name = "Collection Reusable Views";
 			sourceTree = "<group>";
 		};
 		7EA9DEFB1B61A19A00BAC6AF = {
@@ -269,9 +192,8 @@
 		7EA9DF061B61A19A00BAC6AF /* Popcorn Time */ = {
 			isa = PBXGroup;
 			children = (
-				7EA9DF2E1B61A21800BAC6AF /* Startup */,
-				7E3CFB751B62A662002F9E8C /* API */,
-				7EA9DF2B1B61A1E500BAC6AF /* UI */,
+				FA361B0B1D83431D0055E3CC /* Classes */,
+				FA361B081D83430E0055E3CC /* RSwift */,
 				7EA9DF2F1B61A22A00BAC6AF /* Resources */,
 				7EA9DF071B61A19A00BAC6AF /* Supporting Files */,
 			);
@@ -281,79 +203,21 @@
 		7EA9DF071B61A19A00BAC6AF /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				4DFEE9721CC25B5E00324A26 /* dispatch_cancelable_block.h */,
+				7E2A334E1B63D8FB00F426D9 /* PopcornTime-Bridging-Header.h */,
 				7EA9DF081B61A19A00BAC6AF /* Info.plist */,
 				4DA7BA591D5BE14400229B14 /* Entitlements.plist */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		7EA9DF2B1B61A1E500BAC6AF /* UI */ = {
-			isa = PBXGroup;
-			children = (
-				4D0668301D809634004869F6 /* Main.storyboard */,
-				7E5BA38A1BBD32F7004701E3 /* Collection Reusable Views */,
-				7EB833BE1BC478DB00FF31B7 /* Table View Cells */,
-				7E01FAFC1B645C35008DB976 /* Collection View Cells */,
-				7EA9DF2C1B61A1EC00BAC6AF /* Collection View Controllers */,
-				7EF929E71B62A2AC003EFDB0 /* Detail View Controllers */,
-				4DD7593E1CE8FBCC0091AA9B /* Table View Controllers */,
-				4D3FE2851D43807800707065 /* View Controllers */,
-				4D3FE2841D43804700707065 /* Views */,
-			);
-			name = UI;
-			sourceTree = "<group>";
-		};
-		7EA9DF2C1B61A1EC00BAC6AF /* Collection View Controllers */ = {
-			isa = PBXGroup;
-			children = (
-				4DC541891CFB545A001A531C /* ItemOverviewCollectionViewController.swift */,
-				4DC541871CFB545A001A531C /* TVShowsCollectionViewController.swift */,
-				4DC541881CFB545A001A531C /* MoviesCollectionViewController.swift */,
-				4DC5418A1CFB545A001A531C /* AnimeCollectionViewController.swift */,
-			);
-			name = "Collection View Controllers";
-			sourceTree = "<group>";
-		};
-		7EA9DF2E1B61A21800BAC6AF /* Startup */ = {
-			isa = PBXGroup;
-			children = (
-				7E2AD00C1B61D28A001B24BE /* AppDelegate.swift */,
-				4D849B571D3059FC0008AD51 /* Launch Screen.storyboard */,
-			);
-			name = Startup;
-			sourceTree = "<group>";
-		};
 		7EA9DF2F1B61A22A00BAC6AF /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				4DC5419D1CFB54A3001A531C /* UIKit+Extension.swift */,
-				4DB3B8ED1CC3B1760096FEA0 /* CastIconButton.swift */,
-				4DF4497D1CC2795600278078 /* OAuthCredential.swift */,
-				4DFEE9721CC25B5E00324A26 /* dispatch_cancelable_block.h */,
-				7E2A334E1B63D8FB00F426D9 /* PopcornTime-Bridging-Header.h */,
+				FA361B101D8343730055E3CC /* Storyboards */,
 				7E2AD00E1B61D299001B24BE /* Images.xcassets */,
 			);
 			name = Resources;
-			sourceTree = "<group>";
-		};
-		7EB833BE1BC478DB00FF31B7 /* Table View Cells */ = {
-			isa = PBXGroup;
-			children = (
-				4DC5417E1CFB5441001A531C /* TVShowDetailTableViewCell.swift */,
-				4DFB757F1D273075004DC1FD /* AirPlayTableViewCell.swift */,
-			);
-			name = "Table View Cells";
-			sourceTree = "<group>";
-		};
-		7EF929E71B62A2AC003EFDB0 /* Detail View Controllers */ = {
-			isa = PBXGroup;
-			children = (
-				4D936BC91D3506D0004F2B40 /* DetailItemOverviewViewController.swift */,
-				4DC541811CFB544D001A531C /* MovieDetailViewController.swift */,
-				4DC541831CFB544D001A531C /* TVShowDetailViewController.swift */,
-				4DC541821CFB544D001A531C /* EpisodeDetailViewController.swift */,
-			);
-			name = "Detail View Controllers";
 			sourceTree = "<group>";
 		};
 		E10396330A8E2F68E982223B /* Frameworks */ = {
@@ -365,6 +229,153 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		FA361B081D83430E0055E3CC /* RSwift */ = {
+			isa = PBXGroup;
+			children = (
+				FA361B091D83430E0055E3CC /* R.generated.swift */,
+			);
+			path = RSwift;
+			sourceTree = "<group>";
+		};
+		FA361B0B1D83431D0055E3CC /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				7E2AD00C1B61D28A001B24BE /* AppDelegate.swift */,
+				FA361B0C1D8343380055E3CC /* Controllers */,
+				FA361B0E1D83434C0055E3CC /* API */,
+				FA361B0D1D83433F0055E3CC /* Models */,
+				FA361B0F1D8343520055E3CC /* Helpers */,
+			);
+			name = Classes;
+			sourceTree = "<group>";
+		};
+		FA361B0C1D8343380055E3CC /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				FA361B111D8343F90055E3CC /* Commons */,
+				FA361B121D8344030055E3CC /* Movies */,
+				FA361B131D83440A0055E3CC /* TVShows */,
+				FA361B141D8344100055E3CC /* Animes */,
+				FA361B151D8344160055E3CC /* Settings */,
+				FA361B161D8344560055E3CC /* Player */,
+				4DC541711CFB540D001A531C /* FilterCollectionReusableView.swift */,
+				4DC541721CFB540D001A531C /* FavouritesHeaderCollectionReusableView.swift */,
+				4DC5417D1CFB5441001A531C /* CoverCollectionViewCell.swift */,
+				4DC541891CFB545A001A531C /* ItemOverviewCollectionViewController.swift */,
+				4D936BC91D3506D0004F2B40 /* DetailItemOverviewViewController.swift */,
+				4DC541901CFB5467001A531C /* SubtitlesTableViewController.swift */,
+				4DC541911CFB5467001A531C /* GenresTableViewController.swift */,
+			);
+			name = Controllers;
+			sourceTree = "<group>";
+		};
+		FA361B0D1D83433F0055E3CC /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				4DC541671CFB53E3001A531C /* PCTItems.swift */,
+				7E3CFB7A1B62B20B002F9E8C /* PCTTorrent.swift */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
+		FA361B0E1D83434C0055E3CC /* API */ = {
+			isa = PBXGroup;
+			children = (
+				7E2D47391B653EAF00611019 /* Providers */,
+				4DF4497D1CC2795600278078 /* OAuthCredential.swift */,
+				4DC541651CFA4E95001A531C /* WatchlistManager.swift */,
+				4D0005651D3C3CAD0075706C /* AirPlayManager.swift */,
+				4D580A071D3CFAF500963F10 /* GoogleCastManager.swift */,
+				4D2F71BA1D737A01001EF02E /* UpdateManager.swift */,
+			);
+			name = API;
+			sourceTree = "<group>";
+		};
+		FA361B0F1D8343520055E3CC /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				4DC5419D1CFB54A3001A531C /* UIKit+Extension.swift */,
+				4DB3B8ED1CC3B1760096FEA0 /* CastIconButton.swift */,
+			);
+			name = Helpers;
+			sourceTree = "<group>";
+		};
+		FA361B101D8343730055E3CC /* Storyboards */ = {
+			isa = PBXGroup;
+			children = (
+				4D0668301D809634004869F6 /* Main.storyboard */,
+				4D849B571D3059FC0008AD51 /* Launch Screen.storyboard */,
+			);
+			name = Storyboards;
+			sourceTree = "<group>";
+		};
+		FA361B111D8343F90055E3CC /* Commons */ = {
+			isa = PBXGroup;
+			children = (
+				4D2C20CC1D2ECCD900E3862E /* TermsOfServiceViewController.swift */,
+				4DCFA56D1CD25D04005246DC /* TableViewBackground.swift */,
+				4DCFA56B1CD2206F005246DC /* TableViewBackground.xib */,
+				4DC541971CFB5491001A531C /* PCTTablePickerView.swift */,
+				4DC541991CFB5491001A531C /* PCTTablePickerView.xib */,
+				4DA7BA4E1D5A629400229B14 /* PCTPickerView.swift */,
+				4DA7BA501D5A686B00229B14 /* PCTPickerView.xib */,
+				4D3FE2861D4380B100707065 /* UpNextView.swift */,
+				4D0668321D81E3D0004869F6 /* HeaderScrollView.swift */,
+			);
+			name = Commons;
+			sourceTree = "<group>";
+		};
+		FA361B121D8344030055E3CC /* Movies */ = {
+			isa = PBXGroup;
+			children = (
+				4DC541881CFB545A001A531C /* MoviesCollectionViewController.swift */,
+				4DC541811CFB544D001A531C /* MovieDetailViewController.swift */,
+			);
+			name = Movies;
+			sourceTree = "<group>";
+		};
+		FA361B131D83440A0055E3CC /* TVShows */ = {
+			isa = PBXGroup;
+			children = (
+				4DC541871CFB545A001A531C /* TVShowsCollectionViewController.swift */,
+				4DC541831CFB544D001A531C /* TVShowDetailViewController.swift */,
+				4DC5417E1CFB5441001A531C /* TVShowDetailTableViewCell.swift */,
+				4DC541821CFB544D001A531C /* EpisodeDetailViewController.swift */,
+			);
+			name = TVShows;
+			sourceTree = "<group>";
+		};
+		FA361B141D8344100055E3CC /* Animes */ = {
+			isa = PBXGroup;
+			children = (
+				4DC5419E1CFB54A3001A531C /* PCTEpsiodeDetailPresentationController.swift */,
+				4DC5418A1CFB545A001A531C /* AnimeCollectionViewController.swift */,
+			);
+			name = Animes;
+			sourceTree = "<group>";
+		};
+		FA361B151D8344160055E3CC /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				4DC541921CFB5467001A531C /* BugReportTableViewController.swift */,
+				4DC5418F1CFB5467001A531C /* SettingsTableViewController.swift */,
+			);
+			name = Settings;
+			sourceTree = "<group>";
+		};
+		FA361B161D8344560055E3CC /* Player */ = {
+			isa = PBXGroup;
+			children = (
+				4DFB757F1D273075004DC1FD /* AirPlayTableViewCell.swift */,
+				4D74C21A1D23CEC500FB81CA /* StreamToDevicesTableViewController.swift */,
+				4DC541981CFB5491001A531C /* LoadingViewController.swift */,
+				4D02E74A1CE261C600AC4588 /* PCTPlayerViewController.swift */,
+				4DCA0F121D4A4A91003FC58E /* PCTLoadingViewAnimatedTransitioning.swift */,
+				4D5B6A5D1D537198004D98D4 /* CastPlayerViewController.swift */,
+			);
+			name = Player;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -372,13 +383,14 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 7EA9DF251B61A19A00BAC6AF /* Build configuration list for PBXNativeTarget "Popcorn Time" */;
 			buildPhases = (
-				0024328ABAB9F15E60CCA559 /* 📦 Check Pods Manifest.lock */,
+				0024328ABAB9F15E60CCA559 /* [CP] Check Pods Manifest.lock */,
 				7EA9DF001B61A19A00BAC6AF /* Sources */,
 				7EA9DF011B61A19A00BAC6AF /* Frameworks */,
 				7EA9DF021B61A19A00BAC6AF /* Resources */,
 				7EFFD98A1BA4964C0071910B /* Embed Frameworks */,
-				0D7F983D2003320E48C78AD1 /* 📦 Embed Pods Frameworks */,
-				EDC5BA72AC85EF2BF793347C /* 📦 Copy Pods Resources */,
+				0D7F983D2003320E48C78AD1 /* [CP] Embed Pods Frameworks */,
+				EDC5BA72AC85EF2BF793347C /* [CP] Copy Pods Resources */,
+				FA5CD3041D83426B00278E09 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -443,14 +455,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		0024328ABAB9F15E60CCA559 /* 📦 Check Pods Manifest.lock */ = {
+		0024328ABAB9F15E60CCA559 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "📦 Check Pods Manifest.lock";
+			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -458,14 +470,14 @@
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
-		0D7F983D2003320E48C78AD1 /* 📦 Embed Pods Frameworks */ = {
+		0D7F983D2003320E48C78AD1 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "📦 Embed Pods Frameworks";
+			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -473,20 +485,33 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Popcorn Time/Pods-Popcorn Time-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		EDC5BA72AC85EF2BF793347C /* 📦 Copy Pods Resources */ = {
+		EDC5BA72AC85EF2BF793347C /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "📦 Copy Pods Resources";
+			name = "[CP] Copy Pods Resources";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Popcorn Time/Pods-Popcorn Time-resources.sh\"\n";
 			showEnvVarsInLog = 0;
+		};
+		FA5CD3041D83426B00278E09 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"$PODS_ROOT/R.swift/rswift\" \"$SRCROOT/Popcorn Time/RSwift\"";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -497,6 +522,7 @@
 			files = (
 				4D936BCA1D3506D0004F2B40 /* DetailItemOverviewViewController.swift in Sources */,
 				7E2D473E1B653EDE00611019 /* AnimeAPI.swift in Sources */,
+				FA361B0A1D83430E0055E3CC /* R.generated.swift in Sources */,
 				4DC5417F1CFB5441001A531C /* CoverCollectionViewCell.swift in Sources */,
 				4DC541841CFB544D001A531C /* MovieDetailViewController.swift in Sources */,
 				4D5B6A5E1D537198004D98D4 /* CastPlayerViewController.swift in Sources */,
@@ -642,6 +668,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEFINES_MODULE = YES;
 				INFOPLIST_FILE = "${SRCROOT}/Popcorn Time/Info.plist";
 				PRODUCT_BUNDLE_IDENTIFIER = com.popcorntimetv.popcorntime.ios;
@@ -659,6 +686,7 @@
 				CODE_SIGN_ENTITLEMENTS = "${SRCROOT}/Popcorn Time/Entitlements.plist";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEFINES_MODULE = YES;
 				INFOPLIST_FILE = "${SRCROOT}/Popcorn Time/Info.plist";
 				PRODUCT_BUNDLE_IDENTIFIER = com.popcorntimetv.popcorntime.ios;
