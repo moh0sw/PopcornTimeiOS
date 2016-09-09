@@ -4,22 +4,25 @@ import UIKit
 
 class CoverCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var coverImage: UIImageView!
+    
+    @IBOutlet weak var gradientView: UIView!
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var yearLabel: UILabel!
     @IBOutlet weak var watchedIndicator: UIView?
+    
     var watched = false {
         didSet {
-            if let watchedIndicator = watchedIndicator {
-                UIView.animateWithDuration(0.25, animations: {
-                    if self.watched == true {
-                        watchedIndicator.alpha = 0.5
-                        watchedIndicator.hidden = false
-                    } else {
-                        watchedIndicator.alpha = 0.0
-                        watchedIndicator.hidden = true
-                    }
-                })
-            }
+            guard let watchedIndicator = watchedIndicator else {return}
+            
+            UIView.animateWithDuration(0.25, animations: {
+                watchedIndicator.alpha = self.watched ? 0.5 : 0
+                watchedIndicator.hidden = !self.watched
+            })
         }
     }
+    
+    override func awakeFromNib() {
+        self.gradientView.hidden = true
+    }
+    
 }

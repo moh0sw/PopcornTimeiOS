@@ -128,23 +128,43 @@ class ItemOverviewCollectionViewController: UICollectionViewController, UISearch
         }
     }
     
-    func collectionView(collectionView: UICollectionView,layout collectionViewLayout: UICollectionViewLayout,sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
-        var width = (collectionView.bounds.width/CGFloat(2))-8
-        if traitCollection.horizontalSizeClass == .Regular
-        {
-            var items = 1
-            while (collectionView.bounds.width/CGFloat(items))-8 > 195 {
-                items += 1
-            }
-            width = (collectionView.bounds.width/CGFloat(items))-8
-        }
-        let ratio = width/195.0
-        let height = 280.0 * ratio
-        return CGSizeMake(width, height)
+    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
+        return self.itemSize()
+    }
+    
+    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAtIndex section: Int) -> CGFloat {
+        return self.gutterWidth()
+    }
+    
+    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAtIndex section: Int) -> UIEdgeInsets {
+        let topBottomInset = self.gutterWidth()
+        return UIEdgeInsets(top: topBottomInset, left: topBottomInset, bottom: topBottomInset, right: topBottomInset)
+    }
+    
+    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAtIndex section: Int) -> CGFloat {
+        return gutterWidth()
     }
     
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         return filterHeader?.hidden == true ? CGSizeMake(CGFloat.min, CGFloat.min): CGSizeMake(view.frame.size.width, 50)
+    }
+    
+    // MARK: - Help
+    
+    func nbColumns() -> CGFloat {
+        let targetWidth: CGFloat = 160
+        let nbColumns = round(self.collectionView!.bounds.width / targetWidth)
+        return max(2, nbColumns)
+    }
+    
+    func itemSize() -> CGSize {
+        let calcWidth = (self.collectionView!.bounds.width - (nbColumns() + 1) * gutterWidth()) / nbColumns()
+        let calcHeight = calcWidth * (345.0 / 230.0)
+        return CGSize(width: calcWidth, height: calcHeight)
+    }
+    
+    func gutterWidth() -> CGFloat {
+        return 8
     }
 
 }

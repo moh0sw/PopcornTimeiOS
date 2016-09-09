@@ -79,6 +79,7 @@
                                 </constraints>
                                 <connections>
                                     <outlet property="coverImage" destination="2gJ-2S-i4f" id="lkZ-uB-Pac"/>
+                                    <outlet property="gradientView" destination="YaU-Vl-4x6" id="MBD-4w-uy7"/>
                                     <outlet property="titleLabel" destination="pFg-qG-Agg" id="XgC-ak-zO6"/>
                                     <outlet property="yearLabel" destination="1mB-p0-Ymc" id="ZYX-rg-8Ac"/>
                                     <segue destination="A0c-4q-rWQ" kind="show" identifier="showDetail" id="Erc-2l-Rsi">

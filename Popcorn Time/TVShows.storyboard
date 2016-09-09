@@ -413,6 +413,7 @@
                                 </constraints>
                                 <connections>
                                     <outlet property="coverImage" destination="EeN-RG-6Ml" id="YH4-UJ-bbS"/>
+                                    <outlet property="gradientView" destination="9wW-7g-qMT" id="x1X-Jf-1rv"/>
                                     <outlet property="titleLabel" destination="0SI-b5-yjN" id="fbt-Jk-2A9"/>
                                     <outlet property="watchedIndicator" destination="GKh-P5-Dcn" id="w04-MY-OYe"/>
                                     <outlet property="yearLabel" destination="QVE-aW-VF0" id="HVV-gf-eHL"/>
