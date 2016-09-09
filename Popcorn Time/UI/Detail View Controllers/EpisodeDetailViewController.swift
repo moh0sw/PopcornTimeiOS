@@ -101,7 +101,7 @@ class EpisodeDetailViewController: UIViewController, PCTTablePickerViewDelegate,
             playNowBtn?.enabled = currentItem.currentTorrent.url != nil
             torrentHealth.backgroundColor = currentItem.currentTorrent.health.color()
         } else {
-            let background = NSBundle.mainBundle().loadNibNamed("TableViewBackground", owner: self, options: nil).first as! TableViewBackground
+            let background = R.nib.tableViewBackground.firstView(owner: nil)!
             background.frame = view.bounds
             background.autoresizingMask = [.FlexibleHeight, .FlexibleWidth]
             background.backgroundColor = UIColor(red: 30.0/255.0, green: 30.0/255.0, blue: 30.0/255.0, alpha: 1.0)

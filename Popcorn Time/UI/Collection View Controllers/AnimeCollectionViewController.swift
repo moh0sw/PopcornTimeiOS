@@ -119,7 +119,7 @@ class AnimeCollectionViewController: ItemOverviewCollectionViewController, UIPop
         collectionView.backgroundView = nil
         if animes.count == 0 {
             if error != nil {
-                let background = NSBundle.mainBundle().loadNibNamed("TableViewBackground", owner: self, options: nil).first as! TableViewBackground
+                let background = R.nib.tableViewBackground.firstView(owner: nil)!
                 background.setUpView(error: error!)
                 collectionView.backgroundView = background
             } else if isLoading {
@@ -129,7 +129,7 @@ class AnimeCollectionViewController: ItemOverviewCollectionViewController, UIPop
                 indicator.sizeToFit()
                 indicator.startAnimating()
             } else {
-                let background = NSBundle.mainBundle().loadNibNamed("TableViewBackground", owner: self, options: nil).first as! TableViewBackground
+                let background = R.nib.tableViewBackground.firstView(owner: nil)!
                 background.setUpView(image: UIImage(named: "Search")!, title: "No results found.", description: "No search results found for \(searchController.searchBar.text!). Please check the spelling and try again.")
                 collectionView.backgroundView = background
             }
