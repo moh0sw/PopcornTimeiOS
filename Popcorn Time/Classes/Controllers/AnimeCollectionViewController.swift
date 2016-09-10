@@ -103,6 +103,16 @@ class AnimeCollectionViewController: MainCollectionViewController, UIPopoverPres
         (controller.viewControllers[0] as! GenresTableViewController).delegate = self
         presentViewController(controller, animated: true, completion: nil)
     }
+
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        fixIOS9PopOverAnchor(segue)
+        if segue.identifier == "showDetail" ,
+            let selectedPaths = self.collectionView?.indexPathsForSelectedItems(),
+            let selectedIndex = selectedPaths.first?.row,
+            let destinationController = segue.destinationViewController as? TVShowContainerViewController {
+            destinationController.currentItem = animes[selectedIndex]
+        }
+    }
     
     // MARK: - Collection view data source
     
@@ -155,16 +165,7 @@ class AnimeCollectionViewController: MainCollectionViewController, UIPopoverPres
             }()
         return filterHeader!
     }
-    
-    override func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
-        let animeDetail = R.storyboard.animes.tVShowDetailViewController()!
-        animeDetail.currentItem = animes[indexPath.row]
-        animeDetail.currentType = .Animes
-        
-        delay(0.2) {
-            self.navigationController?.pushViewController(animeDetail, animated: true)
-        }
-    }
+
     
     // MARK: - GenresDelegate
     

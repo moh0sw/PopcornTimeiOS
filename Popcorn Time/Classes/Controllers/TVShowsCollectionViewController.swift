@@ -159,14 +159,6 @@ class TVShowsCollectionViewController: MainCollectionViewController, UIPopoverPr
             }()
         return filterHeader!
     }
-    
-//    override func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
-//        let showDetail = R.storyboard.tVShows.tVShowDetailViewController()!
-//        showDetail.currentItem = shows[indexPath.row]
-//        delay(0.2) {
-//            self.navigationController?.pushViewController(showDetail, animated: true)
-//        }
-//    }
 
     // MARK: - GenresDelegate
     

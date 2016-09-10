@@ -547,8 +547,23 @@ struct R: Rswift.Validatable {
     private init() {}
   }
   
-  /// This `R.segue` struct is generated, and contains static references to 4 view controllers.
+  /// This `R.segue` struct is generated, and contains static references to 5 view controllers.
   struct segue {
+    /// This struct is generated for `AnimeCollectionViewController`, and contains static references to 1 segues.
+    struct animeCollectionViewController {
+      /// Segue identifier `showDetail`.
+      static let showDetail: StoryboardSegueIdentifier<UIStoryboardSegue, AnimeCollectionViewController, TVShowContainerViewController> = StoryboardSegueIdentifier(identifier: "showDetail")
+      
+      /// Optionally returns a typed version of segue `showDetail`.
+      /// Returns nil if either the segue identifier, the source, destination, or segue types don't match.
+      /// For use inside `prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?)`.
+      static func showDetail(segue segue: UIStoryboardSegue) -> TypedStoryboardSegueInfo<UIStoryboardSegue, AnimeCollectionViewController, TVShowContainerViewController>? {
+        return TypedStoryboardSegueInfo(segueIdentifier: R.segue.animeCollectionViewController.showDetail, segue: segue)
+      }
+      
+      private init() {}
+    }
+    
     /// This struct is generated for `PCTPlayerViewController`, and contains static references to 2 segues.
     struct pCTPlayerViewController {
       /// Segue identifier `showDevices`.
@@ -763,8 +778,13 @@ struct _R: Rswift.Validatable {
       typealias InitialController = UINavigationController
       
       let bundle = _R.hostingBundle
+      let episodeDetailViewController = StoryboardViewControllerResource<EpisodeDetailViewController>(identifier: "EpisodeDetailViewController")
       let name = "Animes"
       let tVShowDetailViewController = StoryboardViewControllerResource<TVShowDetailViewController>(identifier: "TVShowDetailViewController")
+      
+      func episodeDetailViewController(_: Void) -> EpisodeDetailViewController? {
+        return UIStoryboard(resource: self).instantiateViewController(episodeDetailViewController)
+      }
       
       func tVShowDetailViewController(_: Void) -> TVShowDetailViewController? {
         return UIStoryboard(resource: self).instantiateViewController(tVShowDetailViewController)
@@ -772,12 +792,15 @@ struct _R: Rswift.Validatable {
       
       static func validate() throws {
         if UIImage(named: "Anime") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Anime' is used in storyboard 'Animes', but couldn't be loaded.") }
+        if UIImage(named: "Quality") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Quality' is used in storyboard 'Animes', but couldn't be loaded.") }
         if UIImage(named: "Star") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Star' is used in storyboard 'Animes', but couldn't be loaded.") }
-        if UIImage(named: "StarOff") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'StarOff' is used in storyboard 'Animes', but couldn't be loaded.") }
         if UIImage(named: "Placeholder") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Placeholder' is used in storyboard 'Animes', but couldn't be loaded.") }
+        if UIImage(named: "StarOff") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'StarOff' is used in storyboard 'Animes', but couldn't be loaded.") }
         if UIImage(named: "Filter") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Filter' is used in storyboard 'Animes', but couldn't be loaded.") }
+        if UIImage(named: "Subtitles") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'Subtitles' is used in storyboard 'Animes', but couldn't be loaded.") }
         if UIImage(named: "WatchedOff") == nil { throw Rswift.ValidationError(description: "[R.swift] Image named 'WatchedOff' is used in storyboard 'Animes', but couldn't be loaded.") }
         if _R.storyboard.animes().tVShowDetailViewController() == nil { throw Rswift.ValidationError(description:"[R.swift] ViewController with identifier 'tVShowDetailViewController' could not be loaded from storyboard 'Animes' as 'TVShowDetailViewController'.") }
+        if _R.storyboard.animes().episodeDetailViewController() == nil { throw Rswift.ValidationError(description:"[R.swift] ViewController with identifier 'episodeDetailViewController' could not be loaded from storyboard 'Animes' as 'EpisodeDetailViewController'.") }
       }
       
       private init() {}

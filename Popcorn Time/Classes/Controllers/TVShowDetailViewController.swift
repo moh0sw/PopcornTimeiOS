@@ -113,7 +113,17 @@ class TVShowDetailViewController: DetailItemOverviewViewController, UITableViewD
                 self.episodes = updatedEpisodes
                 self.seasons = seasons
                 self.summaryView.text = synopsis
-                self.infoLabel.text = "\(self.currentItem.year) ● \(self.currentItem.status!.capitalizedString) ● \(self.currentItem.genres![0].capitalizedString)"
+
+                var infoString = self.currentItem.year
+                if let status = self.currentItem.status {
+                    infoString += " ● \(status)"
+                }
+                if let genres = self.currentItem.genres,
+                    let firstGenre = genres.first {
+                    infoString += " ● \(firstGenre)"
+                }
+                self.infoLabel.text = infoString.capitalizedString
+
                 self.setUpSegmenedControl()
                 self.tableView.reloadData()
             }
