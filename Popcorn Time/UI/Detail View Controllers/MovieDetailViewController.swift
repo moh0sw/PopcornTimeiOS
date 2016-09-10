@@ -5,6 +5,7 @@ import XCDYouTubeKit
 import AlamofireImage
 import ColorArt
 import PopcornTorrent
+import SwiftyUserDefaults
 
 class MovieDetailViewController: DetailItemOverviewViewController, PCTTablePickerViewDelegate, UIViewControllerTransitioningDelegate {
     
@@ -57,7 +58,7 @@ class MovieDetailViewController: DetailItemOverviewViewController, PCTTablePicke
         trailerBtn.enabled = currentItem.trailerURLString != nil
         MovieAPI.sharedInstance.getMovieInfo(currentItem.id, completion: {
             self.currentItem.torrents = $0
-            self.currentItem.currentTorrent = self.currentItem.torrents.filter({$0.quality == NSUserDefaults.standardUserDefaults().stringForKey("PreferredQuality")}).first ?? self.currentItem.torrents.first!
+            self.currentItem.currentTorrent = self.currentItem.torrents.filter({$0.quality == Defaults[.PreferredQuality]}).first ?? self.currentItem.torrents.first!
             self.torrentHealth.backgroundColor = self.currentItem.currentTorrent.health.color()
             self.playButton.enabled = self.currentItem.currentTorrent.url != nil
             self.qualityBtn?.userInteractionEnabled = self.currentItem.torrents.count > 1
@@ -72,7 +73,7 @@ class MovieDetailViewController: DetailItemOverviewViewController, PCTTablePicke
                 } else {
                     self.subtitlesButton.setTitle("None ▾", forState: .Normal)
                     self.subtitlesButton.userInteractionEnabled = true
-                    if let preferredSubtitle = NSUserDefaults.standardUserDefaults().objectForKey("PreferredSubtitleLanguage") as? String where preferredSubtitle != "None" {
+                    if let preferredSubtitle = Defaults[.PreferredSubtitleLanguage] where preferredSubtitle != "None" {
                         let languages = subtitles.map({$0.language})
                         let index = languages.indexOf(languages.filter({$0 == preferredSubtitle}).first!)!
                         let subtitle = self.currentItem.subtitles![index]
@@ -125,7 +126,7 @@ class MovieDetailViewController: DetailItemOverviewViewController, PCTTablePicke
     
     @IBAction func watchNowTapped(sender: UIButton) {
         let onWifi: Bool = (UIApplication.sharedApplication().delegate! as! AppDelegate).reachability!.isReachableViaWiFi()
-        let wifiOnly: Bool = !NSUserDefaults.standardUserDefaults().boolForKey("StreamOnCellular")
+        let wifiOnly: Bool = Defaults[.StreamOnCellular]
         if !wifiOnly || onWifi {
             loadMovieTorrent(currentItem)
         } else {

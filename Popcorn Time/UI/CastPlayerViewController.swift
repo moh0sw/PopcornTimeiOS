@@ -5,6 +5,7 @@ import PopcornTorrent
 import GoogleCast
 import JGProgressHUD
 import SwiftyTimer
+import SwiftyUserDefaults
 
 
 class CastPlayerViewController: UIViewController, GCKRemoteMediaClientListener, PCTPickerViewDelegate {
@@ -63,7 +64,7 @@ class CastPlayerViewController: UIViewController, GCKRemoteMediaClientListener, 
                     subtitleDict[subtitle.language] = subtitle.link
                 }
                 self.subtitles += subtitleDict
-                self.selectedSubtitleMeta[0] = media.currentSubtitle?.language ?? NSUserDefaults.standardUserDefaults().stringForKey("PreferredSubtitleLanguage") ?? "None"
+                self.selectedSubtitleMeta[0] = media.currentSubtitle?.language ?? Defaults[.PreferredSubtitleLanguage] ?? "None"
             }
         }
     }
@@ -145,7 +146,7 @@ class CastPlayerViewController: UIViewController, GCKRemoteMediaClientListener, 
         elapsedTimer = nil
         remoteMediaClient?.stop()
         PTTorrentStreamer.sharedStreamer().cancelStreaming()
-        if NSUserDefaults.standardUserDefaults().boolForKey("removeCacheOnPlayerExit") {
+        if Defaults[.RemoveCacheOnPlayerExit] {
             try! NSFileManager.defaultManager().removeItemAtURL(directory)
         }
         dismissViewControllerAnimated(true, completion: nil)
@@ -227,7 +228,7 @@ class CastPlayerViewController: UIViewController, GCKRemoteMediaClientListener, 
     }
     
     required init?(coder aDecoder: NSCoder) {
-        selectedSubtitleMeta = ["None", NSUserDefaults.standardUserDefaults().stringForKey("PreferredSubtitleColor") ?? "White", NSUserDefaults.standardUserDefaults().stringForKey("PreferredSubtitleFont") ?? "Default"]
+        selectedSubtitleMeta = ["None", Defaults[.PreferredSubtitleColor] ?? "White", Defaults[.PreferredSubtitleFont] ?? "Default"]
         super.init(coder: aDecoder)
         remoteMediaClient?.addListener(self)
         UIApplication.sharedApplication().idleTimerDisabled = true

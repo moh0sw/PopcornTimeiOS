@@ -26,4 +26,5 @@ target "Popcorn Time" do
     pod 'SRT2VTT'
     pod 'R.swift', '~> 2.5'
     pod 'PullToRefreshSwift', '~> 2.0'
+    pod 'SwiftyUserDefaults', '~> 2.2'
 end

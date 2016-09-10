@@ -3,6 +3,7 @@
 import UIKit
 import PopcornTorrent
 import AlamofireImage
+import SwiftyUserDefaults
 
 class LoadingViewController: UIViewController {
     
@@ -45,7 +46,7 @@ class LoadingViewController: UIViewController {
 
     @IBAction func cancelButtonPressed() {
         PTTorrentStreamer.sharedStreamer().cancelStreaming()
-        if NSUserDefaults.standardUserDefaults().boolForKey("removeCacheOnPlayerExit") {
+        if Defaults[.RemoveCacheOnPlayerExit] {
             try! NSFileManager.defaultManager().removeItemAtURL(NSURL(fileURLWithPath: downloadsDirectory))
         }
         dismissViewControllerAnimated(true, completion: nil)

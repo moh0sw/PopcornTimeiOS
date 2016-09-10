@@ -6,6 +6,7 @@ import PopcornTorrent
 import Alamofire
 import GZIP
 import SRT2VTT
+import SwiftyUserDefaults
 
 protocol PCTPlayerViewControllerDelegate: class {
     func playNext(episode: PCTEpisode)
@@ -176,7 +177,7 @@ class PCTPlayerViewController: UIViewController, UIGestureRecognizerDelegate, UI
         dismissViewControllerAnimated(true, completion: nil)
         mediaplayer.stop()
         PTTorrentStreamer.sharedStreamer().cancelStreaming()
-        if NSUserDefaults.standardUserDefaults().boolForKey("removeCacheOnPlayerExit") {
+        if Defaults[.RemoveCacheOnPlayerExit] {
             try! NSFileManager.defaultManager().removeItemAtURL(directory)
         }
     }
@@ -281,18 +282,18 @@ class PCTPlayerViewController: UIViewController, UIGestureRecognizerDelegate, UI
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        if let font = NSUserDefaults.standardUserDefaults().stringForKey("PreferredSubtitleFont"),
+        if let font = Defaults[.PreferredSubtitleFont],
             let name = UIFont(name: font, size: 0)?.familyName {
             (mediaplayer as VLCFontAppearance).setTextRendererFont!(name)
         }
-        if let style = NSUserDefaults.standardUserDefaults().stringForKey("PreferredSubtitleFontStyle") {
+        if let style = Defaults[.PreferredSubtitleFontStyle] {
             (mediaplayer as VLCFontAppearance).setTextRendererFontForceBold!(NSNumber(bool: style == "Bold"))
         }
-        if let size = NSUserDefaults.standardUserDefaults().stringForKey("PreferredSubtitleSize") {
+        if let size = Defaults[.PreferredSubtitleSize] {
             (mediaplayer as VLCFontAppearance).setTextRendererFontSize!(NSNumber(float: Float(size.stringByReplacingOccurrencesOfString(" pt", withString: ""))!))
         }
-        if let subtitleColor = NSUserDefaults.standardUserDefaults().stringForKey("PreferredSubtitleColor")?.camelCaseString,
-            let color = UIColor.performSelector(Selector(subtitleColor + "Color")).takeRetainedValue() as? UIColor {
+        if let subtitleColor = Defaults[.PreferredSubtitleColor],
+            let color = UIColor.performSelector(Selector(subtitleColor.camelCaseString + "Color")).takeRetainedValue() as? UIColor {
             (mediaplayer as VLCFontAppearance).setTextRendererFontColor!(NSNumber(unsignedInt: color.hexInt()))
         }
         subtitleSwitcherButton.hidden = subtitles.count == 0

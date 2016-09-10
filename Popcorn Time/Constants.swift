@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import SwiftyUserDefaults
 
 func delay(delay: Double, closure: () -> ()) {
     dispatch_after(
@@ -15,6 +16,21 @@ func delay(delay: Double, closure: () -> ()) {
             Int64(delay * Double(NSEC_PER_SEC))
         ),
         dispatch_get_main_queue(), closure)
+}
+
+extension DefaultsKeys {
+    static let TOSAccepted = DefaultsKey<Bool>("TOSAccepted")
+    static let AuthorizedTrakt = DefaultsKey<Bool>("AuthorizedTrakt")
+    static let RemoveCacheOnPlayerExit = DefaultsKey<Bool>("RemoveCacheOnPlayerExit")
+    static let StreamOnCellular = DefaultsKey<Bool>("StreamOnCellular")
+    static let AuthorizedOpenSubs = DefaultsKey<Bool>("AuthorizedOpenSubs")
+    
+    static let PreferredSubtitleLanguage = DefaultsKey<String?>("PreferredSubtitleLanguage")
+    static let PreferredSubtitleColor = DefaultsKey<String?>("PreferredSubtitleColor")
+    static let PreferredSubtitleFont = DefaultsKey<String?>("PreferredSubtitleFont")
+    static let PreferredSubtitleFontStyle = DefaultsKey<String?>("PreferredSubtitleFontStyle")
+    static let PreferredSubtitleSize = DefaultsKey<String?>("PreferredSubtitleSize")
+    static let PreferredQuality = DefaultsKey<String?>("PreferredQuality")
 }
 
 struct ScreenSize {

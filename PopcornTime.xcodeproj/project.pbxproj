@@ -271,6 +271,7 @@
 			isa = PBXGroup;
 			children = (
 				7E2AD00C1B61D28A001B24BE /* AppDelegate.swift */,
+				FA4D0C561D838373002C2F99 /* Constants.swift */,
 				FA361B0C1D8343380055E3CC /* Controllers */,
 				FA361B0E1D83434C0055E3CC /* API */,
 				FA361B0D1D83433F0055E3CC /* Models */,
@@ -283,7 +284,6 @@
 			isa = PBXGroup;
 			children = (
 				FA5696DC1D8354CE0090B0F3 /* MainTabBarController.swift */,
-				FA4D0C561D838373002C2F99 /* Constants.swift */,
 				FA361B111D8343F90055E3CC /* Commons */,
 				FA361B121D8344030055E3CC /* Movies */,
 				FA361B131D83440A0055E3CC /* TVShows */,

@@ -4,6 +4,7 @@ import UIKit
 import Reachability
 import AlamofireNetworkActivityIndicator
 import GoogleCast
+import SwiftyUserDefaults
 
 let safariLoginNotification = "kCloseSafariViewControllerNotification"
 let errorNotification = "kErrorNotification"
@@ -23,7 +24,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(reachabilityChanged(_:)), name: kReachabilityChangedNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(problemAuthenticatingTrakt), name: traktAuthenticationErrorNotification, object: nil)
         
-        if !NSUserDefaults.standardUserDefaults().boolForKey("TOSAccepted") {
+        if Defaults[.TOSAccepted] {
             self.window?.makeKeyAndVisible()
             self.window?.rootViewController?.presentViewController(R.storyboard.terms.initialViewController()!, animated: false, completion: nil)
         }
@@ -39,7 +40,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             let errorAlert = UIAlertController(title: "Problem authenticating with trakt", message: nil, preferredStyle: .Alert)
             errorAlert.addAction(UIAlertAction(title: "Sign Out", style: .Destructive, handler: { (action) in
                 OAuthCredential.deleteCredentialWithIdentifier("trakt")
-                NSUserDefaults.standardUserDefaults().setBool(false, forKey: "AuthorizedTrakt")
+                Defaults[.AuthorizedTrakt] = false
             }))
             errorAlert.addAction(UIAlertAction(title: "Settings", style: .Default, handler:{ (action) in
                 let storyboard = UIStoryboard(name: "Main", bundle: nil)

@@ -2,6 +2,7 @@
 
 import UIKit
 import AlamofireImage
+import SwiftyUserDefaults
 
 protocol EpisodeDetailViewControllerDelegate: class {
     func didDismissViewController(vc: EpisodeDetailViewController)
@@ -72,7 +73,7 @@ class EpisodeDetailViewController: UIViewController, PCTTablePickerViewDelegate,
                     } else {
                         self.subtitlesButton.setTitle("None ▾", forState: .Normal)
                         self.subtitlesButton.userInteractionEnabled = true
-                        if let preferredSubtitle = NSUserDefaults.standardUserDefaults().objectForKey("PreferredSubtitleLanguage") as? String where preferredSubtitle != "None" {
+                        if let preferredSubtitle = Defaults[.PreferredSubtitleLanguage] where preferredSubtitle != "None" {
                             let languages = subtitles.map({$0.language})
                             let index = languages.indexOf(languages.filter({$0 == preferredSubtitle}).first!)!
                             let subtitle = currentItem.subtitles![index]
@@ -95,7 +96,7 @@ class EpisodeDetailViewController: UIViewController, PCTTablePickerViewDelegate,
             episodeAndSeasonLabel.text = "S\(season)E\(episode)"
             summaryView.text = currentItem.summary
             infoLabel.text = "Aired: " + NSDateFormatter.localizedStringFromDate(currentItem.airedDate, dateStyle: .MediumStyle, timeStyle: .NoStyle)
-            currentItem.currentTorrent = currentItem.torrents.filter({$0.quality == NSUserDefaults.standardUserDefaults().stringForKey("PreferredQuality")}).first ?? currentItem.torrents.first!
+            currentItem.currentTorrent = currentItem.torrents.filter({$0.quality == Defaults[.PreferredQuality]}).first ?? currentItem.torrents.first!
             qualityBtn?.userInteractionEnabled = currentItem.torrents.count > 1
             qualityBtn?.setTitle("\(currentItem.currentTorrent.quality! + (currentItem.torrents.count > 1 ? " ▾" : ""))", forState: .Normal)
             playNowBtn?.enabled = currentItem.currentTorrent.url != nil
@@ -136,7 +137,7 @@ class EpisodeDetailViewController: UIViewController, PCTTablePickerViewDelegate,
     
     @IBAction func watchNowTapped(sender: UIButton) {
         let onWifi: Bool = (UIApplication.sharedApplication().delegate! as! AppDelegate).reachability!.isReachableViaWiFi()
-        let wifiOnly: Bool = !NSUserDefaults.standardUserDefaults().boolForKey("StreamOnCellular")
+        let wifiOnly: Bool = Defaults[.StreamOnCellular]
         if !wifiOnly || onWifi {
             splitViewController?.collapseSecondaryViewController(self, forSplitViewController: splitViewController!)
 //            dismissViewControllerAnimated(false, completion: { [unowned self] in

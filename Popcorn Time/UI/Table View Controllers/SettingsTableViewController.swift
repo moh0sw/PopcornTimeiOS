@@ -2,6 +2,7 @@
 
 import UIKit
 import SafariServices
+import SwiftyUserDefaults
 
 class SettingsTableViewController: UITableViewController, PCTTablePickerViewDelegate, PCTPickerViewDelegate {
 
@@ -13,9 +14,9 @@ class SettingsTableViewController: UITableViewController, PCTTablePickerViewDele
 	
 	var tablePickerView: PCTTablePickerView!
     var pickerView: PCTPickerView!
+    let ud = NSUserDefaults.standardUserDefaults()
     
     var safariViewController: SFSafariViewController!
-    let ud = NSUserDefaults.standardUserDefaults()
     var state: String!
     
     override func viewDidLoad() {
@@ -24,13 +25,13 @@ class SettingsTableViewController: UITableViewController, PCTTablePickerViewDele
         tabBarController?.view.addSubview(tablePickerView)
         pickerView = PCTPickerView(superView: view, componentDataSources: [[String : AnyObject]](), delegate: self, selectedItems: [String]())
         tabBarController?.view.addSubview(pickerView)
-        updateSignedInStatus(traktSignInButton, isSignedIn: ud.boolForKey("AuthorizedTrakt"))
-        updateSignedInStatus(openSubsSignInButton, isSignedIn: ud.boolForKey("AuthorizedOpenSubs"))
+        updateSignedInStatus(traktSignInButton, isSignedIn: Defaults[.AuthorizedTrakt])
+        updateSignedInStatus(openSubsSignInButton, isSignedIn: Defaults[.AuthorizedOpenSubs])
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(safariLogin(_:)), name: safariLoginNotification, object: nil)
-        streamOnCellularSwitch.on = ud.boolForKey("StreamOnCellular")
-        removeCacheOnPlayerExitSwitch.on = ud.boolForKey("removeCacheOnPlayerExit")
+        streamOnCellularSwitch.on = Defaults[.StreamOnCellular]
+        removeCacheOnPlayerExitSwitch.on = Defaults[.RemoveCacheOnPlayerExit]
         for index in 0..<qualitySegmentedControl.numberOfSegments {
-            if qualitySegmentedControl.titleForSegmentAtIndex(index) == ud.stringForKey("PreferredQuality") {
+            if qualitySegmentedControl.titleForSegmentAtIndex(index) == Defaults[.PreferredQuality] {
                 qualitySegmentedControl.selectedSegmentIndex = index
             }
         }
