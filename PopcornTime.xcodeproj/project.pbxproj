@@ -15,11 +15,6 @@
 		4DCFA56C1CD2206F005246DC /* MainBackgroundView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4DCFA56B1CD2206F005246DC /* MainBackgroundView.xib */; };
 		7E2AD00F1B61D299001B24BE /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7E2AD00E1B61D299001B24BE /* Images.xcassets */; };
 		85F38AE05A2DF856A465302E /* Pods_Popcorn_Time.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DC067E4CCF06825BB4ADA281 /* Pods_Popcorn_Time.framework */; };
-		FA0A0E071D84104A0060C909 /* GradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0A0E061D84104A0060C909 /* GradientView.swift */; };
-		FA0A0E091D84106F0060C909 /* CircularView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0A0E081D84106F0060C909 /* CircularView.swift */; };
-		FA0A0E0C1D8411190060C909 /* HighlightImageButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0A0E0B1D8411190060C909 /* HighlightImageButton.swift */; };
-		FA0A0E0E1D8411360060C909 /* BlurButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0A0E0D1D8411360060C909 /* BlurButton.swift */; };
-		FA0A0E101D8411850060C909 /* BorderButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0A0E0F1D8411850060C909 /* BorderButton.swift */; };
 		FA120C7D1D83F61300BCCD56 /* R.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA120C7C1D83F61300BCCD56 /* R.generated.swift */; };
 		FA4D0C4A1D836B77002C2F99 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = FA4D0C4C1D836B77002C2F99 /* Localizable.strings */; };
 		FA5696DF1D8355720090B0F3 /* Movies.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA5696DE1D8355720090B0F3 /* Movies.storyboard */; };
@@ -143,11 +138,6 @@
 		7EA9DF041B61A19A00BAC6AF /* Popcorn Time.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Popcorn Time.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7EA9DF081B61A19A00BAC6AF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DC067E4CCF06825BB4ADA281 /* Pods_Popcorn_Time.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Popcorn_Time.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		FA0A0E061D84104A0060C909 /* GradientView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GradientView.swift; sourceTree = "<group>"; };
-		FA0A0E081D84106F0060C909 /* CircularView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircularView.swift; sourceTree = "<group>"; };
-		FA0A0E0B1D8411190060C909 /* HighlightImageButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HighlightImageButton.swift; sourceTree = "<group>"; };
-		FA0A0E0D1D8411360060C909 /* BlurButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlurButton.swift; sourceTree = "<group>"; };
-		FA0A0E0F1D8411850060C909 /* BorderButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BorderButton.swift; sourceTree = "<group>"; };
 		FA120C7C1D83F61300BCCD56 /* R.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = R.generated.swift; sourceTree = "<group>"; };
 		FA4D0C4B1D836B77002C2F99 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
 		FA4D0C4D1D836B79002C2F99 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -255,17 +245,6 @@
 				DC067E4CCF06825BB4ADA281 /* Pods_Popcorn_Time.framework */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		FA0A0E0A1D8410890060C909 /* Buttons */ = {
-			isa = PBXGroup;
-			children = (
-				4DB3B8ED1CC3B1760096FEA0 /* CastIconButton.swift */,
-				FA0A0E0B1D8411190060C909 /* HighlightImageButton.swift */,
-				FA0A0E0D1D8411360060C909 /* BlurButton.swift */,
-				FA0A0E0F1D8411850060C909 /* BorderButton.swift */,
-			);
-			name = Buttons;
 			sourceTree = "<group>";
 		};
 		FA361B081D83430E0055E3CC /* RSwift */ = {
@@ -418,7 +397,6 @@
 		FA4D0C5A1D83E581002C2F99 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				FA0A0E0A1D8410890060C909 /* Buttons */,
 				FA4D0C5B1D83E5C7002C2F99 /* CollectionViewCells */,
 				FA4D0C5C1D83E60E002C2F99 /* CollectionReusableViews */,
 				FA4D0C5D1D83E745002C2F99 /* TableViewCells */,
@@ -428,10 +406,9 @@
 				4DC541991CFB5491001A531C /* PCTTablePickerView.xib */,
 				4DA7BA4E1D5A629400229B14 /* PCTPickerView.swift */,
 				4DA7BA501D5A686B00229B14 /* PCTPickerView.xib */,
+				4DB3B8ED1CC3B1760096FEA0 /* CastIconButton.swift */,
 				4D3FE2861D4380B100707065 /* UpNextView.swift */,
 				4D0668321D81E3D0004869F6 /* HeaderScrollView.swift */,
-				FA0A0E061D84104A0060C909 /* GradientView.swift */,
-				FA0A0E081D84106F0060C909 /* CircularView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -625,12 +602,10 @@
 				FAC39FB91D83EFFB0024EAF1 /* TVShowsCollectionViewController.swift in Sources */,
 				FAC39FC11D83F0020024EAF1 /* LoadingViewController.swift in Sources */,
 				FAC39FAF1D83EFF10024EAF1 /* AppDelegate.swift in Sources */,
-				FA0A0E0E1D8411360060C909 /* BlurButton.swift in Sources */,
 				FAC39FBD1D83F0020024EAF1 /* PCTEpsiodeDetailPresentationController.swift in Sources */,
 				FAC39FBC1D83F0020024EAF1 /* AnimeCollectionViewController.swift in Sources */,
 				FAC39FC21D83F0020024EAF1 /* PCTPlayerViewController.swift in Sources */,
 				FAC39FA61D83EFE30024EAF1 /* AirPlayManager.swift in Sources */,
-				FA0A0E071D84104A0060C909 /* GradientView.swift in Sources */,
 				FAC39FC51D83F00A0024EAF1 /* PCTTablePickerView.swift in Sources */,
 				FAC39FBB1D83EFFB0024EAF1 /* EpisodeDetailViewController.swift in Sources */,
 				FAC39FAE1D83EFE30024EAF1 /* WatchlistManager.swift in Sources */,
@@ -655,8 +630,6 @@
 				FAC39FC41D83F00A0024EAF1 /* MainBackgroundView.swift in Sources */,
 				FAC39FCE1D83F0150024EAF1 /* AnimeCell.swift in Sources */,
 				FAC39FA51D83EFD40024EAF1 /* TraktTVAPI.swift in Sources */,
-				FA0A0E091D84106F0060C909 /* CircularView.swift in Sources */,
-				FA0A0E0C1D8411190060C909 /* HighlightImageButton.swift in Sources */,
 				FABAC9891D83F37D00BCEE6F /* PCTLoadingViewAnimatedTransitioning.swift in Sources */,
 				FAC39FB11D83EFF50024EAF1 /* MainTabBarController.swift in Sources */,
 				FAC39FCB1D83F0150024EAF1 /* WobblyCell.swift in Sources */,
@@ -674,7 +647,6 @@
 				FAC39FB01D83EFF10024EAF1 /* Constants.swift in Sources */,
 				FAC39FB21D83EFF50024EAF1 /* MainCollectionViewController.swift in Sources */,
 				FAC39FB41D83EFF50024EAF1 /* SubtitlesTableViewController.swift in Sources */,
-				FA0A0E101D8411850060C909 /* BorderButton.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

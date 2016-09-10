@@ -12,7 +12,7 @@ class CastPlayerViewController: UIViewController, GCKRemoteMediaClientListener, 
     
     @IBOutlet var progressSlider: PCTProgressSlider!
     @IBOutlet var volumeSlider: UISlider?
-    @IBOutlet var closeButton: BlurButton!
+    @IBOutlet var closeButton: PCTBlurButton!
     @IBOutlet var imageView: UIImageView!
     @IBOutlet var backgroundImageView: UIImageView!
     @IBOutlet var elapsedTimeLabel: UILabel!
