@@ -43,7 +43,6 @@ class PCTLoadingViewAnimatedTransitioning: NSObject, UIViewControllerAnimatedTra
         sourceController.view.addSubview(view)
         UIView.animateWithDuration(transitionDuration(transitionContext), delay: 0.0, usingSpringWithDamping: 1.0, initialSpringVelocity: 0.0, options: .AllowUserInteraction, animations: {
             if let sourceController = self.sourceController as? DetailItemOverviewViewController {
-                sourceController.lastHeaderHeight = sourceController.headerHeightConstraint.constant
                 let frame = sourceController.tabBarController?.tabBar.frame
                 let nframe = sourceController.navigationController?.navigationBar.frame
                 let offsetY = frame!.size.height
@@ -58,8 +57,6 @@ class PCTLoadingViewAnimatedTransitioning: NSObject, UIViewControllerAnimatedTra
                 if let showDetail = self.sourceController as? TVShowDetailViewController {
                     showDetail.segmentedControl.alpha = 0.0
                 }
-                sourceController.headerHeightConstraint.constant = UIScreen.mainScreen().bounds.height
-                sourceController.view.layoutIfNeeded()
                 view.alpha = 0.4
             }
             }, completion: { completed in
@@ -83,8 +80,6 @@ class PCTLoadingViewAnimatedTransitioning: NSObject, UIViewControllerAnimatedTra
         sourceController.navigationController?.setNavigationBarHidden(false, animated: true)
         UIView.animateWithDuration(transitionDuration(transitionContext), delay: 0.0, usingSpringWithDamping: 1.0, initialSpringVelocity: 0.0, options: .AllowUserInteraction, animations: {
             if let sourceController = self.sourceController as? DetailItemOverviewViewController {
-                sourceController.headerHeightConstraint.constant = sourceController.lastHeaderHeight
-                sourceController.updateScrolling(true)
                 if let showDetail = self.sourceController as? TVShowDetailViewController {
                     showDetail.segmentedControl.alpha = 1.0
                 }

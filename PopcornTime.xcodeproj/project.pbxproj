@@ -66,7 +66,6 @@
 		FAC39FC61D83F00A0024EAF1 /* PCTPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA7BA4E1D5A629400229B14 /* PCTPickerView.swift */; };
 		FAC39FC71D83F00A0024EAF1 /* CastIconButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DB3B8ED1CC3B1760096FEA0 /* CastIconButton.swift */; };
 		FAC39FC81D83F00A0024EAF1 /* UpNextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D3FE2861D4380B100707065 /* UpNextView.swift */; };
-		FAC39FC91D83F00A0024EAF1 /* HeaderScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D0668321D81E3D0004869F6 /* HeaderScrollView.swift */; };
 		FAC39FCA1D83F0150024EAF1 /* MainItemCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC5417D1CFB5441001A531C /* MainItemCell.swift */; };
 		FAC39FCB1D83F0150024EAF1 /* WobblyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4D0C541D8379ED002C2F99 /* WobblyCell.swift */; };
 		FAC39FCC1D83F0150024EAF1 /* MovieCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4D0C4E1D836C3D002C2F99 /* MovieCell.swift */; };
@@ -94,7 +93,6 @@
 		32BEB75AC9001224E0BB6EF0 /* Pods-Popcorn Time.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Popcorn Time.release.xcconfig"; path = "Pods/Target Support Files/Pods-Popcorn Time/Pods-Popcorn Time.release.xcconfig"; sourceTree = "<group>"; };
 		4D02E74A1CE261C600AC4588 /* PCTPlayerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PCTPlayerViewController.swift; sourceTree = "<group>"; };
 		4D0668301D809634004869F6 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
-		4D0668321D81E3D0004869F6 /* HeaderScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HeaderScrollView.swift; sourceTree = "<group>"; };
 		4D2C20CC1D2ECCD900E3862E /* TermsOfServiceViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TermsOfServiceViewController.swift; sourceTree = "<group>"; };
 		4D3FE2861D4380B100707065 /* UpNextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpNextView.swift; sourceTree = "<group>"; };
 		4D5B6A5D1D537198004D98D4 /* CastPlayerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CastPlayerViewController.swift; sourceTree = "<group>"; };
@@ -413,7 +411,6 @@
 				4DA7BA501D5A686B00229B14 /* PCTPickerView.xib */,
 				4DB3B8ED1CC3B1760096FEA0 /* CastIconButton.swift */,
 				4D3FE2861D4380B100707065 /* UpNextView.swift */,
-				4D0668321D81E3D0004869F6 /* HeaderScrollView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -626,7 +623,6 @@
 				FAC39FAA1D83EFE30024EAF1 /* OAuthCredential.swift in Sources */,
 				FAC39FCA1D83F0150024EAF1 /* MainItemCell.swift in Sources */,
 				FAC39FB61D83EFF50024EAF1 /* TermsOfServiceViewController.swift in Sources */,
-				FAC39FC91D83F00A0024EAF1 /* HeaderScrollView.swift in Sources */,
 				FAC39FBF1D83F0020024EAF1 /* BugReportTableViewController.swift in Sources */,
 				FA120C7D1D83F61300BCCD56 /* R.generated.swift in Sources */,
 				FA1CFBFC1D84767E001EFB2A /* UIKit+Extension.swift in Sources */,

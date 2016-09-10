@@ -192,9 +192,6 @@ class TVShowDetailViewController: DetailItemOverviewViewController, UITableViewD
     
     @IBAction func segmentedControlDidChangeSegment(segmentedControl: UISegmentedControl) {
         currentSeason = segmentedControl.selectedSegmentIndex == 0 ? Int.max: seasons?[segmentedControl.selectedSegmentIndex - 1]
-        if tableView.frame.height > tableView.contentSize.height + tableView.contentInset.bottom {
-            resetToEnd(tableView)
-        }
     }
     
     // MARK: - Navigation

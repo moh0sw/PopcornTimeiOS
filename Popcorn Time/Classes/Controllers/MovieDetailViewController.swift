@@ -8,7 +8,11 @@ import PopcornTorrent
 import SwiftyUserDefaults
 
 class MovieDetailViewController: DetailItemOverviewViewController, PCTTablePickerViewDelegate, UIViewControllerTransitioningDelegate {
-    
+
+    @IBOutlet var headerView: UIView!
+    @IBOutlet var headerHeightConstraint: NSLayoutConstraint!
+    @IBOutlet var headerTopConstraint: NSLayoutConstraint!
+
     @IBOutlet var torrentHealth: CircularView!
     @IBOutlet var qualityBtn: UIButton!
     @IBOutlet var subtitlesButton: UIButton!
@@ -16,8 +20,6 @@ class MovieDetailViewController: DetailItemOverviewViewController, PCTTablePicke
     @IBOutlet var watchedBtn: UIBarButtonItem!
     @IBOutlet var trailerBtn: UIButton!
     @IBOutlet var collectionView: UICollectionView!
-    @IBOutlet var regularConstraints: [NSLayoutConstraint]!
-    @IBOutlet var compactConstraints: [NSLayoutConstraint]!
     
     var currentItem: PCTMovie!
     var relatedItems = [PCTMovie]()
@@ -28,12 +30,12 @@ class MovieDetailViewController: DetailItemOverviewViewController, PCTTablePicke
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         WatchlistManager.movieManager.getProgress()
-        view.addObserver(self, forKeyPath: "frame", options: .New, context: &classContext)
+
+        self.scrollView.delegate = self
     }
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
-        view.removeObserver(self, forKeyPath: "frame")
     }
     
     override func viewDidLayoutSubviews() {
@@ -47,9 +49,6 @@ class MovieDetailViewController: DetailItemOverviewViewController, PCTTablePicke
         navigationItem.title = currentItem.title
         currentItem.coverImageAsString = currentItem.coverImageAsString?.stringByReplacingOccurrencesOfString("thumb", withString: "medium")
         watchedBtn.image = getWatchedButtonImage()
-        let adjustForTabbarInsets = UIEdgeInsetsMake(0, 0, CGRectGetHeight(tabBarController!.tabBar.frame), 0)
-        scrollView.contentInset = adjustForTabbarInsets
-        scrollView.scrollIndicatorInsets = adjustForTabbarInsets
         titleLabel.text = currentItem.title
         summaryView.text = currentItem.summary
         ratingView.rating = Float(currentItem.rating)
@@ -219,9 +218,17 @@ class MovieDetailViewController: DetailItemOverviewViewController, PCTTablePicke
     func animationControllerForDismissedController(dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         return dismissed is LoadingViewController ? PCTLoadingViewAnimatedTransitioning(isPresenting: false, sourceController: self) : nil
     }
+
+    func scrollViewDidScroll(scrollView: UIScrollView) {
+        let offset = scrollView.contentOffset.y
+        self.headerTopConstraint.constant = offset
+        self.headerHeightConstraint.constant = 300 - offset
+    }
 }
 
+/*
 extension MovieDetailViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+
     func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
         var sections = 0
         if relatedItems.count > 0 {sections += 1}; if cast.count > 0 {sections += 1}
@@ -292,31 +299,7 @@ extension MovieDetailViewController: UICollectionViewDelegate, UICollectionViewD
                 }
             })
         }
-        
-        for constraint in compactConstraints {
-            constraint.priority = traitCollection.horizontalSizeClass == .Compact ? 999 : 240
-        }
-        for constraint in regularConstraints {
-            constraint.priority = traitCollection.horizontalSizeClass == .Compact ? 240 : 999
-        }
-        UIView.animateWithDuration(animationLength, animations: {
-            self.view.layoutIfNeeded()
-            self.collectionView.collectionViewLayout.invalidateLayout()
-        })
     }
-    
-    func collectionView(collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, atIndexPath indexPath: NSIndexPath) -> UICollectionReusableView {
-        if kind == UICollectionElementKindSectionHeader {
-            return {
-               let element = collectionView.dequeueReusableSupplementaryViewOfKind(kind, withReuseIdentifier: "header", forIndexPath: indexPath)
-                (element.viewWithTag(1) as! UILabel).text = indexPath.section == 0 ? "RELATED" : "CAST"
-                return element
-            }()
-        }
-        return collectionView.dequeueReusableSupplementaryViewOfKind(kind, withReuseIdentifier: "footer", forIndexPath: indexPath)
-    }
-    
-    override func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        return collectionView.gestureRecognizers?.filter({$0 == gestureRecognizer || $0 == otherGestureRecognizer}).first == nil
-    }
+
 }
+*/
