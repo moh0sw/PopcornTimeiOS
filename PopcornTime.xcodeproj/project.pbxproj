@@ -450,8 +450,8 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 7EA9DF251B61A19A00BAC6AF /* Build configuration list for PBXNativeTarget "Popcorn Time" */;
 			buildPhases = (
-				FA2401661D83F6F000E946F0 /* RSwift */,
 				0024328ABAB9F15E60CCA559 /* [CP] Check Pods Manifest.lock */,
+				FA2401661D83F6F000E946F0 /* RSwift */,
 				7EA9DF001B61A19A00BAC6AF /* Sources */,
 				7EA9DF011B61A19A00BAC6AF /* Frameworks */,
 				7EA9DF021B61A19A00BAC6AF /* Resources */,
