@@ -301,7 +301,7 @@ class SettingsTableViewController: UITableViewController, PCTTablePickerViewDele
     
     func openUrl(url: String) {
         safariViewController = SFSafariViewController(URL: NSURL(string: url)!)
-        self.safariViewController.view.tintColor = UIColor(red:0.37, green:0.41, blue:0.91, alpha:1.0)
+        self.safariViewController.view.tintColor = UIColor.appColor()
         presentViewController(self.safariViewController, animated: true, completion: nil)
     }
     

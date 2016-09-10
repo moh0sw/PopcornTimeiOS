@@ -19,7 +19,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         NetworkActivityIndicatorManager.sharedManager.isEnabled = true
-        window?.tintColor = UIColor(red:0.37, green:0.41, blue:0.91, alpha:1.0)
+        window?.tintColor = UIColor.appColor()
         reachability.startNotifier()
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(reachabilityChanged(_:)), name: kReachabilityChangedNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(problemAuthenticatingTrakt), name: traktAuthenticationErrorNotification, object: nil)
