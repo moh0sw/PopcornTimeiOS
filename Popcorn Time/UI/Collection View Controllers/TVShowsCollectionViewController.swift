@@ -98,13 +98,6 @@ class TVShowsCollectionViewController: ItemOverviewCollectionViewController, UIP
         presentViewController(controller, animated: true, completion: nil)
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        fixIOS9PopOverAnchor(segue)
-        if segue.identifier == "showDetail" {
-            (segue.destinationViewController as! TVShowContainerViewController).currentItem = shows[(collectionView?.indexPathForCell(sender as! CoverCollectionViewCell)?.row)!]
-        }
-    }
-    
     // MARK: - Collection view data source
     
     override func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
@@ -155,6 +148,14 @@ class TVShowsCollectionViewController: ItemOverviewCollectionViewController, UIP
             return reuseableView
             }()
         return filterHeader!
+    }
+    
+    override func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+        let showDetail = R.storyboard.tVShows.tVShowDetailViewController()!
+        showDetail.currentItem = shows[indexPath.row]
+        delay(0.2) {
+            self.navigationController?.pushViewController(showDetail, animated: true)
+        }
     }
     
     // MARK: - GenresDelegate

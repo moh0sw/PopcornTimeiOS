@@ -65,6 +65,7 @@
 		FA4D0C511D836C51002C2F99 /* TVShowCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4D0C501D836C51002C2F99 /* TVShowCell.swift */; };
 		FA4D0C531D836C75002C2F99 /* AnimeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4D0C521D836C75002C2F99 /* AnimeCell.swift */; };
 		FA4D0C551D8379ED002C2F99 /* WobblyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4D0C541D8379ED002C2F99 /* WobblyCell.swift */; };
+		FA4D0C571D838373002C2F99 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4D0C561D838373002C2F99 /* Constants.swift */; };
 		FA5696DD1D8354CE0090B0F3 /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5696DC1D8354CE0090B0F3 /* MainTabBarController.swift */; };
 		FA5696DF1D8355720090B0F3 /* Movies.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA5696DE1D8355720090B0F3 /* Movies.storyboard */; };
 		FA5696E11D8355820090B0F3 /* TVShows.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA5696E01D8355820090B0F3 /* TVShows.storyboard */; };
@@ -155,6 +156,7 @@
 		FA4D0C501D836C51002C2F99 /* TVShowCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TVShowCell.swift; sourceTree = "<group>"; };
 		FA4D0C521D836C75002C2F99 /* AnimeCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnimeCell.swift; sourceTree = "<group>"; };
 		FA4D0C541D8379ED002C2F99 /* WobblyCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WobblyCell.swift; sourceTree = "<group>"; };
+		FA4D0C561D838373002C2F99 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		FA5696DC1D8354CE0090B0F3 /* MainTabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainTabBarController.swift; sourceTree = "<group>"; };
 		FA5696DE1D8355720090B0F3 /* Movies.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Movies.storyboard; sourceTree = "<group>"; };
 		FA5696E01D8355820090B0F3 /* TVShows.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = TVShows.storyboard; sourceTree = "<group>"; };
@@ -281,6 +283,7 @@
 			isa = PBXGroup;
 			children = (
 				FA5696DC1D8354CE0090B0F3 /* MainTabBarController.swift */,
+				FA4D0C561D838373002C2F99 /* Constants.swift */,
 				FA361B111D8343F90055E3CC /* Commons */,
 				FA361B121D8344030055E3CC /* Movies */,
 				FA361B131D83440A0055E3CC /* TVShows */,
@@ -604,6 +607,7 @@
 				4DA7BA4F1D5A629400229B14 /* PCTPickerView.swift in Sources */,
 				4DC541951CFB5467001A531C /* GenresTableViewController.swift in Sources */,
 				7E3CFB7B1B62B20B002F9E8C /* PCTTorrent.swift in Sources */,
+				FA4D0C571D838373002C2F99 /* Constants.swift in Sources */,
 				4DC541771CFB540D001A531C /* FilterCollectionReusableView.swift in Sources */,
 				4DC5419B1CFB5491001A531C /* LoadingViewController.swift in Sources */,
 				4D02E74B1CE261C600AC4588 /* PCTPlayerViewController.swift in Sources */,

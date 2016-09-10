@@ -76,9 +76,9 @@ class TVShowDetailViewController: DetailItemOverviewViewController, UITableViewD
         currentItem.coverImageAsString = currentItem.coverImageAsString?.stringByReplacingOccurrencesOfString("thumb", withString: "medium")
         splitViewController?.delegate = self
         splitViewController?.preferredDisplayMode = .AllVisible
-        let adjustForTabbarInsets = UIEdgeInsetsMake(0, 0, CGRectGetHeight(tabBarController!.tabBar.frame), 0)
-        tableView.contentInset = adjustForTabbarInsets
-        tableView.scrollIndicatorInsets = adjustForTabbarInsets
+//        let adjustForTabbarInsets = UIEdgeInsetsMake(0, 0, CGRectGetHeight(tabBarController!.tabBar.frame), 0)
+//        tableView.contentInset = adjustForTabbarInsets
+//        tableView.scrollIndicatorInsets = adjustForTabbarInsets
         tableView.rowHeight = UITableViewAutomaticDimension
         titleLabel.text = currentItem.title
         navigationItem.title = currentItem.title

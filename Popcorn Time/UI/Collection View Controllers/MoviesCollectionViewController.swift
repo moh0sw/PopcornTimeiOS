@@ -105,14 +105,6 @@ class MoviesCollectionViewController: ItemOverviewCollectionViewController, UIPo
         (controller.viewControllers[0] as! GenresTableViewController).delegate = self
         presentViewController(controller, animated: true, completion: nil)
     }
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        fixIOS9PopOverAnchor(segue)
-        if segue.identifier == "showDetail" {
-            let movieDetail = segue.destinationViewController as! MovieDetailViewController
-            let cell = sender as! CoverCollectionViewCell
-            movieDetail.currentItem = self.movies[(collectionView?.indexPathForCell(cell)?.row)!]
-        }
-    }
     
     // MARK: - Collection view data source
     
@@ -165,6 +157,14 @@ class MoviesCollectionViewController: ItemOverviewCollectionViewController, UIPo
             return reuseableView
         }()
         return filterHeader!
+    }
+    
+    override func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+        let movieDetail = R.storyboard.movies.movieDetailViewController()!
+        movieDetail.currentItem = movies[indexPath.row]
+        delay(0.2) {
+          self.navigationController?.pushViewController(movieDetail, animated: true)
+        }
     }
     
     // MARK: - GenresDelegate

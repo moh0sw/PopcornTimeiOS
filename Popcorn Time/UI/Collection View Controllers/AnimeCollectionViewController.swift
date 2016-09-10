@@ -104,15 +104,6 @@ class AnimeCollectionViewController: ItemOverviewCollectionViewController, UIPop
         presentViewController(controller, animated: true, completion: nil)
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        fixIOS9PopOverAnchor(segue)
-        if segue.identifier == "showDetail" {
-            let vc = segue.destinationViewController as! TVShowContainerViewController
-            vc.currentItem = animes[(collectionView?.indexPathForCell(sender as! CoverCollectionViewCell)?.row)!]
-            vc.currentType = .Animes
-        }
-    }
-    
     // MARK: - Collection view data source
     
     override func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
@@ -163,6 +154,16 @@ class AnimeCollectionViewController: ItemOverviewCollectionViewController, UIPop
             return reuseableView
             }()
         return filterHeader!
+    }
+    
+    override func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+        let animeDetail = R.storyboard.animes.tVShowDetailViewController()!
+        animeDetail.currentItem = animes[indexPath.row]
+        animeDetail.currentType = .Animes
+        
+        delay(0.2) {
+            self.navigationController?.pushViewController(animeDetail, animated: true)
+        }
     }
     
     // MARK: - GenresDelegate
