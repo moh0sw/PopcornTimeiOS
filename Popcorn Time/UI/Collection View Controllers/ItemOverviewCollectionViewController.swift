@@ -152,7 +152,7 @@ class ItemOverviewCollectionViewController: UICollectionViewController, UISearch
     // MARK: - Help
     
     func nbColumns() -> CGFloat {
-        let targetWidth: CGFloat = 160
+        let targetWidth: CGFloat = 180
         let nbColumns = round(self.collectionView!.bounds.width / targetWidth)
         return max(2, nbColumns)
     }
