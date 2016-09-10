@@ -2,7 +2,7 @@
 
 import UIKit
 
-class CoverCollectionViewCell: WobblyCell {
+class MainItemCell: WobblyCell {
     
     @IBOutlet weak var coverImage: UIImageView!
     @IBOutlet weak var gradientView: UIView!

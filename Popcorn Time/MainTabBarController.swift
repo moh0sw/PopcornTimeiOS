@@ -13,7 +13,6 @@ class MainTabBarController: UITabBarController, UITabBarControllerDelegate {
     var animesNVC = R.storyboard.animes.initialViewController()!
     var settingsNVC = R.storyboard.settings.initialViewController()!
 
-
     override func viewDidLoad() {
         super.viewDidLoad()
         self.launchApp()

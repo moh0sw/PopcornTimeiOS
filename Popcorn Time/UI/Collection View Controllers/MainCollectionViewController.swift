@@ -10,7 +10,7 @@ protocol ItemOverviewDelegate: class {
     func shouldRefreshCollectionView() -> Bool
 }
 
-class ItemOverviewCollectionViewController: UICollectionViewController, UISearchControllerDelegate, UISearchBarDelegate, UISearchResultsUpdating, UICollectionViewDelegateFlowLayout {
+class MainCollectionViewController: UICollectionViewController, UISearchControllerDelegate, UISearchBarDelegate, UISearchResultsUpdating, UICollectionViewDelegateFlowLayout {
     
     weak var delegate: ItemOverviewDelegate?
     

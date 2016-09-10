@@ -8,7 +8,7 @@
 
 import UIKit
 
-class AnimeCell: CoverCollectionViewCell {
+class AnimeCell: MainItemCell {
     
     var anime: PCTShow? {
         didSet {

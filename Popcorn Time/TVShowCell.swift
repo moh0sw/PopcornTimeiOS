@@ -8,7 +8,7 @@
 
 import UIKit
 
-class TVShowCell: CoverCollectionViewCell {
+class TVShowCell: MainItemCell {
     
     var show: PCTShow? {
         didSet {

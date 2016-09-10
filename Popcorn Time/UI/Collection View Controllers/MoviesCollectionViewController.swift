@@ -3,7 +3,7 @@
 import UIKit
 import AlamofireImage
 
-class MoviesCollectionViewController: ItemOverviewCollectionViewController, UIPopoverPresentationControllerDelegate, GenresDelegate, ItemOverviewDelegate {
+class MoviesCollectionViewController: MainCollectionViewController, UIPopoverPresentationControllerDelegate, GenresDelegate, ItemOverviewDelegate {
     
     var movies = [PCTMovie]()
     
@@ -112,7 +112,7 @@ class MoviesCollectionViewController: ItemOverviewCollectionViewController, UIPo
         collectionView.backgroundView = nil
         if movies.count == 0 {
             if error != nil {
-                let background = R.nib.tableViewBackground.firstView(owner: nil)!
+                let background = R.nib.mainBackgroundView.firstView(owner: nil)!
                 background.setUpView(error: error!)
                 collectionView.backgroundView = background
             } else if isLoading {
@@ -122,7 +122,7 @@ class MoviesCollectionViewController: ItemOverviewCollectionViewController, UIPo
                 indicator.sizeToFit()
                 indicator.startAnimating()
             } else {
-                let background = R.nib.tableViewBackground.firstView(owner: nil)!
+                let background = R.nib.mainBackgroundView.firstView(owner: nil)!
                 background.setUpView(image: UIImage(named: "Search")!, title: "No results found.", description: "No search results found for \(searchController.searchBar.text!). Please check the spelling and try again.")
                 collectionView.backgroundView = background
             }

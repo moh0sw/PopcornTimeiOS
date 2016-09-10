@@ -2,7 +2,7 @@
 
 import UIKit
 
-class TableViewBackground: UIView {
+class MainBackgroundView: UIView {
     @IBOutlet var imageView: UIImageView!
     @IBOutlet var titleLabel: UILabel!
     @IBOutlet var descriptionLabel: UILabel!

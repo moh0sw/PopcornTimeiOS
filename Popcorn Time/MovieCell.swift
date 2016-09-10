@@ -8,7 +8,7 @@
 
 import UIKit
 
-class MovieCell: CoverCollectionViewCell {
+class MovieCell: MainItemCell {
     
     var movie: PCTMovie? {
         didSet {

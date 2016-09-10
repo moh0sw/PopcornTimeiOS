@@ -252,7 +252,7 @@ extension MovieDetailViewController: UICollectionViewDelegate, UICollectionViewD
         let cell: UICollectionViewCell
         if indexPath.section == 0 {
             cell = {
-               let coverCell = collectionView.dequeueReusableCellWithReuseIdentifier("relatedCell", forIndexPath: indexPath) as! CoverCollectionViewCell
+               let coverCell = collectionView.dequeueReusableCellWithReuseIdentifier("relatedCell", forIndexPath: indexPath) as! MainItemCell
                 coverCell.titleLabel.text = relatedItems[indexPath.row].title
                 coverCell.yearLabel.text = relatedItems[indexPath.row].year
                 if let image = relatedItems[indexPath.row].coverImageAsString,

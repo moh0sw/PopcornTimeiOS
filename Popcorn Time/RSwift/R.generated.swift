@@ -492,12 +492,17 @@ struct R: Rswift.Validatable {
   
   /// This `R.nib` struct is generated, and contains static references to 3 nibs.
   struct nib {
+    /// Nib `MainBackgroundView`.
+    static let mainBackgroundView = _R.nib._MainBackgroundView()
     /// Nib `PCTPickerView`.
     static let pCTPickerView = _R.nib._PCTPickerView()
     /// Nib `PCTTablePickerView`.
     static let pCTTablePickerView = _R.nib._PCTTablePickerView()
-    /// Nib `TableViewBackground`.
-    static let tableViewBackground = _R.nib._TableViewBackground()
+    
+    /// `UINib(name: "MainBackgroundView", bundle: ...)`
+    static func mainBackgroundView(_: Void) -> UINib {
+      return UINib(resource: R.nib.mainBackgroundView)
+    }
     
     /// `UINib(name: "PCTPickerView", bundle: ...)`
     static func pCTPickerView(_: Void) -> UINib {
@@ -507,11 +512,6 @@ struct R: Rswift.Validatable {
     /// `UINib(name: "PCTTablePickerView", bundle: ...)`
     static func pCTTablePickerView(_: Void) -> UINib {
       return UINib(resource: R.nib.pCTTablePickerView)
-    }
-    
-    /// `UINib(name: "TableViewBackground", bundle: ...)`
-    static func tableViewBackground(_: Void) -> UINib {
-      return UINib(resource: R.nib.tableViewBackground)
     }
     
     private init() {}
@@ -542,7 +542,7 @@ struct R: Rswift.Validatable {
     /// Reuse identifier `header`.
     static let header: ReuseIdentifier<UIView> = ReuseIdentifier(identifier: "header")
     /// Reuse identifier `relatedCell`.
-    static let relatedCell: ReuseIdentifier<CoverCollectionViewCell> = ReuseIdentifier(identifier: "relatedCell")
+    static let relatedCell: ReuseIdentifier<MainItemCell> = ReuseIdentifier(identifier: "relatedCell")
     
     private init() {}
   }
@@ -667,6 +667,17 @@ struct _R: Rswift.Validatable {
   }
   
   struct nib {
+    struct _MainBackgroundView: NibResourceType {
+      let bundle = _R.hostingBundle
+      let name = "MainBackgroundView"
+      
+      func firstView(owner ownerOrNil: AnyObject?, options optionsOrNil: [NSObject : AnyObject]? = nil) -> MainBackgroundView? {
+        return instantiateWithOwner(ownerOrNil, options: optionsOrNil)[0] as? MainBackgroundView
+      }
+      
+      private init() {}
+    }
+    
     struct _PCTPickerView: NibResourceType {
       let bundle = _R.hostingBundle
       let name = "PCTPickerView"
@@ -684,17 +695,6 @@ struct _R: Rswift.Validatable {
       
       func firstView(owner ownerOrNil: AnyObject?, options optionsOrNil: [NSObject : AnyObject]? = nil) -> UIView? {
         return instantiateWithOwner(ownerOrNil, options: optionsOrNil)[0] as? UIView
-      }
-      
-      private init() {}
-    }
-    
-    struct _TableViewBackground: NibResourceType {
-      let bundle = _R.hostingBundle
-      let name = "TableViewBackground"
-      
-      func firstView(owner ownerOrNil: AnyObject?, options optionsOrNil: [NSObject : AnyObject]? = nil) -> TableViewBackground? {
-        return instantiateWithOwner(ownerOrNil, options: optionsOrNil)[0] as? TableViewBackground
       }
       
       private init() {}
