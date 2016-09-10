@@ -7,66 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		4D0005661D3C3CAD0075706C /* AirPlayManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D0005651D3C3CAD0075706C /* AirPlayManager.swift */; };
-		4D02E74B1CE261C600AC4588 /* PCTPlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D02E74A1CE261C600AC4588 /* PCTPlayerViewController.swift */; };
 		4D0668311D809634004869F6 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4D0668301D809634004869F6 /* Main.storyboard */; };
-		4D0668331D81E3D0004869F6 /* HeaderScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D0668321D81E3D0004869F6 /* HeaderScrollView.swift */; };
-		4D2C20CD1D2ECCD900E3862E /* TermsOfServiceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D2C20CC1D2ECCD900E3862E /* TermsOfServiceViewController.swift */; };
-		4D2F71BB1D737A01001EF02E /* UpdateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D2F71BA1D737A01001EF02E /* UpdateManager.swift */; };
-		4D33E8771CF3957500E65498 /* OpenSubtitles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D33E8761CF3957500E65498 /* OpenSubtitles.swift */; };
-		4D3FE2871D4380B100707065 /* UpNextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D3FE2861D4380B100707065 /* UpNextView.swift */; };
-		4D580A081D3CFAF500963F10 /* GoogleCastManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D580A071D3CFAF500963F10 /* GoogleCastManager.swift */; };
-		4D5B6A5E1D537198004D98D4 /* CastPlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D5B6A5D1D537198004D98D4 /* CastPlayerViewController.swift */; };
-		4D74C21B1D23CEC500FB81CA /* StreamToDevicesTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D74C21A1D23CEC500FB81CA /* StreamToDevicesTableViewController.swift */; };
 		4D849B581D3059FC0008AD51 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4D849B571D3059FC0008AD51 /* Launch Screen.storyboard */; };
-		4D936BCA1D3506D0004F2B40 /* DetailItemOverviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D936BC91D3506D0004F2B40 /* DetailItemOverviewViewController.swift */; };
-		4DA7BA4F1D5A629400229B14 /* PCTPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA7BA4E1D5A629400229B14 /* PCTPickerView.swift */; };
 		4DA7BA511D5A686B00229B14 /* PCTPickerView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4DA7BA501D5A686B00229B14 /* PCTPickerView.xib */; };
 		4DA7BA5A1D5BE14400229B14 /* Entitlements.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4DA7BA591D5BE14400229B14 /* Entitlements.plist */; };
-		4DB3B8EF1CC3B1760096FEA0 /* CastIconButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DB3B8ED1CC3B1760096FEA0 /* CastIconButton.swift */; };
-		4DC541661CFA4E95001A531C /* WatchlistManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC541651CFA4E95001A531C /* WatchlistManager.swift */; };
-		4DC541681CFB53E3001A531C /* PCTItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC541671CFB53E3001A531C /* PCTItems.swift */; };
-		4DC541771CFB540D001A531C /* FilterCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC541711CFB540D001A531C /* FilterCollectionReusableView.swift */; };
-		4DC541781CFB540D001A531C /* FavouritesHeaderCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC541721CFB540D001A531C /* FavouritesHeaderCollectionReusableView.swift */; };
-		4DC5417F1CFB5441001A531C /* MainItemCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC5417D1CFB5441001A531C /* MainItemCell.swift */; };
-		4DC541801CFB5441001A531C /* TVShowDetailTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC5417E1CFB5441001A531C /* TVShowDetailTableViewCell.swift */; };
-		4DC541841CFB544D001A531C /* MovieDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC541811CFB544D001A531C /* MovieDetailViewController.swift */; };
-		4DC541851CFB544D001A531C /* EpisodeDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC541821CFB544D001A531C /* EpisodeDetailViewController.swift */; };
-		4DC541861CFB544D001A531C /* TVShowDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC541831CFB544D001A531C /* TVShowDetailViewController.swift */; };
-		4DC5418B1CFB545A001A531C /* TVShowsCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC541871CFB545A001A531C /* TVShowsCollectionViewController.swift */; };
-		4DC5418C1CFB545A001A531C /* MoviesCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC541881CFB545A001A531C /* MoviesCollectionViewController.swift */; };
-		4DC5418D1CFB545A001A531C /* MainCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC541891CFB545A001A531C /* MainCollectionViewController.swift */; };
-		4DC5418E1CFB545A001A531C /* AnimeCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC5418A1CFB545A001A531C /* AnimeCollectionViewController.swift */; };
-		4DC541931CFB5467001A531C /* SettingsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC5418F1CFB5467001A531C /* SettingsTableViewController.swift */; };
-		4DC541941CFB5467001A531C /* SubtitlesTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC541901CFB5467001A531C /* SubtitlesTableViewController.swift */; };
-		4DC541951CFB5467001A531C /* GenresTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC541911CFB5467001A531C /* GenresTableViewController.swift */; };
-		4DC541961CFB5467001A531C /* BugReportTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC541921CFB5467001A531C /* BugReportTableViewController.swift */; };
-		4DC5419A1CFB5491001A531C /* PCTTablePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC541971CFB5491001A531C /* PCTTablePickerView.swift */; };
-		4DC5419B1CFB5491001A531C /* LoadingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC541981CFB5491001A531C /* LoadingViewController.swift */; };
 		4DC5419C1CFB5491001A531C /* PCTTablePickerView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4DC541991CFB5491001A531C /* PCTTablePickerView.xib */; };
-		4DC5419F1CFB54A3001A531C /* UIKit+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC5419D1CFB54A3001A531C /* UIKit+Extension.swift */; };
-		4DC541A01CFB54A3001A531C /* PCTEpsiodeDetailPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC5419E1CFB54A3001A531C /* PCTEpsiodeDetailPresentationController.swift */; };
-		4DCA0F131D4A4A91003FC58E /* PCTLoadingViewAnimatedTransitioning.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DCA0F121D4A4A91003FC58E /* PCTLoadingViewAnimatedTransitioning.swift */; };
 		4DCFA56C1CD2206F005246DC /* MainBackgroundView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4DCFA56B1CD2206F005246DC /* MainBackgroundView.xib */; };
-		4DCFA56E1CD25D04005246DC /* MainBackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DCFA56D1CD25D04005246DC /* MainBackgroundView.swift */; };
-		4DF4497E1CC2795600278078 /* OAuthCredential.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF4497D1CC2795600278078 /* OAuthCredential.swift */; };
-		4DFB75801D273075004DC1FD /* AirPlayTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DFB757F1D273075004DC1FD /* AirPlayTableViewCell.swift */; };
-		7E2AD00D1B61D28A001B24BE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E2AD00C1B61D28A001B24BE /* AppDelegate.swift */; };
 		7E2AD00F1B61D299001B24BE /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7E2AD00E1B61D299001B24BE /* Images.xcassets */; };
-		7E2D473D1B653EDE00611019 /* TVAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E2D473A1B653EDE00611019 /* TVAPI.swift */; };
-		7E2D473E1B653EDE00611019 /* AnimeAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E2D473B1B653EDE00611019 /* AnimeAPI.swift */; };
-		7E2D473F1B653EDE00611019 /* MovieAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E2D473C1B653EDE00611019 /* MovieAPI.swift */; };
-		7E2D47411B65520D00611019 /* TraktTVAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E2D47401B65520D00611019 /* TraktTVAPI.swift */; };
-		7E3CFB7B1B62B20B002F9E8C /* PCTTorrent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3CFB7A1B62B20B002F9E8C /* PCTTorrent.swift */; };
 		85F38AE05A2DF856A465302E /* Pods_Popcorn_Time.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DC067E4CCF06825BB4ADA281 /* Pods_Popcorn_Time.framework */; };
-		FA361B0A1D83430E0055E3CC /* R.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA361B091D83430E0055E3CC /* R.generated.swift */; };
+		FA120C7D1D83F61300BCCD56 /* R.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA120C7C1D83F61300BCCD56 /* R.generated.swift */; };
 		FA4D0C4A1D836B77002C2F99 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = FA4D0C4C1D836B77002C2F99 /* Localizable.strings */; };
-		FA4D0C4F1D836C3D002C2F99 /* MovieCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4D0C4E1D836C3D002C2F99 /* MovieCell.swift */; };
-		FA4D0C511D836C51002C2F99 /* TVShowCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4D0C501D836C51002C2F99 /* TVShowCell.swift */; };
-		FA4D0C531D836C75002C2F99 /* AnimeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4D0C521D836C75002C2F99 /* AnimeCell.swift */; };
-		FA4D0C551D8379ED002C2F99 /* WobblyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4D0C541D8379ED002C2F99 /* WobblyCell.swift */; };
-		FA4D0C571D838373002C2F99 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4D0C561D838373002C2F99 /* Constants.swift */; };
-		FA5696DD1D8354CE0090B0F3 /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5696DC1D8354CE0090B0F3 /* MainTabBarController.swift */; };
 		FA5696DF1D8355720090B0F3 /* Movies.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA5696DE1D8355720090B0F3 /* Movies.storyboard */; };
 		FA5696E11D8355820090B0F3 /* TVShows.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA5696E01D8355820090B0F3 /* TVShows.storyboard */; };
 		FA5696E31D8355900090B0F3 /* Animes.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA5696E21D8355900090B0F3 /* Animes.storyboard */; };
@@ -74,6 +24,56 @@
 		FA5696E71D8357500090B0F3 /* Commons.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA5696E61D8357500090B0F3 /* Commons.storyboard */; };
 		FA5696E91D83575A0090B0F3 /* Player.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA5696E81D83575A0090B0F3 /* Player.storyboard */; };
 		FA5696EB1D8357720090B0F3 /* Terms.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA5696EA1D8357720090B0F3 /* Terms.storyboard */; };
+		FA6A7A291D83F6AE008B2FED /* TVShowDetailTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6A7A281D83F6AE008B2FED /* TVShowDetailTableViewCell.swift */; };
+		FABAC9871D83F37300BCEE6F /* PCTItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC541671CFB53E3001A531C /* PCTItems.swift */; };
+		FABAC9881D83F37500BCEE6F /* PCTTorrent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3CFB7A1B62B20B002F9E8C /* PCTTorrent.swift */; };
+		FABAC9891D83F37D00BCEE6F /* PCTLoadingViewAnimatedTransitioning.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DCA0F121D4A4A91003FC58E /* PCTLoadingViewAnimatedTransitioning.swift */; };
+		FABAC98A1D83F39200BCEE6F /* UIKit+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC5419D1CFB54A3001A531C /* UIKit+Extension.swift */; };
+		FAC39FA51D83EFD40024EAF1 /* TraktTVAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC39F961D83EED50024EAF1 /* TraktTVAPI.swift */; };
+		FAC39FA61D83EFE30024EAF1 /* AirPlayManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC39F901D83EED50024EAF1 /* AirPlayManager.swift */; };
+		FAC39FA71D83EFE30024EAF1 /* AnimeAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC39F911D83EED50024EAF1 /* AnimeAPI.swift */; };
+		FAC39FA81D83EFE30024EAF1 /* GoogleCastManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC39F921D83EED50024EAF1 /* GoogleCastManager.swift */; };
+		FAC39FA91D83EFE30024EAF1 /* MovieAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC39F931D83EED50024EAF1 /* MovieAPI.swift */; };
+		FAC39FAA1D83EFE30024EAF1 /* OAuthCredential.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC39F941D83EED50024EAF1 /* OAuthCredential.swift */; };
+		FAC39FAB1D83EFE30024EAF1 /* OpenSubtitles.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC39F951D83EED50024EAF1 /* OpenSubtitles.swift */; };
+		FAC39FAC1D83EFE30024EAF1 /* TVAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC39F971D83EED50024EAF1 /* TVAPI.swift */; };
+		FAC39FAD1D83EFE30024EAF1 /* UpdateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC39F981D83EED50024EAF1 /* UpdateManager.swift */; };
+		FAC39FAE1D83EFE30024EAF1 /* WatchlistManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC39F991D83EED50024EAF1 /* WatchlistManager.swift */; };
+		FAC39FAF1D83EFF10024EAF1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E2AD00C1B61D28A001B24BE /* AppDelegate.swift */; };
+		FAC39FB01D83EFF10024EAF1 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4D0C561D838373002C2F99 /* Constants.swift */; };
+		FAC39FB11D83EFF50024EAF1 /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5696DC1D8354CE0090B0F3 /* MainTabBarController.swift */; };
+		FAC39FB21D83EFF50024EAF1 /* MainCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC541891CFB545A001A531C /* MainCollectionViewController.swift */; };
+		FAC39FB31D83EFF50024EAF1 /* DetailItemOverviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D936BC91D3506D0004F2B40 /* DetailItemOverviewViewController.swift */; };
+		FAC39FB41D83EFF50024EAF1 /* SubtitlesTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC541901CFB5467001A531C /* SubtitlesTableViewController.swift */; };
+		FAC39FB51D83EFF50024EAF1 /* GenresTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC541911CFB5467001A531C /* GenresTableViewController.swift */; };
+		FAC39FB61D83EFF50024EAF1 /* TermsOfServiceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D2C20CC1D2ECCD900E3862E /* TermsOfServiceViewController.swift */; };
+		FAC39FB71D83EFF80024EAF1 /* MoviesCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC541881CFB545A001A531C /* MoviesCollectionViewController.swift */; };
+		FAC39FB81D83EFF80024EAF1 /* MovieDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC541811CFB544D001A531C /* MovieDetailViewController.swift */; };
+		FAC39FB91D83EFFB0024EAF1 /* TVShowsCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC541871CFB545A001A531C /* TVShowsCollectionViewController.swift */; };
+		FAC39FBA1D83EFFB0024EAF1 /* TVShowDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC541831CFB544D001A531C /* TVShowDetailViewController.swift */; };
+		FAC39FBB1D83EFFB0024EAF1 /* EpisodeDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC541821CFB544D001A531C /* EpisodeDetailViewController.swift */; };
+		FAC39FBC1D83F0020024EAF1 /* AnimeCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC5418A1CFB545A001A531C /* AnimeCollectionViewController.swift */; };
+		FAC39FBD1D83F0020024EAF1 /* PCTEpsiodeDetailPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC5419E1CFB54A3001A531C /* PCTEpsiodeDetailPresentationController.swift */; };
+		FAC39FBE1D83F0020024EAF1 /* SettingsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC5418F1CFB5467001A531C /* SettingsTableViewController.swift */; };
+		FAC39FBF1D83F0020024EAF1 /* BugReportTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC541921CFB5467001A531C /* BugReportTableViewController.swift */; };
+		FAC39FC01D83F0020024EAF1 /* StreamToDevicesTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D74C21A1D23CEC500FB81CA /* StreamToDevicesTableViewController.swift */; };
+		FAC39FC11D83F0020024EAF1 /* LoadingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC541981CFB5491001A531C /* LoadingViewController.swift */; };
+		FAC39FC21D83F0020024EAF1 /* PCTPlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D02E74A1CE261C600AC4588 /* PCTPlayerViewController.swift */; };
+		FAC39FC31D83F0020024EAF1 /* CastPlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D5B6A5D1D537198004D98D4 /* CastPlayerViewController.swift */; };
+		FAC39FC41D83F00A0024EAF1 /* MainBackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DCFA56D1CD25D04005246DC /* MainBackgroundView.swift */; };
+		FAC39FC51D83F00A0024EAF1 /* PCTTablePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC541971CFB5491001A531C /* PCTTablePickerView.swift */; };
+		FAC39FC61D83F00A0024EAF1 /* PCTPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA7BA4E1D5A629400229B14 /* PCTPickerView.swift */; };
+		FAC39FC71D83F00A0024EAF1 /* CastIconButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DB3B8ED1CC3B1760096FEA0 /* CastIconButton.swift */; };
+		FAC39FC81D83F00A0024EAF1 /* UpNextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D3FE2861D4380B100707065 /* UpNextView.swift */; };
+		FAC39FC91D83F00A0024EAF1 /* HeaderScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D0668321D81E3D0004869F6 /* HeaderScrollView.swift */; };
+		FAC39FCA1D83F0150024EAF1 /* MainItemCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC5417D1CFB5441001A531C /* MainItemCell.swift */; };
+		FAC39FCB1D83F0150024EAF1 /* WobblyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4D0C541D8379ED002C2F99 /* WobblyCell.swift */; };
+		FAC39FCC1D83F0150024EAF1 /* MovieCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4D0C4E1D836C3D002C2F99 /* MovieCell.swift */; };
+		FAC39FCD1D83F0150024EAF1 /* TVShowCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4D0C501D836C51002C2F99 /* TVShowCell.swift */; };
+		FAC39FCE1D83F0150024EAF1 /* AnimeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4D0C521D836C75002C2F99 /* AnimeCell.swift */; };
+		FAC39FCF1D83F0150024EAF1 /* AirPlayTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DFB757F1D273075004DC1FD /* AirPlayTableViewCell.swift */; };
+		FAC39FD01D83F0150024EAF1 /* FavouritesHeaderCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC541721CFB540D001A531C /* FavouritesHeaderCollectionReusableView.swift */; };
+		FAC39FD11D83F0150024EAF1 /* FilterCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC541711CFB540D001A531C /* FilterCollectionReusableView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -91,65 +91,54 @@
 
 /* Begin PBXFileReference section */
 		32BEB75AC9001224E0BB6EF0 /* Pods-Popcorn Time.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Popcorn Time.release.xcconfig"; path = "Pods/Target Support Files/Pods-Popcorn Time/Pods-Popcorn Time.release.xcconfig"; sourceTree = "<group>"; };
-		4D0005651D3C3CAD0075706C /* AirPlayManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AirPlayManager.swift; path = API/AirPlayManager.swift; sourceTree = "<group>"; };
-		4D02E74A1CE261C600AC4588 /* PCTPlayerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PCTPlayerViewController.swift; path = Resources/PCTPlayerViewController.swift; sourceTree = "<group>"; };
-		4D0668301D809634004869F6 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Main.storyboard; path = UI/Main.storyboard; sourceTree = "<group>"; };
-		4D0668321D81E3D0004869F6 /* HeaderScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HeaderScrollView.swift; path = UI/Views/HeaderScrollView.swift; sourceTree = "<group>"; };
-		4D2C20CC1D2ECCD900E3862E /* TermsOfServiceViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TermsOfServiceViewController.swift; path = Resources/TermsOfServiceViewController.swift; sourceTree = "<group>"; };
-		4D2F71BA1D737A01001EF02E /* UpdateManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UpdateManager.swift; path = API/UpdateManager.swift; sourceTree = "<group>"; };
-		4D33E8761CF3957500E65498 /* OpenSubtitles.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = OpenSubtitles.swift; path = API/Providers/Subs/OpenSubtitles.swift; sourceTree = "<group>"; };
-		4D3FE2861D4380B100707065 /* UpNextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UpNextView.swift; path = UI/UpNextView.swift; sourceTree = "<group>"; };
-		4D580A071D3CFAF500963F10 /* GoogleCastManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = GoogleCastManager.swift; path = API/GoogleCastManager.swift; sourceTree = "<group>"; };
-		4D5B6A5D1D537198004D98D4 /* CastPlayerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CastPlayerViewController.swift; path = UI/CastPlayerViewController.swift; sourceTree = "<group>"; };
-		4D74C21A1D23CEC500FB81CA /* StreamToDevicesTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = StreamToDevicesTableViewController.swift; path = "UI/Table View Controllers/StreamToDevicesTableViewController.swift"; sourceTree = "<group>"; };
-		4D849B571D3059FC0008AD51 /* Launch Screen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = "Launch Screen.storyboard"; path = "Startup/Launch Screen.storyboard"; sourceTree = "<group>"; };
-		4D936BC91D3506D0004F2B40 /* DetailItemOverviewViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DetailItemOverviewViewController.swift; path = "UI/Detail View Controllers/DetailItemOverviewViewController.swift"; sourceTree = "<group>"; };
-		4DA7BA4E1D5A629400229B14 /* PCTPickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PCTPickerView.swift; path = UI/PCTPickerView.swift; sourceTree = "<group>"; };
-		4DA7BA501D5A686B00229B14 /* PCTPickerView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = PCTPickerView.xib; path = UI/PCTPickerView.xib; sourceTree = "<group>"; };
+		4D02E74A1CE261C600AC4588 /* PCTPlayerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PCTPlayerViewController.swift; sourceTree = "<group>"; };
+		4D0668301D809634004869F6 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
+		4D0668321D81E3D0004869F6 /* HeaderScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HeaderScrollView.swift; sourceTree = "<group>"; };
+		4D2C20CC1D2ECCD900E3862E /* TermsOfServiceViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TermsOfServiceViewController.swift; sourceTree = "<group>"; };
+		4D3FE2861D4380B100707065 /* UpNextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpNextView.swift; sourceTree = "<group>"; };
+		4D5B6A5D1D537198004D98D4 /* CastPlayerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CastPlayerViewController.swift; sourceTree = "<group>"; };
+		4D74C21A1D23CEC500FB81CA /* StreamToDevicesTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamToDevicesTableViewController.swift; sourceTree = "<group>"; };
+		4D849B571D3059FC0008AD51 /* Launch Screen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
+		4D936BC91D3506D0004F2B40 /* DetailItemOverviewViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailItemOverviewViewController.swift; sourceTree = "<group>"; };
+		4DA7BA4E1D5A629400229B14 /* PCTPickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PCTPickerView.swift; sourceTree = "<group>"; };
+		4DA7BA501D5A686B00229B14 /* PCTPickerView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PCTPickerView.xib; sourceTree = "<group>"; };
 		4DA7BA591D5BE14400229B14 /* Entitlements.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Entitlements.plist; sourceTree = "<group>"; };
-		4DB3B8ED1CC3B1760096FEA0 /* CastIconButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CastIconButton.swift; path = Resources/CastIconButton.swift; sourceTree = "<group>"; };
-		4DC541651CFA4E95001A531C /* WatchlistManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WatchlistManager.swift; path = API/WatchlistManager.swift; sourceTree = "<group>"; };
-		4DC541671CFB53E3001A531C /* PCTItems.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PCTItems.swift; path = API/PCTItems.swift; sourceTree = "<group>"; };
-		4DC541711CFB540D001A531C /* FilterCollectionReusableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FilterCollectionReusableView.swift; path = "UI/Collection Reusable Views/FilterCollectionReusableView.swift"; sourceTree = "<group>"; };
-		4DC541721CFB540D001A531C /* FavouritesHeaderCollectionReusableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FavouritesHeaderCollectionReusableView.swift; path = "UI/Collection Reusable Views/FavouritesHeaderCollectionReusableView.swift"; sourceTree = "<group>"; };
-		4DC5417D1CFB5441001A531C /* MainItemCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MainItemCell.swift; path = "UI/Collection View Cells/MainItemCell.swift"; sourceTree = "<group>"; };
-		4DC5417E1CFB5441001A531C /* TVShowDetailTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TVShowDetailTableViewCell.swift; path = "UI/Collection View Cells/TVShowDetailTableViewCell.swift"; sourceTree = "<group>"; };
-		4DC541811CFB544D001A531C /* MovieDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MovieDetailViewController.swift; path = "UI/Detail View Controllers/MovieDetailViewController.swift"; sourceTree = "<group>"; };
-		4DC541821CFB544D001A531C /* EpisodeDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EpisodeDetailViewController.swift; path = "UI/Detail View Controllers/EpisodeDetailViewController.swift"; sourceTree = "<group>"; };
-		4DC541831CFB544D001A531C /* TVShowDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TVShowDetailViewController.swift; path = "UI/Detail View Controllers/TVShowDetailViewController.swift"; sourceTree = "<group>"; };
-		4DC541871CFB545A001A531C /* TVShowsCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TVShowsCollectionViewController.swift; path = "UI/Collection View Controllers/TVShowsCollectionViewController.swift"; sourceTree = "<group>"; };
-		4DC541881CFB545A001A531C /* MoviesCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MoviesCollectionViewController.swift; path = "UI/Collection View Controllers/MoviesCollectionViewController.swift"; sourceTree = "<group>"; };
-		4DC541891CFB545A001A531C /* MainCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MainCollectionViewController.swift; path = "UI/Collection View Controllers/MainCollectionViewController.swift"; sourceTree = "<group>"; };
-		4DC5418A1CFB545A001A531C /* AnimeCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AnimeCollectionViewController.swift; path = "UI/Collection View Controllers/AnimeCollectionViewController.swift"; sourceTree = "<group>"; };
-		4DC5418F1CFB5467001A531C /* SettingsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SettingsTableViewController.swift; path = "UI/Table View Controllers/SettingsTableViewController.swift"; sourceTree = "<group>"; };
-		4DC541901CFB5467001A531C /* SubtitlesTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SubtitlesTableViewController.swift; path = "UI/Table View Controllers/SubtitlesTableViewController.swift"; sourceTree = "<group>"; };
-		4DC541911CFB5467001A531C /* GenresTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = GenresTableViewController.swift; path = "UI/Table View Controllers/GenresTableViewController.swift"; sourceTree = "<group>"; };
-		4DC541921CFB5467001A531C /* BugReportTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BugReportTableViewController.swift; path = "UI/Table View Controllers/BugReportTableViewController.swift"; sourceTree = "<group>"; };
-		4DC541971CFB5491001A531C /* PCTTablePickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PCTTablePickerView.swift; path = UI/PCTTablePickerView.swift; sourceTree = "<group>"; };
-		4DC541981CFB5491001A531C /* LoadingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LoadingViewController.swift; path = UI/LoadingViewController.swift; sourceTree = "<group>"; };
-		4DC541991CFB5491001A531C /* PCTTablePickerView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = PCTTablePickerView.xib; path = UI/PCTTablePickerView.xib; sourceTree = "<group>"; };
-		4DC5419D1CFB54A3001A531C /* UIKit+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "UIKit+Extension.swift"; path = "Resources/UIKit+Extension.swift"; sourceTree = "<group>"; };
-		4DC5419E1CFB54A3001A531C /* PCTEpsiodeDetailPresentationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PCTEpsiodeDetailPresentationController.swift; path = Resources/PCTEpsiodeDetailPresentationController.swift; sourceTree = "<group>"; };
-		4DCA0F121D4A4A91003FC58E /* PCTLoadingViewAnimatedTransitioning.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PCTLoadingViewAnimatedTransitioning.swift; path = UI/PCTLoadingViewAnimatedTransitioning.swift; sourceTree = "<group>"; };
-		4DCFA56B1CD2206F005246DC /* MainBackgroundView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = MainBackgroundView.xib; path = UI/MainBackgroundView.xib; sourceTree = "<group>"; };
-		4DCFA56D1CD25D04005246DC /* MainBackgroundView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MainBackgroundView.swift; path = UI/MainBackgroundView.swift; sourceTree = "<group>"; };
-		4DF4497D1CC2795600278078 /* OAuthCredential.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = OAuthCredential.swift; path = Resources/OAuthCredential.swift; sourceTree = "<group>"; };
-		4DFB757F1D273075004DC1FD /* AirPlayTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AirPlayTableViewCell.swift; path = "UI/Table View Cells/AirPlayTableViewCell.swift"; sourceTree = "<group>"; };
-		4DFEE9721CC25B5E00324A26 /* dispatch_cancelable_block.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = dispatch_cancelable_block.h; path = Resources/dispatch_cancelable_block.h; sourceTree = "<group>"; };
+		4DB3B8ED1CC3B1760096FEA0 /* CastIconButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CastIconButton.swift; sourceTree = "<group>"; };
+		4DC541671CFB53E3001A531C /* PCTItems.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PCTItems.swift; sourceTree = "<group>"; };
+		4DC541711CFB540D001A531C /* FilterCollectionReusableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilterCollectionReusableView.swift; sourceTree = "<group>"; };
+		4DC541721CFB540D001A531C /* FavouritesHeaderCollectionReusableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FavouritesHeaderCollectionReusableView.swift; sourceTree = "<group>"; };
+		4DC5417D1CFB5441001A531C /* MainItemCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainItemCell.swift; sourceTree = "<group>"; };
+		4DC541811CFB544D001A531C /* MovieDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MovieDetailViewController.swift; sourceTree = "<group>"; };
+		4DC541821CFB544D001A531C /* EpisodeDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EpisodeDetailViewController.swift; sourceTree = "<group>"; };
+		4DC541831CFB544D001A531C /* TVShowDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TVShowDetailViewController.swift; sourceTree = "<group>"; };
+		4DC541871CFB545A001A531C /* TVShowsCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TVShowsCollectionViewController.swift; sourceTree = "<group>"; };
+		4DC541881CFB545A001A531C /* MoviesCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MoviesCollectionViewController.swift; sourceTree = "<group>"; };
+		4DC541891CFB545A001A531C /* MainCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainCollectionViewController.swift; sourceTree = "<group>"; };
+		4DC5418A1CFB545A001A531C /* AnimeCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnimeCollectionViewController.swift; sourceTree = "<group>"; };
+		4DC5418F1CFB5467001A531C /* SettingsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsTableViewController.swift; sourceTree = "<group>"; };
+		4DC541901CFB5467001A531C /* SubtitlesTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SubtitlesTableViewController.swift; sourceTree = "<group>"; };
+		4DC541911CFB5467001A531C /* GenresTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenresTableViewController.swift; sourceTree = "<group>"; };
+		4DC541921CFB5467001A531C /* BugReportTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BugReportTableViewController.swift; sourceTree = "<group>"; };
+		4DC541971CFB5491001A531C /* PCTTablePickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PCTTablePickerView.swift; sourceTree = "<group>"; };
+		4DC541981CFB5491001A531C /* LoadingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadingViewController.swift; sourceTree = "<group>"; };
+		4DC541991CFB5491001A531C /* PCTTablePickerView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PCTTablePickerView.xib; sourceTree = "<group>"; };
+		4DC5419D1CFB54A3001A531C /* UIKit+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIKit+Extension.swift"; sourceTree = "<group>"; };
+		4DC5419E1CFB54A3001A531C /* PCTEpsiodeDetailPresentationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PCTEpsiodeDetailPresentationController.swift; sourceTree = "<group>"; };
+		4DCA0F121D4A4A91003FC58E /* PCTLoadingViewAnimatedTransitioning.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PCTLoadingViewAnimatedTransitioning.swift; sourceTree = "<group>"; };
+		4DCFA56B1CD2206F005246DC /* MainBackgroundView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainBackgroundView.xib; sourceTree = "<group>"; };
+		4DCFA56D1CD25D04005246DC /* MainBackgroundView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainBackgroundView.swift; sourceTree = "<group>"; };
+		4DFB757F1D273075004DC1FD /* AirPlayTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AirPlayTableViewCell.swift; sourceTree = "<group>"; };
+		4DFEE9721CC25B5E00324A26 /* dispatch_cancelable_block.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = dispatch_cancelable_block.h; sourceTree = "<group>"; };
 		6F8B9328C0A1586670968A68 /* Pods-Popcorn Time.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Popcorn Time.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Popcorn Time/Pods-Popcorn Time.debug.xcconfig"; sourceTree = "<group>"; };
 		769AD55486BB07D7DC76F59A /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		7E2A334E1B63D8FB00F426D9 /* PopcornTime-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "PopcornTime-Bridging-Header.h"; path = "Resources/PopcornTime-Bridging-Header.h"; sourceTree = "<group>"; };
-		7E2AD00C1B61D28A001B24BE /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = Startup/AppDelegate.swift; sourceTree = "<group>"; };
-		7E2AD00E1B61D299001B24BE /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Resources/Images.xcassets; sourceTree = "<group>"; };
-		7E2D473A1B653EDE00611019 /* TVAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TVAPI.swift; path = API/Providers/TVAPI.swift; sourceTree = "<group>"; };
-		7E2D473B1B653EDE00611019 /* AnimeAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AnimeAPI.swift; path = API/Providers/AnimeAPI.swift; sourceTree = "<group>"; };
-		7E2D473C1B653EDE00611019 /* MovieAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MovieAPI.swift; path = API/Providers/MovieAPI.swift; sourceTree = "<group>"; };
-		7E2D47401B65520D00611019 /* TraktTVAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TraktTVAPI.swift; path = API/Providers/TraktTVAPI.swift; sourceTree = "<group>"; };
-		7E3CFB7A1B62B20B002F9E8C /* PCTTorrent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PCTTorrent.swift; path = API/PCTTorrent.swift; sourceTree = "<group>"; };
+		7E2A334E1B63D8FB00F426D9 /* PopcornTime-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PopcornTime-Bridging-Header.h"; sourceTree = "<group>"; };
+		7E2AD00C1B61D28A001B24BE /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		7E2AD00E1B61D299001B24BE /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		7E3CFB7A1B62B20B002F9E8C /* PCTTorrent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PCTTorrent.swift; sourceTree = "<group>"; };
 		7EA9DF041B61A19A00BAC6AF /* Popcorn Time.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Popcorn Time.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7EA9DF081B61A19A00BAC6AF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DC067E4CCF06825BB4ADA281 /* Pods_Popcorn_Time.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Popcorn_Time.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		FA361B091D83430E0055E3CC /* R.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = R.generated.swift; sourceTree = "<group>"; };
+		FA120C7C1D83F61300BCCD56 /* R.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = R.generated.swift; sourceTree = "<group>"; };
 		FA4D0C4B1D836B77002C2F99 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
 		FA4D0C4D1D836B79002C2F99 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		FA4D0C4E1D836C3D002C2F99 /* MovieCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MovieCell.swift; sourceTree = "<group>"; };
@@ -165,6 +154,17 @@
 		FA5696E61D8357500090B0F3 /* Commons.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Commons.storyboard; sourceTree = "<group>"; };
 		FA5696E81D83575A0090B0F3 /* Player.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Player.storyboard; sourceTree = "<group>"; };
 		FA5696EA1D8357720090B0F3 /* Terms.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Terms.storyboard; sourceTree = "<group>"; };
+		FA6A7A281D83F6AE008B2FED /* TVShowDetailTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TVShowDetailTableViewCell.swift; sourceTree = "<group>"; };
+		FAC39F901D83EED50024EAF1 /* AirPlayManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AirPlayManager.swift; sourceTree = "<group>"; };
+		FAC39F911D83EED50024EAF1 /* AnimeAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnimeAPI.swift; sourceTree = "<group>"; };
+		FAC39F921D83EED50024EAF1 /* GoogleCastManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GoogleCastManager.swift; sourceTree = "<group>"; };
+		FAC39F931D83EED50024EAF1 /* MovieAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MovieAPI.swift; sourceTree = "<group>"; };
+		FAC39F941D83EED50024EAF1 /* OAuthCredential.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OAuthCredential.swift; sourceTree = "<group>"; };
+		FAC39F951D83EED50024EAF1 /* OpenSubtitles.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenSubtitles.swift; sourceTree = "<group>"; };
+		FAC39F961D83EED50024EAF1 /* TraktTVAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TraktTVAPI.swift; sourceTree = "<group>"; };
+		FAC39F971D83EED50024EAF1 /* TVAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TVAPI.swift; sourceTree = "<group>"; };
+		FAC39F981D83EED50024EAF1 /* UpdateManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateManager.swift; sourceTree = "<group>"; };
+		FAC39F991D83EED50024EAF1 /* WatchlistManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WatchlistManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -186,18 +186,6 @@
 				32BEB75AC9001224E0BB6EF0 /* Pods-Popcorn Time.release.xcconfig */,
 			);
 			name = Pods;
-			sourceTree = "<group>";
-		};
-		7E2D47391B653EAF00611019 /* Providers */ = {
-			isa = PBXGroup;
-			children = (
-				7E2D473C1B653EDE00611019 /* MovieAPI.swift */,
-				7E2D473A1B653EDE00611019 /* TVAPI.swift */,
-				7E2D473B1B653EDE00611019 /* AnimeAPI.swift */,
-				7E2D47401B65520D00611019 /* TraktTVAPI.swift */,
-				4D33E8761CF3957500E65498 /* OpenSubtitles.swift */,
-			);
-			name = Providers;
 			sourceTree = "<group>";
 		};
 		7EA9DEFB1B61A19A00BAC6AF = {
@@ -237,7 +225,7 @@
 				7EA9DF081B61A19A00BAC6AF /* Info.plist */,
 				4DA7BA591D5BE14400229B14 /* Entitlements.plist */,
 			);
-			name = "Supporting Files";
+			path = "Supporting Files";
 			sourceTree = "<group>";
 		};
 		7EA9DF2F1B61A22A00BAC6AF /* Resources */ = {
@@ -247,7 +235,7 @@
 				FA361B101D8343730055E3CC /* Storyboards */,
 				7E2AD00E1B61D299001B24BE /* Images.xcassets */,
 			);
-			name = Resources;
+			path = Resources;
 			sourceTree = "<group>";
 		};
 		E10396330A8E2F68E982223B /* Frameworks */ = {
@@ -262,7 +250,7 @@
 		FA361B081D83430E0055E3CC /* RSwift */ = {
 			isa = PBXGroup;
 			children = (
-				FA361B091D83430E0055E3CC /* R.generated.swift */,
+				FA120C7C1D83F61300BCCD56 /* R.generated.swift */,
 			);
 			path = RSwift;
 			sourceTree = "<group>";
@@ -278,7 +266,7 @@
 				FA361B0D1D83433F0055E3CC /* Models */,
 				FA361B0F1D8343520055E3CC /* Helpers */,
 			);
-			name = Classes;
+			path = Classes;
 			sourceTree = "<group>";
 		};
 		FA361B0C1D8343380055E3CC /* Controllers */ = {
@@ -291,7 +279,7 @@
 				FA361B151D8344160055E3CC /* Settings */,
 				FA361B161D8344560055E3CC /* Player */,
 			);
-			name = Controllers;
+			path = Controllers;
 			sourceTree = "<group>";
 		};
 		FA361B0D1D83433F0055E3CC /* Models */ = {
@@ -300,29 +288,33 @@
 				4DC541671CFB53E3001A531C /* PCTItems.swift */,
 				7E3CFB7A1B62B20B002F9E8C /* PCTTorrent.swift */,
 			);
-			name = Models;
+			path = Models;
 			sourceTree = "<group>";
 		};
 		FA361B0E1D83434C0055E3CC /* API */ = {
 			isa = PBXGroup;
 			children = (
-				7E2D47391B653EAF00611019 /* Providers */,
-				4DF4497D1CC2795600278078 /* OAuthCredential.swift */,
-				4DC541651CFA4E95001A531C /* WatchlistManager.swift */,
-				4D0005651D3C3CAD0075706C /* AirPlayManager.swift */,
-				4D580A071D3CFAF500963F10 /* GoogleCastManager.swift */,
-				4D2F71BA1D737A01001EF02E /* UpdateManager.swift */,
+				FAC39F901D83EED50024EAF1 /* AirPlayManager.swift */,
+				FAC39F911D83EED50024EAF1 /* AnimeAPI.swift */,
+				FAC39F921D83EED50024EAF1 /* GoogleCastManager.swift */,
+				FAC39F931D83EED50024EAF1 /* MovieAPI.swift */,
+				FAC39F941D83EED50024EAF1 /* OAuthCredential.swift */,
+				FAC39F951D83EED50024EAF1 /* OpenSubtitles.swift */,
+				FAC39F961D83EED50024EAF1 /* TraktTVAPI.swift */,
+				FAC39F971D83EED50024EAF1 /* TVAPI.swift */,
+				FAC39F981D83EED50024EAF1 /* UpdateManager.swift */,
+				FAC39F991D83EED50024EAF1 /* WatchlistManager.swift */,
 			);
-			name = API;
+			path = API;
 			sourceTree = "<group>";
 		};
 		FA361B0F1D8343520055E3CC /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				4DCA0F121D4A4A91003FC58E /* PCTLoadingViewAnimatedTransitioning.swift */,
 				4DC5419D1CFB54A3001A531C /* UIKit+Extension.swift */,
-				4DB3B8ED1CC3B1760096FEA0 /* CastIconButton.swift */,
 			);
-			name = Helpers;
+			path = Helpers;
 			sourceTree = "<group>";
 		};
 		FA361B101D8343730055E3CC /* Storyboards */ = {
@@ -338,7 +330,7 @@
 				FA5696E81D83575A0090B0F3 /* Player.storyboard */,
 				FA5696E61D8357500090B0F3 /* Commons.storyboard */,
 			);
-			name = Storyboards;
+			path = Storyboards;
 			sourceTree = "<group>";
 		};
 		FA361B111D8343F90055E3CC /* Commons */ = {
@@ -398,7 +390,6 @@
 				4DC541981CFB5491001A531C /* LoadingViewController.swift */,
 				4D02E74A1CE261C600AC4588 /* PCTPlayerViewController.swift */,
 				4D5B6A5D1D537198004D98D4 /* CastPlayerViewController.swift */,
-				4DCA0F121D4A4A91003FC58E /* PCTLoadingViewAnimatedTransitioning.swift */,
 			);
 			name = Player;
 			sourceTree = "<group>";
@@ -415,10 +406,11 @@
 				4DC541991CFB5491001A531C /* PCTTablePickerView.xib */,
 				4DA7BA4E1D5A629400229B14 /* PCTPickerView.swift */,
 				4DA7BA501D5A686B00229B14 /* PCTPickerView.xib */,
+				4DB3B8ED1CC3B1760096FEA0 /* CastIconButton.swift */,
 				4D3FE2861D4380B100707065 /* UpNextView.swift */,
 				4D0668321D81E3D0004869F6 /* HeaderScrollView.swift */,
 			);
-			name = Views;
+			path = Views;
 			sourceTree = "<group>";
 		};
 		FA4D0C5B1D83E5C7002C2F99 /* CollectionViewCells */ = {
@@ -446,7 +438,7 @@
 		FA4D0C5D1D83E745002C2F99 /* TableViewCells */ = {
 			isa = PBXGroup;
 			children = (
-				4DC5417E1CFB5441001A531C /* TVShowDetailTableViewCell.swift */,
+				FA6A7A281D83F6AE008B2FED /* TVShowDetailTableViewCell.swift */,
 			);
 			name = TableViewCells;
 			sourceTree = "<group>";
@@ -458,8 +450,8 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 7EA9DF251B61A19A00BAC6AF /* Build configuration list for PBXNativeTarget "Popcorn Time" */;
 			buildPhases = (
+				FA2401661D83F6F000E946F0 /* RSwift */,
 				0024328ABAB9F15E60CCA559 /* [CP] Check Pods Manifest.lock */,
-				FA5CD3041D83426B00278E09 /* RSwift */,
 				7EA9DF001B61A19A00BAC6AF /* Sources */,
 				7EA9DF011B61A19A00BAC6AF /* Frameworks */,
 				7EA9DF021B61A19A00BAC6AF /* Resources */,
@@ -583,7 +575,7 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Popcorn Time/Pods-Popcorn Time-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		FA5CD3041D83426B00278E09 /* RSwift */ = {
+		FA2401661D83F6F000E946F0 /* RSwift */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -604,57 +596,57 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4D936BCA1D3506D0004F2B40 /* DetailItemOverviewViewController.swift in Sources */,
-				7E2D473E1B653EDE00611019 /* AnimeAPI.swift in Sources */,
-				FA361B0A1D83430E0055E3CC /* R.generated.swift in Sources */,
-				4DC5417F1CFB5441001A531C /* MainItemCell.swift in Sources */,
-				FA4D0C4F1D836C3D002C2F99 /* MovieCell.swift in Sources */,
-				4DC541841CFB544D001A531C /* MovieDetailViewController.swift in Sources */,
-				4D5B6A5E1D537198004D98D4 /* CastPlayerViewController.swift in Sources */,
-				FA5696DD1D8354CE0090B0F3 /* MainTabBarController.swift in Sources */,
-				4DC541851CFB544D001A531C /* EpisodeDetailViewController.swift in Sources */,
-				4DC541861CFB544D001A531C /* TVShowDetailViewController.swift in Sources */,
-				4DC541781CFB540D001A531C /* FavouritesHeaderCollectionReusableView.swift in Sources */,
-				4D0668331D81E3D0004869F6 /* HeaderScrollView.swift in Sources */,
-				4DFB75801D273075004DC1FD /* AirPlayTableViewCell.swift in Sources */,
-				7E2D47411B65520D00611019 /* TraktTVAPI.swift in Sources */,
-				FA4D0C531D836C75002C2F99 /* AnimeCell.swift in Sources */,
-				4DC541801CFB5441001A531C /* TVShowDetailTableViewCell.swift in Sources */,
-				4DC541931CFB5467001A531C /* SettingsTableViewController.swift in Sources */,
-				4DC541941CFB5467001A531C /* SubtitlesTableViewController.swift in Sources */,
-				4D580A081D3CFAF500963F10 /* GoogleCastManager.swift in Sources */,
-				4DC541681CFB53E3001A531C /* PCTItems.swift in Sources */,
-				4D3FE2871D4380B100707065 /* UpNextView.swift in Sources */,
-				4DCA0F131D4A4A91003FC58E /* PCTLoadingViewAnimatedTransitioning.swift in Sources */,
-				4DC5418B1CFB545A001A531C /* TVShowsCollectionViewController.swift in Sources */,
-				4DC541A01CFB54A3001A531C /* PCTEpsiodeDetailPresentationController.swift in Sources */,
-				4DC5418D1CFB545A001A531C /* MainCollectionViewController.swift in Sources */,
-				4DC5419F1CFB54A3001A531C /* UIKit+Extension.swift in Sources */,
-				4DB3B8EF1CC3B1760096FEA0 /* CastIconButton.swift in Sources */,
-				FA4D0C551D8379ED002C2F99 /* WobblyCell.swift in Sources */,
-				FA4D0C511D836C51002C2F99 /* TVShowCell.swift in Sources */,
-				4DC5418C1CFB545A001A531C /* MoviesCollectionViewController.swift in Sources */,
-				4DCFA56E1CD25D04005246DC /* MainBackgroundView.swift in Sources */,
-				4D2F71BB1D737A01001EF02E /* UpdateManager.swift in Sources */,
-				4DA7BA4F1D5A629400229B14 /* PCTPickerView.swift in Sources */,
-				4DC541951CFB5467001A531C /* GenresTableViewController.swift in Sources */,
-				7E3CFB7B1B62B20B002F9E8C /* PCTTorrent.swift in Sources */,
-				FA4D0C571D838373002C2F99 /* Constants.swift in Sources */,
-				4DC541771CFB540D001A531C /* FilterCollectionReusableView.swift in Sources */,
-				4DC5419B1CFB5491001A531C /* LoadingViewController.swift in Sources */,
-				4D02E74B1CE261C600AC4588 /* PCTPlayerViewController.swift in Sources */,
-				7E2D473F1B653EDE00611019 /* MovieAPI.swift in Sources */,
-				4DC541961CFB5467001A531C /* BugReportTableViewController.swift in Sources */,
-				4D2C20CD1D2ECCD900E3862E /* TermsOfServiceViewController.swift in Sources */,
-				4DC541661CFA4E95001A531C /* WatchlistManager.swift in Sources */,
-				4D74C21B1D23CEC500FB81CA /* StreamToDevicesTableViewController.swift in Sources */,
-				7E2D473D1B653EDE00611019 /* TVAPI.swift in Sources */,
-				4D0005661D3C3CAD0075706C /* AirPlayManager.swift in Sources */,
-				4D33E8771CF3957500E65498 /* OpenSubtitles.swift in Sources */,
-				4DC5419A1CFB5491001A531C /* PCTTablePickerView.swift in Sources */,
-				7E2AD00D1B61D28A001B24BE /* AppDelegate.swift in Sources */,
-				4DC5418E1CFB545A001A531C /* AnimeCollectionViewController.swift in Sources */,
-				4DF4497E1CC2795600278078 /* OAuthCredential.swift in Sources */,
+				FAC39FC01D83F0020024EAF1 /* StreamToDevicesTableViewController.swift in Sources */,
+				FAC39FBA1D83EFFB0024EAF1 /* TVShowDetailViewController.swift in Sources */,
+				FAC39FC61D83F00A0024EAF1 /* PCTPickerView.swift in Sources */,
+				FAC39FB91D83EFFB0024EAF1 /* TVShowsCollectionViewController.swift in Sources */,
+				FAC39FC11D83F0020024EAF1 /* LoadingViewController.swift in Sources */,
+				FAC39FAF1D83EFF10024EAF1 /* AppDelegate.swift in Sources */,
+				FAC39FBD1D83F0020024EAF1 /* PCTEpsiodeDetailPresentationController.swift in Sources */,
+				FAC39FBC1D83F0020024EAF1 /* AnimeCollectionViewController.swift in Sources */,
+				FAC39FC21D83F0020024EAF1 /* PCTPlayerViewController.swift in Sources */,
+				FAC39FA61D83EFE30024EAF1 /* AirPlayManager.swift in Sources */,
+				FAC39FC51D83F00A0024EAF1 /* PCTTablePickerView.swift in Sources */,
+				FAC39FBB1D83EFFB0024EAF1 /* EpisodeDetailViewController.swift in Sources */,
+				FAC39FAE1D83EFE30024EAF1 /* WatchlistManager.swift in Sources */,
+				FAC39FB31D83EFF50024EAF1 /* DetailItemOverviewViewController.swift in Sources */,
+				FAC39FC81D83F00A0024EAF1 /* UpNextView.swift in Sources */,
+				FAC39FA81D83EFE30024EAF1 /* GoogleCastManager.swift in Sources */,
+				FAC39FAC1D83EFE30024EAF1 /* TVAPI.swift in Sources */,
+				FAC39FB71D83EFF80024EAF1 /* MoviesCollectionViewController.swift in Sources */,
+				FAC39FD01D83F0150024EAF1 /* FavouritesHeaderCollectionReusableView.swift in Sources */,
+				FAC39FD11D83F0150024EAF1 /* FilterCollectionReusableView.swift in Sources */,
+				FAC39FCC1D83F0150024EAF1 /* MovieCell.swift in Sources */,
+				FAC39FAA1D83EFE30024EAF1 /* OAuthCredential.swift in Sources */,
+				FAC39FCA1D83F0150024EAF1 /* MainItemCell.swift in Sources */,
+				FAC39FB61D83EFF50024EAF1 /* TermsOfServiceViewController.swift in Sources */,
+				FAC39FC91D83F00A0024EAF1 /* HeaderScrollView.swift in Sources */,
+				FABAC98A1D83F39200BCEE6F /* UIKit+Extension.swift in Sources */,
+				FAC39FBF1D83F0020024EAF1 /* BugReportTableViewController.swift in Sources */,
+				FA120C7D1D83F61300BCCD56 /* R.generated.swift in Sources */,
+				FAC39FC71D83F00A0024EAF1 /* CastIconButton.swift in Sources */,
+				FAC39FBE1D83F0020024EAF1 /* SettingsTableViewController.swift in Sources */,
+				FAC39FCD1D83F0150024EAF1 /* TVShowCell.swift in Sources */,
+				FAC39FC41D83F00A0024EAF1 /* MainBackgroundView.swift in Sources */,
+				FAC39FCE1D83F0150024EAF1 /* AnimeCell.swift in Sources */,
+				FAC39FA51D83EFD40024EAF1 /* TraktTVAPI.swift in Sources */,
+				FABAC9891D83F37D00BCEE6F /* PCTLoadingViewAnimatedTransitioning.swift in Sources */,
+				FAC39FB11D83EFF50024EAF1 /* MainTabBarController.swift in Sources */,
+				FAC39FCB1D83F0150024EAF1 /* WobblyCell.swift in Sources */,
+				FAC39FB51D83EFF50024EAF1 /* GenresTableViewController.swift in Sources */,
+				FAC39FC31D83F0020024EAF1 /* CastPlayerViewController.swift in Sources */,
+				FAC39FA71D83EFE30024EAF1 /* AnimeAPI.swift in Sources */,
+				FAC39FAB1D83EFE30024EAF1 /* OpenSubtitles.swift in Sources */,
+				FAC39FA91D83EFE30024EAF1 /* MovieAPI.swift in Sources */,
+				FA6A7A291D83F6AE008B2FED /* TVShowDetailTableViewCell.swift in Sources */,
+				FAC39FAD1D83EFE30024EAF1 /* UpdateManager.swift in Sources */,
+				FAC39FCF1D83F0150024EAF1 /* AirPlayTableViewCell.swift in Sources */,
+				FABAC9881D83F37500BCEE6F /* PCTTorrent.swift in Sources */,
+				FAC39FB81D83EFF80024EAF1 /* MovieDetailViewController.swift in Sources */,
+				FABAC9871D83F37300BCEE6F /* PCTItems.swift in Sources */,
+				FAC39FB01D83EFF10024EAF1 /* Constants.swift in Sources */,
+				FAC39FB21D83EFF50024EAF1 /* MainCollectionViewController.swift in Sources */,
+				FAC39FB41D83EFF50024EAF1 /* SubtitlesTableViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -668,6 +660,7 @@
 				FA4D0C4D1D836B79002C2F99 /* en */,
 			);
 			name = Localizable.strings;
+			path = Strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -768,15 +761,18 @@
 			baseConfigurationReference = 6F8B9328C0A1586670968A68 /* Pods-Popcorn Time.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "${SRCROOT}/Popcorn Time/Supporting Files/Entitlements.plist";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEFINES_MODULE = YES;
-				INFOPLIST_FILE = "${SRCROOT}/Popcorn Time/Info.plist";
+				GCC_DYNAMIC_NO_PIC = YES;
+				INFOPLIST_FILE = "${SRCROOT}/Popcorn Time/Supporting Files/Info.plist";
+				LD_NO_PIE = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.popcorntimetv.popcorntime.ios;
 				PRODUCT_NAME = "Popcorn Time";
 				PROVISIONING_PROFILE = "";
-				SWIFT_OBJC_BRIDGING_HEADER = "Popcorn Time/Resources/PopcornTime-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "Popcorn Time/Supporting Files/PopcornTime-Bridging-Header.h";
 			};
 			name = Debug;
 		};
@@ -785,16 +781,18 @@
 			baseConfigurationReference = 32BEB75AC9001224E0BB6EF0 /* Pods-Popcorn Time.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = "${SRCROOT}/Popcorn Time/Entitlements.plist";
+				CODE_SIGN_ENTITLEMENTS = "${SRCROOT}/Popcorn Time/Supporting Files/Entitlements.plist";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEFINES_MODULE = YES;
-				INFOPLIST_FILE = "${SRCROOT}/Popcorn Time/Info.plist";
+				GCC_DYNAMIC_NO_PIC = YES;
+				INFOPLIST_FILE = "${SRCROOT}/Popcorn Time/Supporting Files/Info.plist";
+				LD_NO_PIE = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.popcorntimetv.popcorntime.ios;
 				PRODUCT_NAME = "Popcorn Time";
 				PROVISIONING_PROFILE = "";
-				SWIFT_OBJC_BRIDGING_HEADER = "Popcorn Time/Resources/PopcornTime-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "Popcorn Time/Supporting Files/PopcornTime-Bridging-Header.h";
 			};
 			name = Release;
 		};

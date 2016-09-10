@@ -520,40 +520,33 @@
             </objects>
             <point key="canvasLocation" x="882" y="-432"/>
         </scene>
-        <!--Split View Controller-->
-        <scene sceneID="36P-Ab-Wzv">
-            <objects>
-                <splitViewController id="lHD-Kx-Ovk" sceneMemberID="viewController">
-                    <navigationItem key="navigationItem" id="mB3-Oh-9eQ"/>
-                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
-                    <connections>
-                        <segue destination="pRM-EU-bbe" kind="relationship" relationship="detailViewController" id="hK1-TP-F4L"/>
-                    </connections>
-                </splitViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="TU9-B8-yu4" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="881.5" y="409.5"/>
-        </scene>
         <!--Episode Detail View Controller-->
         <scene sceneID="lOz-Oy-rxp">
             <objects>
+                <panGestureRecognizer minimumNumberOfTouches="1" id="2nt-5d-sbp">
+                    <connections>
+                        <action selector="handleGesture:" destination="pRM-EU-bbe" id="Asu-NT-vuw"/>
+                        <outlet property="delegate" destination="pRM-EU-bbe" id="Hfi-jX-Ev4"/>
+                    </connections>
+                </panGestureRecognizer>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="nxB-2L-Hqc" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <viewController storyboardIdentifier="EpisodeDetailViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="pRM-EU-bbe" customClass="EpisodeDetailViewController" customModule="Popcorn_Time" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="H1Q-eS-MD4"/>
                         <viewControllerLayoutGuide type="bottom" id="wSd-op-SzA"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="Bqu-Nt-w98">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ReT-CH-uqe">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="PJq-9S-0rv" userLabel="Content View">
-                                        <rect key="frame" x="0.0" y="0.0" width="375" height="401"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="600" height="401"/>
                                         <subviews>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" image="Placeholder" translatesAutoresizingMaskIntoConstraints="NO" id="KZF-la-qU1">
-                                                <rect key="frame" x="0.0" y="0.0" width="375" height="240"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="600" height="240"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="240" id="2dY-3D-t32"/>
                                                 </constraints>
@@ -562,7 +555,7 @@
                                                 </userDefinedRuntimeAttributes>
                                             </imageView>
                                             <view contentMode="scaleToFill" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="JML-gc-piY" customClass="GradientView" customModule="Popcorn_Time" customModuleProvider="target">
-                                                <rect key="frame" x="0.0" y="175" width="375" height="65"/>
+                                                <rect key="frame" x="0.0" y="175" width="600" height="65"/>
                                                 <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="calibratedRGB"/>
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="color" keyPath="topColor">
@@ -574,7 +567,7 @@
                                                 </userDefinedRuntimeAttributes>
                                             </view>
                                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" horizontalHuggingPriority="200" verticalHuggingPriority="200" horizontalCompressionResistancePriority="200" verticalCompressionResistancePriority="200" scrollEnabled="NO" editable="NO" text="Loading Summary..." textAlignment="natural" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="O8U-51-iso" customClass="PCTTextView" customModule="Popcorn_Time" customModuleProvider="target">
-                                                <rect key="frame" x="11" y="287" width="349" height="37"/>
+                                                <rect key="frame" x="11" y="287" width="574" height="37"/>
                                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
@@ -585,7 +578,7 @@
                                                 </userDefinedRuntimeAttributes>
                                             </textView>
                                             <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7cy-Fu-4t3" customClass="PCTBorderButton" customModule="Popcorn_Time" customModuleProvider="target">
-                                                <rect key="frame" x="207" y="344" width="152.5" height="44"/>
+                                                <rect key="frame" x="320" y="344" width="265" height="44"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="44" id="fPG-vi-aGh"/>
                                                 </constraints>
@@ -626,7 +619,7 @@
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <button opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" verticalHuggingPriority="1000" verticalCompressionResistancePriority="1000" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1Cn-YR-zsS">
-                                                <rect key="frame" x="15" y="369" width="187.5" height="22"/>
+                                                <rect key="frame" x="15" y="369" width="300" height="22"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="22" id="SJf-6i-fHn"/>
                                                 </constraints>
@@ -747,13 +740,6 @@
                         <outlet property="torrentHealth" destination="q2Q-8C-bGH" id="YF3-Wv-Hrh"/>
                     </connections>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="nxB-2L-Hqc" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <panGestureRecognizer minimumNumberOfTouches="1" id="2nt-5d-sbp">
-                    <connections>
-                        <action selector="handleGesture:" destination="pRM-EU-bbe" id="Asu-NT-vuw"/>
-                        <outlet property="delegate" destination="pRM-EU-bbe" id="Hfi-jX-Ev4"/>
-                    </connections>
-                </panGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="1423.5" y="409.5"/>
         </scene>
