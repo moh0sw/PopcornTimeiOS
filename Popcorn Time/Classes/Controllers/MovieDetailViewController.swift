@@ -10,6 +10,7 @@ import SwiftyUserDefaults
 class MovieDetailViewController: DetailItemOverviewViewController, PCTTablePickerViewDelegate, UIViewControllerTransitioningDelegate {
 
     @IBOutlet var headerView: UIView!
+    @IBOutlet var headerProportinalHeightConstraint: NSLayoutConstraint!
     @IBOutlet var headerHeightConstraint: NSLayoutConstraint!
     @IBOutlet var headerTopConstraint: NSLayoutConstraint!
 
@@ -29,8 +30,8 @@ class MovieDetailViewController: DetailItemOverviewViewController, PCTTablePicke
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        
         WatchlistManager.movieManager.getProgress()
-
         self.scrollView.delegate = self
     }
     
@@ -40,13 +41,12 @@ class MovieDetailViewController: DetailItemOverviewViewController, PCTTablePicke
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        subtitlesTablePickerView?.setNeedsLayout()
-        subtitlesTablePickerView?.layoutIfNeeded()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.title = currentItem.title
+        
         currentItem.coverImageAsString = currentItem.coverImageAsString?.stringByReplacingOccurrencesOfString("thumb", withString: "medium")
         watchedBtn.image = getWatchedButtonImage()
         titleLabel.text = currentItem.title
@@ -55,6 +55,14 @@ class MovieDetailViewController: DetailItemOverviewViewController, PCTTablePicke
         infoLabel.text = "\(currentItem.year) ● \(currentItem.runtime) min ● \(currentItem.genres[0].capitalizedString)"
         playButton.borderColor = SLColorArt(image: backgroundImageView.image).secondaryColor
         trailerBtn.enabled = currentItem.trailerURLString != nil
+        
+        if let image = currentItem.coverImageAsString,
+            let url = NSURL(string: image) {
+            self.backgroundImageView.af_setImageWithURL(url,
+                                               placeholderImage: R.image.placeholder(),
+                                               imageTransition: .CrossDissolve(animationLength))
+        }
+        
         MovieAPI.sharedInstance.getMovieInfo(currentItem.id, completion: {
             self.currentItem.torrents = $0
             self.currentItem.currentTorrent = self.currentItem.torrents.filter({$0.quality == Defaults[.PreferredQuality]}).first ?? self.currentItem.torrents.first!
@@ -63,6 +71,7 @@ class MovieDetailViewController: DetailItemOverviewViewController, PCTTablePicke
             self.qualityBtn?.userInteractionEnabled = self.currentItem.torrents.count > 1
             self.qualityBtn?.setTitle("\(self.currentItem.currentTorrent.quality! + (self.currentItem.torrents.count > 1 ? " ▾" : ""))", forState: .Normal)
         })
+        
         OpenSubtitles.sharedInstance.login({
             OpenSubtitles.sharedInstance.search(imdbId: self.currentItem.id, completion: {
                 subtitles in
@@ -87,6 +96,8 @@ class MovieDetailViewController: DetailItemOverviewViewController, PCTTablePicke
                 self.tabBarController?.view.addSubview(self.subtitlesTablePickerView)
             })
         })
+        
+        
         MovieAPI.sharedInstance.getDetailedMovieInfo(currentItem.id) { (actors, related) in
             self.relatedItems = related as! [PCTMovie]
             self.cast = actors
@@ -222,7 +233,7 @@ class MovieDetailViewController: DetailItemOverviewViewController, PCTTablePicke
     func scrollViewDidScroll(scrollView: UIScrollView) {
         let offset = scrollView.contentOffset.y
         self.headerTopConstraint.constant = offset
-        self.headerHeightConstraint.constant = 300 - offset
+        self.headerHeightConstraint.constant = self.view.bounds.height * headerProportinalHeightConstraint.multiplier - offset
     }
 }
 

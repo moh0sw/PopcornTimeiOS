@@ -139,7 +139,6 @@
 		DC067E4CCF06825BB4ADA281 /* Pods_Popcorn_Time.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Popcorn_Time.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA120C7C1D83F61300BCCD56 /* R.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = R.generated.swift; sourceTree = "<group>"; };
 		FA1A10E91D84488800B69E08 /* TVShowContainerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TVShowContainerViewController.swift; sourceTree = "<group>"; };
-		FA1CFBFA1D8475EE001EFB2A /* Popcorn Time copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Popcorn Time copy-Info.plist"; path = "/Users/alex/Documents/Developpement/iOS/com.alexiscreuzot/PopcornTimeiOS/Popcorn Time copy-Info.plist"; sourceTree = "<absolute>"; };
 		FA4D0C4B1D836B77002C2F99 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
 		FA4D0C4D1D836B79002C2F99 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		FA4D0C4E1D836C3D002C2F99 /* MovieCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MovieCell.swift; sourceTree = "<group>"; };
@@ -196,7 +195,6 @@
 				7EA9DF051B61A19A00BAC6AF /* Products */,
 				E10396330A8E2F68E982223B /* Frameworks */,
 				05E238DEC3D6DA7F33E77379 /* Pods */,
-				FA1CFBFA1D8475EE001EFB2A /* Popcorn Time copy-Info.plist */,
 			);
 			sourceTree = "<group>";
 		};
