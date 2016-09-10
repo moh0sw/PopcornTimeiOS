@@ -547,7 +547,7 @@ struct R: Rswift.Validatable {
     private init() {}
   }
   
-  /// This `R.segue` struct is generated, and contains static references to 1 view controllers.
+  /// This `R.segue` struct is generated, and contains static references to 4 view controllers.
   struct segue {
     /// This struct is generated for `PCTPlayerViewController`, and contains static references to 2 segues.
     struct pCTPlayerViewController {
@@ -568,6 +568,51 @@ struct R: Rswift.Validatable {
       /// For use inside `prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?)`.
       static func showSubtitles(segue segue: UIStoryboardSegue) -> TypedStoryboardSegueInfo<UIStoryboardSegue, PCTPlayerViewController, UINavigationController>? {
         return TypedStoryboardSegueInfo(segueIdentifier: R.segue.pCTPlayerViewController.showSubtitles, segue: segue)
+      }
+      
+      private init() {}
+    }
+    
+    /// This struct is generated for `TVShowContainerViewController`, and contains static references to 1 segues.
+    struct tVShowContainerViewController {
+      /// Segue identifier `showDetail`.
+      static let showDetail: StoryboardSegueIdentifier<UIStoryboardSegue, TVShowContainerViewController, UISplitViewController> = StoryboardSegueIdentifier(identifier: "showDetail")
+      
+      /// Optionally returns a typed version of segue `showDetail`.
+      /// Returns nil if either the segue identifier, the source, destination, or segue types don't match.
+      /// For use inside `prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?)`.
+      static func showDetail(segue segue: UIStoryboardSegue) -> TypedStoryboardSegueInfo<UIStoryboardSegue, TVShowContainerViewController, UISplitViewController>? {
+        return TypedStoryboardSegueInfo(segueIdentifier: R.segue.tVShowContainerViewController.showDetail, segue: segue)
+      }
+      
+      private init() {}
+    }
+    
+    /// This struct is generated for `TVShowDetailViewController`, and contains static references to 1 segues.
+    struct tVShowDetailViewController {
+      /// Segue identifier `showDetail`.
+      static let showDetail: StoryboardSegueIdentifier<UIStoryboardSegue, TVShowDetailViewController, EpisodeDetailViewController> = StoryboardSegueIdentifier(identifier: "showDetail")
+      
+      /// Optionally returns a typed version of segue `showDetail`.
+      /// Returns nil if either the segue identifier, the source, destination, or segue types don't match.
+      /// For use inside `prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?)`.
+      static func showDetail(segue segue: UIStoryboardSegue) -> TypedStoryboardSegueInfo<UIStoryboardSegue, TVShowDetailViewController, EpisodeDetailViewController>? {
+        return TypedStoryboardSegueInfo(segueIdentifier: R.segue.tVShowDetailViewController.showDetail, segue: segue)
+      }
+      
+      private init() {}
+    }
+    
+    /// This struct is generated for `TVShowsCollectionViewController`, and contains static references to 1 segues.
+    struct tVShowsCollectionViewController {
+      /// Segue identifier `showDetail`.
+      static let showDetail: StoryboardSegueIdentifier<UIStoryboardSegue, TVShowsCollectionViewController, TVShowContainerViewController> = StoryboardSegueIdentifier(identifier: "showDetail")
+      
+      /// Optionally returns a typed version of segue `showDetail`.
+      /// Returns nil if either the segue identifier, the source, destination, or segue types don't match.
+      /// For use inside `prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?)`.
+      static func showDetail(segue segue: UIStoryboardSegue) -> TypedStoryboardSegueInfo<UIStoryboardSegue, TVShowsCollectionViewController, TVShowContainerViewController>? {
+        return TypedStoryboardSegueInfo(segueIdentifier: R.segue.tVShowsCollectionViewController.showDetail, segue: segue)
       }
       
       private init() {}

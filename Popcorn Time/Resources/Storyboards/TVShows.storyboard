@@ -276,6 +276,7 @@
                                             <outlet property="seasonLabel" destination="xlW-I7-aXt" id="9vs-yY-W3f"/>
                                             <outlet property="titleLabel" destination="Z1Q-2K-IQT" id="VUF-0O-AW4"/>
                                             <outlet property="watchedButton" destination="V5Y-4b-XhD" id="k6q-JS-ifl"/>
+                                            <segue destination="pRM-EU-bbe" kind="showDetail" identifier="showDetail" id="oCP-YF-bXD"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
@@ -330,7 +331,7 @@
                     </connections>
                 </panGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="2134.5" y="-410.5"/>
+            <point key="canvasLocation" x="2224.5" y="-70.5"/>
         </scene>
         <!--TV Shows Collection View Controller-->
         <scene sceneID="Zp5-yf-Ywx">
@@ -417,6 +418,7 @@
                                     <outlet property="titleLabel" destination="0SI-b5-yjN" id="fbt-Jk-2A9"/>
                                     <outlet property="watchedIndicator" destination="GKh-P5-Dcn" id="w04-MY-OYe"/>
                                     <outlet property="yearLabel" destination="QVE-aW-VF0" id="HVV-gf-eHL"/>
+                                    <segue destination="ZyN-nA-bQ5" kind="show" identifier="showDetail" id="M0T-4W-c4n"/>
                                 </connections>
                             </collectionViewCell>
                         </cells>
@@ -498,7 +500,7 @@
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Lsp-K0-6Hn" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1423.5" y="-432.5"/>
+            <point key="canvasLocation" x="1240.5" y="-440.5"/>
         </scene>
         <!--TV Shows-->
         <scene sceneID="MwI-gM-lUK">
@@ -518,7 +520,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="N7A-Sx-htw" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="882" y="-432"/>
+            <point key="canvasLocation" x="1240.5" y="-1324.5"/>
         </scene>
         <!--Split View Controller-->
         <scene sceneID="2LG-Ey-9T2">
@@ -532,7 +534,7 @@
                 </splitViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Uzu-1z-QrK" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1423.5" y="367.5"/>
+            <point key="canvasLocation" x="1734.5" y="414.5"/>
         </scene>
         <!--Episode Detail View Controller-->
         <scene sceneID="lOz-Oy-rxp">
@@ -755,7 +757,24 @@
                 </panGestureRecognizer>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="nxB-2L-Hqc" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2134.5" y="367.5"/>
+            <point key="canvasLocation" x="2224.5" y="790.5"/>
+        </scene>
+        <!--Show Container View Controller-->
+        <scene sceneID="C0l-9i-dxF">
+            <objects>
+                <viewController id="ZyN-nA-bQ5" customClass="TVShowContainerViewController" customModule="Popcorn_Time" customModuleProvider="target" sceneMemberID="viewController">
+                    <containerView key="view" opaque="NO" contentMode="scaleToFill" id="1QJ-QI-6GH">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                        <connections>
+                            <segue destination="Gq2-J4-LYE" kind="embed" identifier="showDetail" id="a1m-Vo-y8y"/>
+                        </connections>
+                    </containerView>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="chH-FR-DzP" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1734.5" y="-440.5"/>
         </scene>
     </scenes>
     <resources>
@@ -768,4 +787,7 @@
         <image name="TV" width="32" height="24"/>
         <image name="WatchedOff" width="27" height="19"/>
     </resources>
+    <inferredMetricsTieBreakers>
+        <segue reference="oCP-YF-bXD"/>
+    </inferredMetricsTieBreakers>
 </document>

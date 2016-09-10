@@ -97,7 +97,17 @@ class TVShowsCollectionViewController: MainCollectionViewController, UIPopoverPr
         (controller.viewControllers[0] as! GenresTableViewController).delegate = self
         presentViewController(controller, animated: true, completion: nil)
     }
-    
+
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        fixIOS9PopOverAnchor(segue)
+        if segue.identifier == "showDetail" ,
+            let selectedPaths = self.collectionView?.indexPathsForSelectedItems(),
+            let selectedIndex = selectedPaths.first?.row,
+            let destinationController = segue.destinationViewController as? TVShowContainerViewController {
+            destinationController.currentItem = shows[selectedIndex]
+        }
+    }
+
     // MARK: - Collection view data source
     
     override func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
@@ -150,14 +160,14 @@ class TVShowsCollectionViewController: MainCollectionViewController, UIPopoverPr
         return filterHeader!
     }
     
-    override func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
-        let showDetail = R.storyboard.tVShows.tVShowDetailViewController()!
-        showDetail.currentItem = shows[indexPath.row]
-        delay(0.2) {
-            self.navigationController?.pushViewController(showDetail, animated: true)
-        }
-    }
-    
+//    override func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+//        let showDetail = R.storyboard.tVShows.tVShowDetailViewController()!
+//        showDetail.currentItem = shows[indexPath.row]
+//        delay(0.2) {
+//            self.navigationController?.pushViewController(showDetail, animated: true)
+//        }
+//    }
+
     // MARK: - GenresDelegate
     
     func finished(genreArrayIndex: Int) {
@@ -171,24 +181,6 @@ class TVShowsCollectionViewController: MainCollectionViewController, UIPopoverPr
     func populateDataSourceArray(inout array: [String]) {
         for genre in TVAPI.genres.arrayValue {
             array.append(genre.rawValue)
-        }
-    }
-}
-
-class TVShowContainerViewController: UIViewController {
-    
-    var currentItem: PCTShow!
-    var currentType: TraktTVAPI.type = .Shows
-    
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        if segue.identifier == "showDetail" {
-            let vc = (segue.destinationViewController as! UISplitViewController).viewControllers.first as! TVShowDetailViewController
-            vc.currentItem = currentItem
-            vc.currentType = currentType
-            vc.parentTabBarController = tabBarController
-            vc.parentNavigationController = navigationController
-            navigationItem.rightBarButtonItems = vc.navigationItem.rightBarButtonItems
-            vc.parentNavigationItem = navigationItem
         }
     }
 }
