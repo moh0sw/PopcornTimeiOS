@@ -199,7 +199,7 @@
         <!--Movie Detail View Controller-->
         <scene sceneID="ZkR-Jd-zji">
             <objects>
-                <viewController storyboardIdentifier="MovieDetailViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="6he-ZC-7st" customClass="MovieDetailViewController" customModule="Popcorn_Time" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="MovieDetailViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="6he-ZC-7st" customClass="MovieDetailViewController" customModule="Popcorn_Time" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="pVe-gu-doh"/>
                         <viewControllerLayoutGuide type="bottom" id="W2R-Xx-Pwo"/>
@@ -321,7 +321,7 @@
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" text="Loading Summary..." textAlignment="natural" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="clX-gc-bQr" customClass="PCTTextView" customModule="Popcorn_Time" customModuleProvider="target">
-                                                <rect key="frame" x="11" y="103" width="242" height="37"/>
+                                                <rect key="frame" x="11" y="103" width="241" height="37"/>
                                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
@@ -370,7 +370,7 @@
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="x7c-ew-Bcn" customClass="PCTBorderButton" customModule="Popcorn_Time" customModuleProvider="target">
-                                                <rect key="frame" x="132" y="180" width="116" height="44"/>
+                                                <rect key="frame" x="132" y="180" width="115" height="44"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="44" id="Fo1-QY-05v"/>
                                                 </constraints>
@@ -406,10 +406,10 @@
                                                 </collectionViewFlowLayout>
                                                 <cells>
                                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="relatedCell" id="cvT-uN-E3O" customClass="MainItemCell" customModule="Popcorn_Time" customModuleProvider="target">
-                                                        <rect key="frame" x="-1" y="25" width="97.5" height="140"/>
+                                                        <rect key="frame" x="-1" y="25" width="98" height="140"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                                            <rect key="frame" x="0.0" y="0.0" width="97.5" height="140"/>
+                                                            <rect key="frame" x="0.0" y="0.0" width="98" height="140"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <subviews>
                                                                 <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Placeholder" translatesAutoresizingMaskIntoConstraints="NO" id="eFx-Bt-aZv">
@@ -477,10 +477,10 @@
                                                         </connections>
                                                     </collectionViewCell>
                                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="castCell" id="Nia-UV-hOe">
-                                                        <rect key="frame" x="-1" y="170" width="97.5" height="140"/>
+                                                        <rect key="frame" x="-1" y="170" width="98" height="140"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                                            <rect key="frame" x="0.0" y="0.0" width="97.5" height="140"/>
+                                                            <rect key="frame" x="0.0" y="0.0" width="98" height="140"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <subviews>
                                                                 <imageView userInteractionEnabled="NO" tag="1" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="emg-ud-KZq">

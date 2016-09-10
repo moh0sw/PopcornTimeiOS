@@ -768,8 +768,8 @@ struct _R: Rswift.Validatable {
       try movies.validate()
       try animes.validate()
       try commons.validate()
-      try player.validate()
       try terms.validate()
+      try player.validate()
       try tVShows.validate()
       try settings.validate()
     }

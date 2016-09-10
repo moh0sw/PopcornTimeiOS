@@ -11,8 +11,8 @@ private enum ScrollDirection {
     case Up
 }
 
-@IBDesignable public class HeaderScrollView: UIScrollView {
-    @IBInspectable var headerView: UIView = UIView() {
+public class HeaderScrollView: UIScrollView {
+    var headerView: UIView = UIView() {
         didSet {
             if let heightConstraint = headerView.constraints.filter({$0.firstAttribute == .Height}).first {
                 headerHeightConstraint = heightConstraint
@@ -22,9 +22,9 @@ private enum ScrollDirection {
         }
     }
     
-    @IBInspectable var maximumHeaderHeight: CGFloat = 230
+    var maximumHeaderHeight: CGFloat = 230
     
-    @IBInspectable var minimumHeaderHeight: CGFloat = 22
+    var minimumHeaderHeight: CGFloat = 22
     
     @IBOutlet private var headerHeightConstraint: NSLayoutConstraint! {
         didSet {

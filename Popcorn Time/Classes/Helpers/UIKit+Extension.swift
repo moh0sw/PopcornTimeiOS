@@ -7,14 +7,14 @@ import MediaPlayer
 
 // MARK: - UIView
 
-@IBDesignable class GradientView: UIView {
+class GradientView: UIView {
     
-    @IBInspectable var topColor: UIColor? {
+    var topColor: UIColor? {
         didSet {
             configureView()
         }
     }
-    @IBInspectable var bottomColor: UIColor? {
+    var bottomColor: UIColor? {
         didSet {
             configureView()
         }
@@ -52,19 +52,19 @@ import MediaPlayer
 }
 
 
-@IBDesignable class CircularView: UIView {
-    @IBInspectable var cornerRadius: CGFloat = 0 {
+class CircularView: UIView {
+    var cornerRadius: CGFloat = 0 {
         didSet {
             layer.cornerRadius = cornerRadius
             layer.masksToBounds = cornerRadius > 0
         }
     }
-    @IBInspectable var borderWidth: CGFloat = 0 {
+    var borderWidth: CGFloat = 0 {
         didSet {
             layer.borderWidth = borderWidth
         }
     }
-    @IBInspectable var borderColor: UIColor? {
+    var borderColor: UIColor? {
         didSet {
             layer.borderColor = borderColor?.CGColor
         }
@@ -109,19 +109,19 @@ extension UIView {
 
 // MARK: - UIButton
 
-@IBDesignable class PCTBorderButton: UIButton {
-    @IBInspectable var cornerRadius: CGFloat = 0 {
+class PCTBorderButton: UIButton {
+    var cornerRadius: CGFloat = 0 {
         didSet {
             layer.cornerRadius = cornerRadius
             layer.masksToBounds = cornerRadius > 0
         }
     }
-    @IBInspectable var borderWidth: CGFloat = 0 {
+    var borderWidth: CGFloat = 0 {
         didSet {
             layer.borderWidth = borderWidth
         }
     }
-    @IBInspectable var borderColor: UIColor? {
+    var borderColor: UIColor? {
         didSet {
             layer.borderColor = borderColor?.CGColor
             setTitleColor(borderColor, forState: .Normal)
@@ -156,14 +156,14 @@ extension UIView {
     }
 }
 
-@IBDesignable class PCTBlurButton: UIButton {
+class PCTBlurButton: UIButton {
     var cornerRadius: CGFloat = 0.0 {
         didSet {
             backgroundView.layer.cornerRadius = cornerRadius
             backgroundView.layer.masksToBounds = cornerRadius > 0
         }
     }
-    @IBInspectable var blurTint: UIColor = UIColor.clearColor() {
+    var blurTint: UIColor = UIColor.clearColor() {
         didSet {
             backgroundView.contentView.backgroundColor = blurTint
         }
@@ -222,8 +222,8 @@ extension UIView {
     }
 }
 
-@IBDesignable class PCTHighlightedImageButton: UIButton {
-    @IBInspectable var highlightedImageTintColor: UIColor = UIColor.whiteColor()
+class PCTHighlightedImageButton: UIButton {
+    var highlightedImageTintColor: UIColor = UIColor.whiteColor()
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -844,21 +844,21 @@ extension GCKMediaTextTrackStyle {
 
 // MARK: - UITextView
 
-@IBDesignable public class PCTTextView: UITextView {
+public class PCTTextView: UITextView {
     
-    @IBInspectable var moreButtonText: String = "...more" {
+    var moreButtonText: String = "...more" {
         didSet {
             moreButton.setTitle(moreButtonText, forState: .Normal)
         }
     }
     
-    @IBInspectable var maxHeight: CGFloat = 57 {
+    var maxHeight: CGFloat = 57 {
         didSet {
             heightConstraint.constant = maxHeight
         }
     }
     
-    @IBInspectable var moreButtonBackgroundColor: UIColor? {
+    var moreButtonBackgroundColor: UIColor? {
         didSet {
             moreButton.backgroundColor = moreButtonBackgroundColor
         }
