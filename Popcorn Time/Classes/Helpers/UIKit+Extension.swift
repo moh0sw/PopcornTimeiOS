@@ -7,77 +7,6 @@ import MediaPlayer
 
 // MARK: - UIView
 
-@IBDesignable class GradientView: UIView {
-    
-    @IBInspectable var topColor: UIColor? {
-        didSet {
-            configureView()
-        }
-    }
-    @IBInspectable var bottomColor: UIColor? {
-        didSet {
-            configureView()
-        }
-    }
-    
-    override class func layerClass() -> AnyClass {
-        return CAGradientLayer.self
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        configureView()
-    }
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        configureView()
-    }
-    
-    override func tintColorDidChange() {
-        super.tintColorDidChange()
-        configureView()
-    }
-    
-    func configureView() {
-        let layer = self.layer as! CAGradientLayer
-        let locations = [ 0.0, 1.0 ]
-        layer.locations = locations
-        let color1: UIColor = topColor ?? self.tintColor
-        let color2: UIColor = bottomColor ?? UIColor.blackColor()
-        let colors = [ color1.CGColor, color2.CGColor ]
-        layer.colors = colors
-    }
-    
-}
-
-
-@IBDesignable class CircularView: UIView {
-    @IBInspectable var cornerRadius: CGFloat = 0 {
-        didSet {
-            layer.cornerRadius = cornerRadius
-            layer.masksToBounds = cornerRadius > 0
-        }
-    }
-    @IBInspectable var borderWidth: CGFloat = 0 {
-        didSet {
-            layer.borderWidth = borderWidth
-        }
-    }
-    @IBInspectable var borderColor: UIColor? {
-        didSet {
-            layer.borderColor = borderColor?.CGColor
-        }
-    }
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-    }
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-    }
-}
-
 extension UIView {
     /**
      Remove all constraints from the view.
@@ -107,146 +36,7 @@ extension UIView {
     }
 }
 
-// MARK: - UIButton
-
-@IBDesignable class PCTBorderButton: UIButton {
-    @IBInspectable var cornerRadius: CGFloat = 0 {
-        didSet {
-            layer.cornerRadius = cornerRadius
-            layer.masksToBounds = cornerRadius > 0
-        }
-    }
-    @IBInspectable var borderWidth: CGFloat = 0 {
-        didSet {
-            layer.borderWidth = borderWidth
-        }
-    }
-    @IBInspectable var borderColor: UIColor? {
-        didSet {
-            layer.borderColor = borderColor?.CGColor
-            setTitleColor(borderColor, forState: .Normal)
-        }
-    }
-    override var highlighted: Bool {
-        didSet {
-            updateColor(highlighted, borderColor)
-        }
-    }
-    
-    override func tintColorDidChange() {
-        if tintAdjustmentMode == .Dimmed {
-            updateColor(false)
-        } else {
-            updateColor(false, borderColor)
-        }
-    }
-    
-    func updateColor(highlighted: Bool, _ color: UIColor? = nil) {
-        UIView.animateWithDuration(0.25) {
-            if highlighted {
-                self.backgroundColor =  color ?? self.tintColor
-                self.layer.borderColor = color?.CGColor ?? self.tintColor?.CGColor
-                self.setTitleColor(UIColor.whiteColor(), forState: .Highlighted)
-            } else {
-                self.backgroundColor = UIColor.clearColor()
-                self.layer.borderColor = color?.CGColor ?? self.tintColor?.CGColor
-                self.setTitleColor(color ?? self.tintColor, forState: .Normal)
-            }
-        }
-    }
-}
-
-@IBDesignable class PCTBlurButton: UIButton {
-    var cornerRadius: CGFloat = 0.0 {
-        didSet {
-            backgroundView.layer.cornerRadius = cornerRadius
-            backgroundView.layer.masksToBounds = cornerRadius > 0
-        }
-    }
-    @IBInspectable var blurTint: UIColor = UIColor.clearColor() {
-        didSet {
-            backgroundView.contentView.backgroundColor = blurTint
-        }
-    }
-    var blurStyle: UIBlurEffectStyle = .Light {
-        didSet {
-            backgroundView.effect = UIBlurEffect(style: blurStyle)
-        }
-    }
-    
-    var imageTransform: CGAffineTransform = CGAffineTransformMakeScale(0.5, 0.5) {
-        didSet {
-            updatedImageView.transform = imageTransform
-        }
-    }
-    
-    var backgroundView: UIVisualEffectView
-    private var updatedImageView = UIImageView()
-    
-    override init(frame: CGRect) {
-        backgroundView = UIVisualEffectView(effect: UIBlurEffect(style: blurStyle))
-        super.init(frame: frame)
-        setUpButton()
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        backgroundView = UIVisualEffectView(effect: UIBlurEffect(style: blurStyle))
-        super.init(coder: aDecoder)
-        setUpButton()
-    }
-    
-    func setUpButton() {
-        backgroundView.frame = bounds
-        backgroundView.userInteractionEnabled = false
-        insertSubview(backgroundView, atIndex: 0)
-        updatedImageView = UIImageView(image: self.imageView!.image)
-        updatedImageView.frame = self.imageView!.bounds
-        updatedImageView.center = CGPointMake(CGRectGetMidX(bounds), CGRectGetMidY(bounds))
-        updatedImageView.userInteractionEnabled = false
-        self.imageView?.removeFromSuperview()
-        addSubview(updatedImageView)
-        updatedImageView.transform = imageTransform
-        cornerRadius = frame.width/2
-    }
-    
-    override var highlighted: Bool {
-        didSet {
-            updateColor(highlighted)
-        }
-    }
-    
-    func updateColor(tint: Bool) {
-        UIView.animateWithDuration(0.25, delay: 0.0, options: .CurveEaseInOut, animations: { 
-            self.backgroundView.contentView.backgroundColor = tint ? UIColor.whiteColor() : self.blurTint
-            }, completion: nil)
-    }
-}
-
-@IBDesignable class PCTHighlightedImageButton: UIButton {
-    @IBInspectable var highlightedImageTintColor: UIColor = UIColor.whiteColor()
-    
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        setImage(self.imageView?.image?.withColor(highlightedImageTintColor), forState: .Highlighted)
-    }
-    
-    override func setImage(image: UIImage?, forState state: UIControlState) {
-        super.setImage(image, forState: state)
-        super.setImage(image?.withColor(highlightedImageTintColor), forState: .Highlighted)
-    }
-}
-
-
-
 // MARK: - String
-
-func randomString(length length: Int) -> String {
-    let alphabet = "-_1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    let upperBound = UInt32(alphabet.characters.count)
-    return String((0..<length).map { _ -> Character in
-        return alphabet[alphabet.startIndex.advancedBy(Int(arc4random_uniform(upperBound)))]
-        })
-}
 
 let downloadsDirectory: String = {
     let cachesPath = NSURL(fileURLWithPath: NSTemporaryDirectory())
@@ -258,6 +48,15 @@ let downloadsDirectory: String = {
 }()
 
 extension String {
+    
+    static func random(length length: Int) -> String {
+        let alphabet = "-_1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        let upperBound = UInt32(alphabet.characters.count)
+        return String((0..<length).map { _ -> Character in
+            return alphabet[alphabet.startIndex.advancedBy(Int(arc4random_uniform(upperBound)))]
+        })
+    }
+    
     func urlStringValues() -> [String: String] {
         var queryStringDictionary = [String: String]()
         let urlComponents = componentsSeparatedByString("&")

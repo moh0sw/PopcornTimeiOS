@@ -17,7 +17,7 @@ class EpisodeDetailViewController: UIViewController, PCTTablePickerViewDelegate,
     @IBOutlet var summaryView: UITextView!
     @IBOutlet var infoLabel: UILabel!
     @IBOutlet var qualityBtn: UIButton?
-    @IBOutlet var playNowBtn: PCTBorderButton?
+    @IBOutlet var playNowBtn: BorderButton?
     @IBOutlet var subtitlesButton: UIButton!
     @IBOutlet var scrollView: UIScrollView!
     @IBOutlet var torrentHealth: CircularView!

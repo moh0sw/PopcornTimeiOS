@@ -265,7 +265,7 @@
                                                 <action selector="didFinishPlaying" destination="NFr-Tv-vwl" eventType="touchUpInside" id="sNO-wd-cc7"/>
                                             </connections>
                                         </button>
-                                        <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YZC-cY-77x" userLabel="Change Video Dimentions" customClass="PCTHighlightedImageButton" customModule="Popcorn_Time" customModuleProvider="target">
+                                        <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YZC-cY-77x" userLabel="Change Video Dimentions" customClass="HighlightImageButton" customModule="Popcorn_Time" customModuleProvider="target">
                                             <rect key="frame" x="346" y="22" width="20" height="22"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="20" id="1yh-ud-fi8"/>
@@ -319,7 +319,7 @@
                                     <rect key="frame" x="0.0" y="0.0" width="375" height="84"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" reversesTitleShadowWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9eF-eP-pPo" userLabel="Play/Pause" customClass="PCTHighlightedImageButton" customModule="Popcorn_Time" customModuleProvider="target">
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" reversesTitleShadowWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9eF-eP-pPo" userLabel="Play/Pause" customClass="HighlightImageButton" customModule="Popcorn_Time" customModuleProvider="target">
                                             <rect key="frame" x="176" y="15" width="23" height="25"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="23" id="3FP-hU-3zX"/>
@@ -331,7 +331,7 @@
                                                 <action selector="playandPause:" destination="NFr-Tv-vwl" eventType="touchUpInside" id="JYK-Gy-s3F"/>
                                             </connections>
                                         </button>
-                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" reversesTitleShadowWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dYK-gR-uum" userLabel="Subtitles" customClass="PCTHighlightedImageButton" customModule="Popcorn_Time" customModuleProvider="target">
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" reversesTitleShadowWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dYK-gR-uum" userLabel="Subtitles" customClass="HighlightImageButton" customModule="Popcorn_Time" customModuleProvider="target">
                                             <rect key="frame" x="334" y="59" width="24" height="19"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="24" id="XZl-aO-VnT"/>
@@ -345,7 +345,7 @@
                                                 </segue>
                                             </connections>
                                         </button>
-                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="plz-b8-yPs" userLabel="Fast Forward" customClass="PCTHighlightedImageButton" customModule="Popcorn_Time" customModuleProvider="target">
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="plz-b8-yPs" userLabel="Fast Forward" customClass="HighlightImageButton" customModule="Popcorn_Time" customModuleProvider="target">
                                             <rect key="frame" x="254" y="17" width="32" height="22"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="32" id="Gam-Go-g1y"/>
@@ -357,7 +357,7 @@
                                                 <outletCollection property="gestureRecognizers" destination="1no-Db-A2o" appends="YES" id="O3b-p8-BEk"/>
                                             </connections>
                                         </button>
-                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9Ym-2f-hgG" userLabel="Rewind" customClass="PCTHighlightedImageButton" customModule="Popcorn_Time" customModuleProvider="target">
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9Ym-2f-hgG" userLabel="Rewind" customClass="HighlightImageButton" customModule="Popcorn_Time" customModuleProvider="target">
                                             <rect key="frame" x="89" y="17" width="32" height="22"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="32" id="gza-Wc-dHl"/>
@@ -369,7 +369,7 @@
                                                 <outletCollection property="gestureRecognizers" destination="1bL-Ku-N1X" appends="YES" id="g9J-A7-5s8"/>
                                             </connections>
                                         </button>
-                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nTF-9H-cEf" customClass="PCTHighlightedImageButton" customModule="Popcorn_Time" customModuleProvider="target">
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nTF-9H-cEf" customClass="HighlightImageButton" customModule="Popcorn_Time" customModuleProvider="target">
                                             <rect key="frame" x="300" y="59" width="24" height="18"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="24" id="Sny-dZ-96e"/>

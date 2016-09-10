@@ -255,7 +255,7 @@ class SettingsTableViewController: UITableViewController, PCTTablePickerViewDele
             alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
             presentViewController(alert, animated: true, completion: nil)
         } else {
-            state = randomString(length: 15)
+            state = String.random(length: 15)
             openUrl("https://trakt.tv/oauth/authorize?client_id=a3b34d7ce9a7f8c1bb216eed6c92b11f125f91ee0e711207e1030e7cdc965e19&redirect_uri=PopcornTime%3A%2F%2Ftrakt&response_type=code&state=\(state)")
         }
     }

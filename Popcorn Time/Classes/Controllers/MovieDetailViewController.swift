@@ -12,7 +12,7 @@ class MovieDetailViewController: DetailItemOverviewViewController, PCTTablePicke
     @IBOutlet var torrentHealth: CircularView!
     @IBOutlet var qualityBtn: UIButton!
     @IBOutlet var subtitlesButton: UIButton!
-    @IBOutlet var playButton: PCTBorderButton!
+    @IBOutlet var playButton: BorderButton!
     @IBOutlet var watchedBtn: UIBarButtonItem!
     @IBOutlet var trailerBtn: UIButton!
     @IBOutlet var collectionView: UICollectionView!
