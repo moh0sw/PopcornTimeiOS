@@ -28,10 +28,13 @@ class CastIconButton: UIButton {
             }
         }
     }
-    let castOff = UIImage(named: "CastOff")!
-    let castOn = UIImage(named: "CastOn")!
+    let castOff = R.image.castOff()!
+    let castOn = R.image.castOn()!
     var castConnecting: [UIImage] {
-      return [UIImage(named: "CastOn0")!.withColor(superview?.tintColor), UIImage(named: "CastOn1")!.withColor(superview?.tintColor), UIImage(named: "CastOn2")!.withColor(superview?.tintColor), UIImage(named: "CastOn1")!.withColor(superview?.tintColor)]
+      return [R.image.castOn0()!.withColor(superview?.tintColor),
+              R.image.castOn1()!.withColor(superview?.tintColor),
+              R.image.castOn2()!.withColor(superview?.tintColor),
+              R.image.castOn1()!.withColor(superview?.tintColor)]
     }
     override init(frame: CGRect) {
         super.init(frame: frame)

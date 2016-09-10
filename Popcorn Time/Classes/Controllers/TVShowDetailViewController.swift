@@ -124,7 +124,7 @@ class TVShowDetailViewController: DetailItemOverviewViewController, UITableViewD
         super.traitCollectionDidChange(previousTraitCollection)
         if let coverImageAsString = currentItem.coverImageAsString,
             let backgroundImageAsString = currentItem.backgroundImageAsString {
-            backgroundImageView.af_setImageWithURLRequest(NSURLRequest(URL: NSURL(string: splitViewController?.traitCollection.horizontalSizeClass == .Compact ? coverImageAsString : backgroundImageAsString)!), placeholderImage: UIImage(named: "Placeholder"), imageTransition: .CrossDissolve(animationLength))
+            backgroundImageView.af_setImageWithURLRequest(NSURLRequest(URL: NSURL(string: splitViewController?.traitCollection.horizontalSizeClass == .Compact ? coverImageAsString : backgroundImageAsString)!), placeholderImage: R.image.placeholder(), imageTransition: .CrossDissolve(animationLength))
         }
     }
     

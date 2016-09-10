@@ -14,7 +14,7 @@ class TVShowDetailTableViewCell: UITableViewCell {
     }
     
     var watchedButtonImage: UIImage {
-        return WatchlistManager.episodeManager.isWatched(tvdbId) ? UIImage(named: "WatchedOn")! : UIImage(named: "WatchedOff")!
+        return WatchlistManager.episodeManager.isWatched(tvdbId) ? R.image.watchedOn()! : R.image.watchedOff()!
     }
     
     @IBAction func toggleWatched() {

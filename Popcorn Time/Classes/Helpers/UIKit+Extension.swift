@@ -534,7 +534,7 @@ class PCTBarSlider: OBSlider {
     }
     
     override func awakeFromNib() {
-        self.setThumbImage(UIImage(named: "Scrubber Image"), forState: .Normal)
+        self.setThumbImage(R.image.scrubberImage(), forState: .Normal)
         super.awakeFromNib()
     }
 }
@@ -549,7 +549,7 @@ class PCTProgressSlider: UISlider {
     }
     
     override func awakeFromNib() {
-        setThumbImage(UIImage(named: "Progress Indicator")?.withColor(minimumTrackTintColor), forState: .Normal)
+        setThumbImage(R.image.progressIndicator()?.withColor(minimumTrackTintColor), forState: .Normal)
         setMinimumTrackImage(UIImage.fromColor(minimumTrackTintColor), forState: .Normal)
         setMaximumTrackImage(UIImage.fromColor(maximumTrackTintColor), forState: .Normal)
         super.awakeFromNib()

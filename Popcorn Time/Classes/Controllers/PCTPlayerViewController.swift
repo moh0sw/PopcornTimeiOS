@@ -97,7 +97,7 @@ class PCTPlayerViewController: UIViewController, UIGestureRecognizerDelegate, UI
     @IBAction func positionSliderAction() {
         if stateBeforeScrubbing != .Paused {
             mediaplayer.play()
-            playPauseButton.setImage(UIImage(named: "Pause"), forState: .Normal)
+            playPauseButton.setImage(R.image.pause(), forState: .Normal)
         }
         mediaplayer.position = positionSlider.value
         view.layoutIfNeeded()
@@ -165,10 +165,10 @@ class PCTPlayerViewController: UIViewController, UIGestureRecognizerDelegate, UI
             } else if movieView.bounds.width % 9 == 0 && movieView.bounds.height % 16 == 0 {
                 mediaplayer.videoCropGeometry = UnsafeMutablePointer<Int8>(("9:16" as NSString).UTF8String)
             }
-            videoDimensionsButton.setImage(UIImage(named: "Scale To Fit"), forState: .Normal)
+            videoDimensionsButton.setImage(R.image.scaleToFit(), forState: .Normal)
         } else // Change aspect ratio to scale to fit
         {
-            videoDimensionsButton.setImage(UIImage(named: "Scale To Fill"), forState: .Normal)
+            videoDimensionsButton.setImage(R.image.scaleToFill(), forState: .Normal)
             mediaplayer.videoAspectRatio = nil
             mediaplayer.videoCropGeometry = nil
         }
@@ -346,10 +346,10 @@ class PCTPlayerViewController: UIViewController, UIGestureRecognizerDelegate, UI
             TraktTVAPI.sharedInstance.scrobble(media.id, progress: positionSlider.value, type: type, status: .Finished)
             didFinishPlaying()
         case .Paused:
-            playPauseButton.setImage(UIImage(named: "Play"), forState: .Normal)
+            playPauseButton.setImage(R.image.play(), forState: .Normal)
             TraktTVAPI.sharedInstance.scrobble(media.id, progress: positionSlider.value, type: type, status: .Paused)
         case .Playing:
-            playPauseButton.setImage(UIImage(named: "Pause"), forState: .Normal)
+            playPauseButton.setImage(R.image.pause(), forState: .Normal)
             TraktTVAPI.sharedInstance.scrobble(media.id, progress: positionSlider.value, type: type, status: .Watching)
         default:
             break

@@ -174,19 +174,19 @@ class CastPlayerViewController: UIViewController, GCKRemoteMediaClientListener, 
                 case .Paused:
                     UIApplication.sharedApplication().idleTimerDisabled = false
                     TraktTVAPI.sharedInstance.scrobble(media.id, progress: progressSlider.value, type: type, status: .Paused)
-                    playPauseButton.setImage(UIImage(named: "Play"), forState: .Normal)
+                    playPauseButton.setImage(R.image.play(), forState: .Normal)
                     elapsedTimer.invalidate()
                     elapsedTimer = nil
                 case .Playing:
                     UIApplication.sharedApplication().idleTimerDisabled = true
                     TraktTVAPI.sharedInstance.scrobble(media.id, progress: progressSlider.value, type: type, status: .Watching)
-                    playPauseButton.setImage(UIImage(named: "Pause"), forState: .Normal)
+                    playPauseButton.setImage(R.image.pause(), forState: .Normal)
                     if elapsedTimer == nil {
                         elapsedTimer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: #selector(updateTime), userInfo: nil, repeats: true)
                     }
                 case .Buffering:
                     UIApplication.sharedApplication().idleTimerDisabled = true
-                    playPauseButton.setImage(UIImage(named: "Play"), forState: .Normal)
+                    playPauseButton.setImage(R.image.play(), forState: .Normal)
                     bufferView.showInView(view)
                 case .Idle:
                     switch idleReason {
@@ -261,7 +261,7 @@ class CastPlayerViewController: UIViewController, GCKRemoteMediaClientListener, 
                 }
             }            
         }
-        volumeSlider?.setThumbImage(UIImage(named: "Scrubber Image"), forState: .Normal)
+        volumeSlider?.setThumbImage(R.image.scrubberImage(), forState: .Normal)
     }
     
     func pickerView(pickerView: PCTPickerView, didClose items: [String : AnyObject]) {

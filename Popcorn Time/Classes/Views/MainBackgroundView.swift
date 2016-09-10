@@ -34,6 +34,6 @@ class MainBackgroundView: UIView {
             title = "Unknown Error"
             helpfulDescription = "Uh Oh! An unknown error has occured. Please try again."
         }
-        setUpView(image: UIImage(named: "Error")!, title: title, description: helpfulDescription)
+        setUpView(image: R.image.error()!, title: title, description: helpfulDescription)
     }
 }

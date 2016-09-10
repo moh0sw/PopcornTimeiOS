@@ -64,7 +64,7 @@ class EpisodeDetailViewController: UIViewController, PCTTablePickerViewDelegate,
                 currentItem.coverImageAsString = imageURLAsString
                 if let imageURLAsString = imageURLAsString,
                     url = NSURL(string: imageURLAsString) {
-                    self.backgroundImageView!.af_setImageWithURL(url, placeholderImage: UIImage(named: "Placeholder"), imageTransition: .CrossDissolve(animationLength))
+                    self.backgroundImageView!.af_setImageWithURL(url, placeholderImage: R.image.placeholder(), imageTransition: .CrossDissolve(animationLength))
                 }
                 if let subtitles = subtitles {
                     currentItem.subtitles = subtitles
@@ -107,7 +107,7 @@ class EpisodeDetailViewController: UIViewController, PCTTablePickerViewDelegate,
             background.autoresizingMask = [.FlexibleHeight, .FlexibleWidth]
             background.backgroundColor = UIColor(red: 30.0/255.0, green: 30.0/255.0, blue: 30.0/255.0, alpha: 1.0)
             view.insertSubview(background, aboveSubview: view)
-            background.setUpView(image: UIImage(named: "AirTV")!.imageWithRenderingMode(.AlwaysTemplate), description: "No episode selected")
+            background.setUpView(image: R.image.airTV()!.imageWithRenderingMode(.AlwaysTemplate), description: "No episode selected")
             background.imageView.tintColor = UIColor.darkGrayColor()
         }
         scrollView.setNeedsLayout()

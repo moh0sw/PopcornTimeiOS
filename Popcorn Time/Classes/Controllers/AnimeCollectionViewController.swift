@@ -121,7 +121,7 @@ class AnimeCollectionViewController: MainCollectionViewController, UIPopoverPres
                 indicator.startAnimating()
             } else {
                 let background = R.nib.mainBackgroundView.firstView(owner: nil)!
-                background.setUpView(image: UIImage(named: "Search")!, title: "No results found.", description: "No search results found for \(searchController.searchBar.text!). Please check the spelling and try again.")
+                background.setUpView(image: R.image.search()!, title: "No results found.", description: "No search results found for \(searchController.searchBar.text!). Please check the spelling and try again.")
                 collectionView.backgroundView = background
             }
         }

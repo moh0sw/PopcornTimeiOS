@@ -72,12 +72,12 @@ class AirPlayManager: NSObject {
     func airPlayItemImage(row: Int) -> UIImage {
         if let routeType = self.audioDeviceController.routeDescriptionAtIndex!(row)["AirPlayPortExtendedInfo"]?["model"] as? String {
             if routeType.containsString("AppleTV") {
-                return UIImage(named: "AirTV")!
+                return R.image.airTV()!
             } else {
-                return UIImage(named: "AirSpeaker")!
+                return R.image.airSpeaker()!
             }
         } else {
-            return UIImage(named: "AirAudio")!
+            return R.image.airAudio()!
         }
     }
     

@@ -100,7 +100,7 @@ class StreamToDevicesTableViewController: UITableViewController, GCKDeviceScanne
             cell.airImageView?.image = airPlayManager.airPlayItemImage(indexPath.row)
         } else {
             cell.titleLabel?.text = googleCastDevices[indexPath.row].friendlyName
-            cell.airImageView?.image = UIImage(named: "CastOff")
+            cell.airImageView?.image = R.image.castOff()
             if let session = GCKCastContext.sharedInstance().sessionManager.currentSession {
                 cell.picked = googleCastDevices[indexPath.row] == session.device
             } else {

@@ -96,7 +96,7 @@ class MovieDetailViewController: DetailItemOverviewViewController, PCTTablePicke
     }
     
     func getWatchedButtonImage() -> UIImage {
-        return WatchlistManager.movieManager.isWatched(currentItem.id) ? UIImage(named: "WatchedOn")! : UIImage(named: "WatchedOff")!
+        return WatchlistManager.movieManager.isWatched(currentItem.id) ? R.image.watchedOn()! : R.image.watchedOff()!
     }
     
     @IBAction func toggleWatched() {
@@ -257,7 +257,7 @@ extension MovieDetailViewController: UICollectionViewDelegate, UICollectionViewD
                 coverCell.yearLabel.text = relatedItems[indexPath.row].year
                 if let image = relatedItems[indexPath.row].coverImageAsString,
                     let url = NSURL(string: image) {
-                    coverCell.coverImage.af_setImageWithURL(url, placeholderImage: UIImage(named: "Placeholder"))
+                    coverCell.coverImage.af_setImageWithURL(url, placeholderImage: R.image.placeholder())
                 }
                 coverCell.watched = WatchlistManager.movieManager.isWatched(relatedItems[indexPath.row].id)
                 return coverCell
@@ -267,7 +267,7 @@ extension MovieDetailViewController: UICollectionViewDelegate, UICollectionViewD
             let imageView = cell.viewWithTag(1) as! UIImageView
             if let image = cast[indexPath.row].imageAsString,
                 let url = NSURL(string: image) {
-                imageView.af_setImageWithURL(url, placeholderImage: UIImage(named: "Placeholder"))
+                imageView.af_setImageWithURL(url, placeholderImage: R.image.placeholder())
             }
             imageView.layer.cornerRadius = self.collectionView(collectionView, layout: collectionView.collectionViewLayout, sizeForItemAtIndexPath: indexPath).width/2
             (cell.viewWithTag(2) as! UILabel).text = cast[indexPath.row].name
@@ -286,7 +286,7 @@ extension MovieDetailViewController: UICollectionViewDelegate, UICollectionViewD
     override func traitCollectionDidChange(previousTraitCollection: UITraitCollection?) {
         if let coverImageAsString = currentItem.coverImageAsString,
             let backgroundImageAsString = currentItem.backgroundImageAsString {
-            backgroundImageView.af_setImageWithURLRequest(NSURLRequest(URL: NSURL(string: traitCollection.horizontalSizeClass == .Compact ? coverImageAsString : backgroundImageAsString)!), placeholderImage: UIImage(named: "Placeholder"), imageTransition: .CrossDissolve(animationLength), completion: {
+            backgroundImageView.af_setImageWithURLRequest(NSURLRequest(URL: NSURL(string: traitCollection.horizontalSizeClass == .Compact ? coverImageAsString : backgroundImageAsString)!), placeholderImage: R.image.placeholder(), imageTransition: .CrossDissolve(animationLength), completion: {
                 if let value = $0.result.value {
                     self.playButton.borderColor = SLColorArt(image: value).secondaryColor
                 }
