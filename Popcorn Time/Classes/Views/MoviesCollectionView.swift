@@ -10,11 +10,16 @@ protocol MoviesCollectionDelegate {
     func didSelectMovie(movie: PCTMovie)
 }
 
-class MoviesCollectionView {
+class MoviesCollectionView: UICollectionView, UICollectionViewDataSource, UICollectionViewDelegate {
     
     var movies = [PCTMovie]()
     var moviesCollectionDelegate: MoviesCollectionDelegate?
-    var itemSize = CGSizeMake(100, 200)
+    var itemSize = CGSizeMake(98, 140)
+    
+    override func awakeFromNib() {
+        self.dataSource = self
+        self.delegate = self
+    }
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return movies.count

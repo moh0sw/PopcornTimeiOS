@@ -5,11 +5,16 @@
 
 import UIKit
 
-class CastCollectionView {
+class CastCollectionView: UICollectionView, UICollectionViewDataSource, UICollectionViewDelegate { 
     
     var actors = [PCTActor]()
     var castCollectionDelegate: MoviesCollectionDelegate?
-    var itemSize = CGSizeMake(100, 200)
+    var itemSize = CGSizeMake(98, 140)
+    
+    override func awakeFromNib() {
+    self.dataSource = self
+    self.delegate = self
+    }
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return actors.count

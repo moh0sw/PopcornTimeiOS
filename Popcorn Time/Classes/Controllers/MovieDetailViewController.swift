@@ -20,10 +20,10 @@ class MovieDetailViewController: DetailItemOverviewViewController, PCTTablePicke
     @IBOutlet var playButton: PCTBorderButton!
     @IBOutlet var watchedBtn: UIBarButtonItem!
     @IBOutlet var trailerBtn: UIButton!
-    @IBOutlet var collectionView: UICollectionView!
+    @IBOutlet var moviesCollectionView: MoviesCollectionView!
+    @IBOutlet var castCollectionView: CastCollectionView!
     
     var currentItem: PCTMovie!
-    var relatedItems = [PCTMovie]()
     var cast = [PCTActor]()
     var subtitlesTablePickerView: PCTTablePickerView!
     private var classContext = 0
@@ -55,13 +55,6 @@ class MovieDetailViewController: DetailItemOverviewViewController, PCTTablePicke
         infoLabel.text = "\(currentItem.year) ● \(currentItem.runtime) min ● \(currentItem.genres[0].capitalizedString)"
         playButton.borderColor = SLColorArt(image: backgroundImageView.image).secondaryColor
         trailerBtn.enabled = currentItem.trailerURLString != nil
-        
-        if let image = currentItem.coverImageAsString,
-            let url = NSURL(string: image) {
-            self.backgroundImageView.af_setImageWithURL(url,
-                                               placeholderImage: R.image.placeholder(),
-                                               imageTransition: .CrossDissolve(animationLength))
-        }
         
         MovieAPI.sharedInstance.getMovieInfo(currentItem.id, completion: {
             self.currentItem.torrents = $0
@@ -99,9 +92,22 @@ class MovieDetailViewController: DetailItemOverviewViewController, PCTTablePicke
         
         
         MovieAPI.sharedInstance.getDetailedMovieInfo(currentItem.id) { (actors, related) in
-            self.relatedItems = related as! [PCTMovie]
-            self.cast = actors
-            self.collectionView.reloadData()
+            self.moviesCollectionView.movies = related as! [PCTMovie]
+            self.moviesCollectionView.reloadData()
+            
+            self.castCollectionView.actors = actors
+            self.castCollectionView.reloadData()
+        }
+    }
+    
+    override func traitCollectionDidChange(previousTraitCollection: UITraitCollection?) {
+        if let coverImageAsString = currentItem.coverImageAsString,
+            let backgroundImageAsString = currentItem.backgroundImageAsString {
+            backgroundImageView.af_setImageWithURLRequest(NSURLRequest(URL: NSURL(string: traitCollection.horizontalSizeClass == .Compact ? coverImageAsString : backgroundImageAsString)!), placeholderImage: R.image.placeholder(), imageTransition: .CrossDissolve(animationLength), completion: {
+                if let value = $0.result.value {
+                    self.playButton.borderColor = SLColorArt(image: value).secondaryColor
+                }
+            })
         }
     }
     
@@ -236,81 +242,4 @@ class MovieDetailViewController: DetailItemOverviewViewController, PCTTablePicke
         self.headerTopConstraint.constant = offset
         self.headerHeightConstraint.constant = self.view.bounds.height * headerProportinalHeightConstraint.multiplier - offset
     }
-}
-
-
-extension MovieDetailViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-
-    func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
-        var sections = 0
-        if relatedItems.count > 0 {sections += 1}; if cast.count > 0 {sections += 1}
-        return sections
-    }
-    func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return section == 0 ? relatedItems.count : cast.count
-    }
-    
-    func collectionView(collectionView: UICollectionView,layout collectionViewLayout: UICollectionViewLayout,sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
-        var items = 1
-        while (collectionView.bounds.width/CGFloat(items))-8 > 195 {
-            items += 1
-        }
-        let width = (collectionView.bounds.width/CGFloat(items))-8
-        let ratio = width/195.0
-        let height = 180.0 * ratio
-        return CGSizeMake(width, height)
-    }
-    
-    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
-        if &classContext == context && keyPath == "frame" {
-            collectionView.collectionViewLayout.invalidateLayout()
-        }
-    }
-    
-    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        let cell: UICollectionViewCell
-        if indexPath.section == 0 {
-            cell = {
-               let coverCell = collectionView.dequeueReusableCellWithReuseIdentifier("relatedCell", forIndexPath: indexPath) as! MainItemCell
-                coverCell.titleLabel.text = relatedItems[indexPath.row].title
-                coverCell.yearLabel.text = relatedItems[indexPath.row].year
-                if let image = relatedItems[indexPath.row].coverImageAsString,
-                    let url = NSURL(string: image) {
-                    coverCell.coverImage.af_setImageWithURL(url, placeholderImage: R.image.placeholder())
-                }
-                coverCell.watched = WatchlistManager.movieManager.isWatched(relatedItems[indexPath.row].id)
-                return coverCell
-            }()
-        } else {
-            cell = collectionView.dequeueReusableCellWithReuseIdentifier("castCell", forIndexPath: indexPath)
-            let imageView = cell.viewWithTag(1) as! UIImageView
-            if let image = cast[indexPath.row].imageAsString,
-                let url = NSURL(string: image) {
-                imageView.af_setImageWithURL(url, placeholderImage: R.image.placeholder())
-            }
-            imageView.layer.cornerRadius = self.collectionView(collectionView, layout: collectionView.collectionViewLayout, sizeForItemAtIndexPath: indexPath).width/2
-            (cell.viewWithTag(2) as! UILabel).text = cast[indexPath.row].name
-            (cell.viewWithTag(3) as! UILabel).text = cast[indexPath.row].character
-        }
-        return cell
-    }
-    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
-        if indexPath.section == 0 {
-            let movieDetail = storyboard?.instantiateViewControllerWithIdentifier("MovieDetailViewController") as! MovieDetailViewController
-            movieDetail.currentItem = relatedItems[indexPath.row]
-            navigationController?.pushViewController(movieDetail, animated: true)
-        }
-    }
-    
-    override func traitCollectionDidChange(previousTraitCollection: UITraitCollection?) {
-        if let coverImageAsString = currentItem.coverImageAsString,
-            let backgroundImageAsString = currentItem.backgroundImageAsString {
-            backgroundImageView.af_setImageWithURLRequest(NSURLRequest(URL: NSURL(string: traitCollection.horizontalSizeClass == .Compact ? coverImageAsString : backgroundImageAsString)!), placeholderImage: R.image.placeholder(), imageTransition: .CrossDissolve(animationLength), completion: {
-                if let value = $0.result.value {
-                    self.playButton.borderColor = SLColorArt(image: value).secondaryColor
-                }
-            })
-        }
-    }
-
 }
