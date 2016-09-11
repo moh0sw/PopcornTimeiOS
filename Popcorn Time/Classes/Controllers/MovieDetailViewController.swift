@@ -151,10 +151,11 @@ class MovieDetailViewController: DetailItemOverviewViewController, PCTTablePicke
     }
     
     func loadMovieTorrent(media: PCTMovie, onChromecast: Bool = GCKCastContext.sharedInstance().castState == .Connected) {
-        let loadingViewController = storyboard!.instantiateViewControllerWithIdentifier("LoadingViewController") as! LoadingViewController
+        let loadingViewController = R.storyboard.commons.loadingViewController()!
         loadingViewController.transitioningDelegate = self
         loadingViewController.backgroundImage = backgroundImageView.image
         presentViewController(loadingViewController, animated: true, completion: nil)
+        
         downloadTorrentFile(media.currentTorrent.url!) { [unowned self] (url, error) in
             if let url = url {
                 let moviePlayer = self.storyboard!.instantiateViewControllerWithIdentifier("PCTPlayerViewController") as! PCTPlayerViewController
@@ -237,7 +238,7 @@ class MovieDetailViewController: DetailItemOverviewViewController, PCTTablePicke
     }
 }
 
-/*
+
 extension MovieDetailViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
 
     func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
@@ -256,7 +257,7 @@ extension MovieDetailViewController: UICollectionViewDelegate, UICollectionViewD
         }
         let width = (collectionView.bounds.width/CGFloat(items))-8
         let ratio = width/195.0
-        let height = 280.0 * ratio
+        let height = 180.0 * ratio
         return CGSizeMake(width, height)
     }
     
@@ -313,4 +314,3 @@ extension MovieDetailViewController: UICollectionViewDelegate, UICollectionViewD
     }
 
 }
-*/

@@ -49,7 +49,6 @@ class PCTLoadingViewAnimatedTransitioning: NSObject, UIViewControllerAnimatedTra
                 let noffsetY = -(nframe!.size.height + sourceController.statusBarHeight())
                 sourceController.tabBarController?.tabBar.frame = CGRectOffset(frame!, 0, offsetY)
                 sourceController.navigationController?.navigationBar.frame = CGRectOffset(nframe!, 0, noffsetY)
-                sourceController.progressiveness = 0.0
                 sourceController.blurView.alpha = 0.0
                 for view in sourceController.gradientViews {
                    view.alpha = 0.0

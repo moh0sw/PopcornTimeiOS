@@ -211,8 +211,8 @@
                             <scrollView multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" translatesAutoresizingMaskIntoConstraints="NO" id="A4I-6v-Yg2">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <subviews>
-                                    <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" axis="vertical" distribution="equalSpacing" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="2oM-Dv-d9j">
-                                        <rect key="frame" x="0.0" y="0.0" width="375" height="565"/>
+                                    <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" axis="vertical" distribution="equalSpacing" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="2oM-Dv-d9j">
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="601"/>
                                         <subviews>
                                             <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="mgD-e1-m0E" userLabel="Header View">
                                                 <rect key="frame" x="0.0" y="0.0" width="375" height="100"/>
@@ -243,18 +243,23 @@
                                                 </constraints>
                                             </view>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="1000" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bzX-p4-Vwb">
-                                                <rect key="frame" x="0.0" y="104" width="375" height="50"/>
+                                                <rect key="frame" x="0.0" y="110" width="375" height="24"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="50" id="Phu-BW-XYk"/>
                                                 </constraints>
                                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
                                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
+                                                <variation key="default">
+                                                    <mask key="constraints">
+                                                        <exclude reference="Phu-BW-XYk"/>
+                                                    </mask>
+                                                </variation>
                                             </label>
-                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="in9-sd-eld">
-                                                <rect key="frame" x="0.0" y="158" width="375" height="50"/>
+                                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="in9-sd-eld">
+                                                <rect key="frame" x="0.0" y="144" width="375" height="50"/>
                                                 <subviews>
-                                                    <view contentMode="scaleToFill" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="jqH-Vw-I6X" customClass="FloatRatingView" customModule="FloatRatingView">
+                                                    <view contentMode="scaleToFill" verticalCompressionResistancePriority="1000" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="jqH-Vw-I6X" customClass="FloatRatingView" customModule="FloatRatingView">
                                                         <rect key="frame" x="0.0" y="15" width="145" height="20"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="20" id="CiX-VW-MYz"/>
@@ -286,7 +291,7 @@
                                                             </mask>
                                                         </variation>
                                                     </view>
-                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qA1-jd-C8y" customClass="CircularView" customModule="Popcorn_Time" customModuleProvider="target">
+                                                    <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="qA1-jd-C8y" customClass="CircularView" customModule="Popcorn_Time" customModuleProvider="target">
                                                         <rect key="frame" x="155" y="18" width="16" height="15"/>
                                                         <color key="backgroundColor" red="0.41176470590000003" green="0.41176470590000003" blue="0.41176470590000003" alpha="1" colorSpace="calibratedRGB"/>
                                                         <constraints>
@@ -317,9 +322,14 @@
                                                     <constraint firstAttribute="height" constant="50" id="WL4-O2-gLr"/>
                                                     <constraint firstItem="jqH-Vw-I6X" firstAttribute="leading" secondItem="in9-sd-eld" secondAttribute="leading" id="c9D-3w-S6B"/>
                                                 </constraints>
+                                                <variation key="default">
+                                                    <mask key="constraints">
+                                                        <exclude reference="WL4-O2-gLr"/>
+                                                    </mask>
+                                                </variation>
                                             </view>
-                                            <label opaque="NO" userInteractionEnabled="NO" alpha="0.69999998807907104" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="1000" text="Movie Info" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CHY-Ny-pFG">
-                                                <rect key="frame" x="0.0" y="212" width="375" height="20"/>
+                                            <label opaque="NO" userInteractionEnabled="NO" alpha="0.69999998807907104" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="1000" misplaced="YES" text="Movie Info" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CHY-Ny-pFG">
+                                                <rect key="frame" x="0.0" y="204" width="375" height="20"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="20" id="0Rl-uu-uQP"/>
                                                 </constraints>
@@ -328,7 +338,7 @@
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" scrollEnabled="NO" editable="NO" text="Loading Summary..." textAlignment="natural" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Bd8-dO-xaL" customClass="PCTTextView" customModule="Popcorn_Time" customModuleProvider="target">
-                                                <rect key="frame" x="0.0" y="236" width="375" height="37"/>
+                                                <rect key="frame" x="0.0" y="234" width="375" height="37"/>
                                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
@@ -339,7 +349,7 @@
                                                 </userDefinedRuntimeAttributes>
                                             </textView>
                                             <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mYF-Az-xhy">
-                                                <rect key="frame" x="0.0" y="277" width="375" height="50"/>
+                                                <rect key="frame" x="0.0" y="281" width="375" height="50"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="50" id="4Cy-sc-rAK"/>
                                                 </constraints>
@@ -350,7 +360,7 @@
                                                 </connections>
                                             </button>
                                             <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="mRM-J2-7Tx">
-                                                <rect key="frame" x="0.0" y="331" width="375" height="50"/>
+                                                <rect key="frame" x="0.0" y="341" width="375" height="50"/>
                                                 <subviews>
                                                     <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" axis="vertical" distribution="fillEqually" alignment="top" translatesAutoresizingMaskIntoConstraints="NO" id="xzL-Ol-ZaH">
                                                         <rect key="frame" x="0.0" y="0.0" width="188" height="50"/>
@@ -395,7 +405,7 @@
                                                             </button>
                                                         </subviews>
                                                     </stackView>
-                                                    <view contentMode="scaleToFill" horizontalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="GuL-1F-bvd">
+                                                    <view contentMode="scaleToFill" horizontalHuggingPriority="251" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="GuL-1F-bvd">
                                                         <rect key="frame" x="188" y="0.0" width="188" height="50"/>
                                                         <subviews>
                                                             <button opaque="NO" contentMode="scaleToFill" misplaced="YES" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BDx-7b-aV9" customClass="PCTBorderButton" customModule="Popcorn_Time" customModuleProvider="target">
@@ -448,11 +458,11 @@
                                                 </subviews>
                                             </stackView>
                                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="0J5-Eo-bu4">
-                                                <rect key="frame" x="0.0" y="385" width="375" height="180"/>
+                                                <rect key="frame" x="0.0" y="401" width="375" height="200"/>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" priority="240" constant="200" id="3Qx-Zm-dGO"/>
-                                                    <constraint firstAttribute="height" constant="180" id="CZ7-bj-USy"/>
+                                                    <constraint firstAttribute="height" constant="200" id="CZ7-bj-USy"/>
                                                 </constraints>
                                                 <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="5" minimumInteritemSpacing="5" id="4QO-0W-qDD">
                                                     <size key="itemSize" width="97.5" height="140"/>
@@ -462,7 +472,7 @@
                                                 </collectionViewFlowLayout>
                                                 <cells>
                                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="relatedCell" id="tNR-sh-gR4" customClass="MainItemCell" customModule="Popcorn_Time" customModuleProvider="target">
-                                                        <rect key="frame" x="0.0" y="20" width="97.5" height="140"/>
+                                                        <rect key="frame" x="0.0" y="30" width="97.5" height="140"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                                             <rect key="frame" x="0.0" y="0.0" width="97.5" height="140"/>
@@ -533,7 +543,7 @@
                                                         </connections>
                                                     </collectionViewCell>
                                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="castCell" id="GsH-MT-t2v">
-                                                        <rect key="frame" x="102.5" y="20" width="97.5" height="140"/>
+                                                        <rect key="frame" x="102.5" y="30" width="97.5" height="140"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                                             <rect key="frame" x="0.0" y="0.0" width="97.5" height="140"/>
@@ -584,6 +594,10 @@
                                                         <exclude reference="3Qx-Zm-dGO"/>
                                                     </mask>
                                                 </variation>
+                                                <connections>
+                                                    <outlet property="dataSource" destination="6he-ZC-7st" id="EmC-I2-hFh"/>
+                                                    <outlet property="delegate" destination="6he-ZC-7st" id="gMp-cZ-ZLF"/>
+                                                </connections>
                                             </collectionView>
                                         </subviews>
                                         <constraints>

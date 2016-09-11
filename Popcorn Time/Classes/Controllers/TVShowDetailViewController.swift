@@ -10,12 +10,6 @@ class TVShowDetailViewController: DetailItemOverviewViewController, UITableViewD
     @IBOutlet var segmentedControl: UISegmentedControl!
     @IBOutlet var tableHeaderView: UIView!
     
-    override var minimumHeight: CGFloat {
-        get {
-            return super.minimumHeight + 46.0
-        }
-    }
-    
     let interactor = PCTEpisodeDetailPercentDrivenInteractiveTransition()
 
     var currentType: TraktTVAPI.type = .Shows

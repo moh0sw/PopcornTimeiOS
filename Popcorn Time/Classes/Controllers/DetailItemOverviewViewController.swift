@@ -6,16 +6,6 @@ import FloatRatingView
 
 class DetailItemOverviewViewController: UIViewController, UIScrollViewDelegate, UIPopoverPresentationControllerDelegate, PCTPlayerViewControllerDelegate {
     
-    var progressiveness: CGFloat = 0.0
-    var lastTranslation: CGFloat = 0.0
-    var lastHeaderHeight: CGFloat = 0.0
-    var minimumHeight: CGFloat {
-        if let navigationBar = navigationController?.navigationBar where navigationBar.hidden == false { return navigationBar.bounds.size.height + statusBarHeight() }
-        return statusBarHeight()
-    }
-    var maximumHeight: CGFloat {
-        return view.bounds.height/1.6
-    }
     
     @IBOutlet var scrollView: UIScrollView!
     @IBOutlet var tableView: UITableView!
@@ -27,15 +17,13 @@ class DetailItemOverviewViewController: UIViewController, UIScrollViewDelegate, 
     @IBOutlet var ratingView: FloatRatingView!
     @IBOutlet var summaryView: PCTTextView!
     @IBOutlet var infoLabel: UILabel!
-
-    enum ScrollDirection {
-        case Down
-        case Up
-    }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(updateCastStatus), name: kGCKCastStateDidChangeNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self,
+                                                         selector: #selector(updateCastStatus),
+                                                         name: kGCKCastStateDidChangeNotification,
+                                                         object: nil)
         updateCastStatus()
     }
     
@@ -72,7 +60,6 @@ class DetailItemOverviewViewController: UIViewController, UIScrollViewDelegate, 
     // MARK: - Presentation
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        fixIOS9PopOverAnchor(segue)
         if segue.identifier == "showCasts", let vc = (segue.destinationViewController as? UINavigationController)?.viewControllers.first as? StreamToDevicesTableViewController {
             segue.destinationViewController.popoverPresentationController?.delegate = self
             vc.onlyShowCastDevices = true
@@ -87,12 +74,6 @@ class DetailItemOverviewViewController: UIViewController, UIScrollViewDelegate, 
         if let castView = castButton.customView as? CastIconButton {
             castView.status = GCKCastContext.sharedInstance().castState
         }
-    }
-    
-    func presentationController(controller: UIPresentationController, viewControllerForAdaptivePresentationStyle style: UIModalPresentationStyle) -> UIViewController? {
-        (controller.presentedViewController as! UINavigationController).topViewController?.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Cancel", style: .Plain, target: self, action: #selector(dismiss))
-        return controller.presentedViewController
-        
     }
     
     func dismiss() {
