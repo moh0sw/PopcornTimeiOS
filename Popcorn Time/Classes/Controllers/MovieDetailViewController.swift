@@ -10,7 +10,6 @@ import SwiftyUserDefaults
 class MovieDetailViewController: DetailItemOverviewViewController, PCTTablePickerViewDelegate, UIViewControllerTransitioningDelegate {
 
     @IBOutlet var headerView: UIView!
-    @IBOutlet var headerProportinalHeightConstraint: NSLayoutConstraint!
     @IBOutlet var headerHeightConstraint: NSLayoutConstraint!
     @IBOutlet var headerTopConstraint: NSLayoutConstraint!
 
@@ -240,6 +239,6 @@ class MovieDetailViewController: DetailItemOverviewViewController, PCTTablePicke
     func scrollViewDidScroll(scrollView: UIScrollView) {
         let offset = scrollView.contentOffset.y
         self.headerTopConstraint.constant = offset
-        self.headerHeightConstraint.constant = self.view.bounds.height * headerProportinalHeightConstraint.multiplier - offset
+        self.headerHeightConstraint.constant = self.view.bounds.height * 0.6 - offset
     }
 }
