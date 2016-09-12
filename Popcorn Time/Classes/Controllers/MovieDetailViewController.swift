@@ -21,84 +21,68 @@ class MovieDetailViewController: DetailItemOverviewViewController, PCTTablePicke
     @IBOutlet var trailerBtn: UIButton!
     @IBOutlet var moviesCollectionView: MoviesCollectionView!
     @IBOutlet var castCollectionView: CastCollectionView!
-    
+
     var currentItem: PCTMovie!
     var cast = [PCTActor]()
     var subtitlesTablePickerView: PCTTablePickerView!
     private var classContext = 0
-    
+    private var watchButtonImage = UIImage()
+
+    // MARK: - LifeCycle
+
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        
+
         WatchlistManager.movieManager.getProgress()
         self.scrollView.delegate = self
     }
-    
+
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
     }
-    
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-    }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
+
         navigationItem.title = currentItem.title
-        
-        currentItem.coverImageAsString = currentItem.coverImageAsString?.stringByReplacingOccurrencesOfString("thumb", withString: "medium")
-        watchedBtn.image = getWatchedButtonImage()
-        titleLabel.text = currentItem.title
-        summaryView.text = currentItem.summary
-        ratingView.rating = Float(currentItem.rating)
-        infoLabel.text = "\(currentItem.year) ● \(currentItem.runtime) min ● \(currentItem.genres[0].capitalizedString)"
-        playButton.borderColor = SLColorArt(image: backgroundImageView.image).secondaryColor
-        trailerBtn.enabled = currentItem.trailerURLString != nil
-        
+        self.updateUI()
+
         MovieAPI.sharedInstance.getMovieInfo(currentItem.id, completion: {
             self.currentItem.torrents = $0
             self.currentItem.currentTorrent = self.currentItem.torrents.filter({$0.quality == Defaults[.PreferredQuality]}).first ?? self.currentItem.torrents.first!
-            self.torrentHealth.backgroundColor = self.currentItem.currentTorrent.health.color()
-            self.playButton.enabled = self.currentItem.currentTorrent.url != nil
-            self.qualityBtn?.userInteractionEnabled = self.currentItem.torrents.count > 1
-            self.qualityBtn?.setTitle(  "\(self.currentItem.currentTorrent.quality! + (self.currentItem.torrents.count > 1 ? " ▾" : ""))", forState: .Normal)
+            self.updateUI()
         })
-        
+
         OpenSubtitles.sharedInstance.login({
             OpenSubtitles.sharedInstance.search(imdbId: self.currentItem.id, completion: {
                 subtitles in
                 self.currentItem.subtitles = subtitles
-                if subtitles.count == 0 {
-                    self.subtitlesButton.setTitle("No Subtitles Available", forState: .Normal)
-                } else {
-                    self.subtitlesButton.setTitle("None ▾", forState: .Normal)
-                    self.subtitlesButton.userInteractionEnabled = true
-                    if let preferredSubtitle = Defaults[.PreferredSubtitleLanguage] where preferredSubtitle != "None" {
-                        let languages = subtitles.map({$0.language})
-                        let index = languages.indexOf(languages.filter({$0 == preferredSubtitle}).first!)!
-                        let subtitle = self.currentItem.subtitles![index]
-                        self.currentItem.currentSubtitle = subtitle
-                        self.subtitlesButton.setTitle("  " + subtitle.language + " ▾", forState: .Normal)
-                    }
-                }
                 self.subtitlesTablePickerView = PCTTablePickerView(superView: self.view, sourceDict: PCTSubtitle.dictValue(subtitles), self)
                 if let link = self.currentItem.currentSubtitle?.link {
                     self.subtitlesTablePickerView.selectedItems = [link]
                 }
                 self.tabBarController?.view.addSubview(self.subtitlesTablePickerView)
+
+                if let subtitles = self.currentItem.subtitles where subtitles.count > 0 {
+                    if let preferredSubtitle = Defaults[.PreferredSubtitleLanguage] where preferredSubtitle != "None" {
+                        let languages = subtitles.map({$0.language})
+                        let index = languages.indexOf(languages.filter({$0 == preferredSubtitle}).first!)!
+                        let subtitle = self.currentItem.subtitles![index]
+                        self.currentItem.currentSubtitle = subtitle
+                    }
+                }
+                self.updateUI()
             })
         })
-        
-        
+
         MovieAPI.sharedInstance.getDetailedMovieInfo(currentItem.id) { (actors, related) in
             self.moviesCollectionView.movies = related as! [PCTMovie]
             self.moviesCollectionView.reloadData()
-            
             self.castCollectionView.actors = actors
             self.castCollectionView.reloadData()
         }
     }
-    
+
     override func traitCollectionDidChange(previousTraitCollection: UITraitCollection?) {
         if let coverImageAsString = currentItem.coverImageAsString,
             let backgroundImageAsString = currentItem.backgroundImageAsString {
@@ -109,16 +93,50 @@ class MovieDetailViewController: DetailItemOverviewViewController, PCTTablePicke
             })
         }
     }
-    
-    func getWatchedButtonImage() -> UIImage {
-        return WatchlistManager.movieManager.isWatched(currentItem.id) ? R.image.watchedOn()! : R.image.watchedOff()!
+
+    func updateUI() {
+
+        // General
+        watchButtonImage = WatchlistManager.movieManager.isWatched(currentItem.id) ? R.image.watchedOn()! : R.image.watchedOff()!
+        currentItem.coverImageAsString = currentItem.coverImageAsString?.stringByReplacingOccurrencesOfString("thumb", withString: "medium")
+        watchedBtn.image = watchButtonImage
+        titleLabel.text = currentItem.title
+        summaryView.text = currentItem.summary
+        ratingView.rating = Float(currentItem.rating)
+        infoLabel.text = "\(currentItem.year) ● \(currentItem.runtime) min ● \(currentItem.genres[0].capitalizedString)"
+        playButton.borderColor = SLColorArt(image: backgroundImageView.image).secondaryColor
+        trailerBtn.enabled = currentItem.trailerURLString != nil
+
+        // Subs
+        self.subtitlesButton.userInteractionEnabled = false
+        if let subtitles = self.currentItem.subtitles {
+            self.subtitlesButton.userInteractionEnabled = (subtitles.count > 0)
+            if subtitles.count == 0 {
+                self.subtitlesButton.setTitle("  No Subtitles Available", forState: .Normal)
+            } else if let subtitle = currentItem.currentSubtitle{
+                self.subtitlesButton.setTitle("  " + subtitle.language + " ▾", forState: .Normal)
+            } else {
+                self.subtitlesButton.setTitle("  None ▾", forState: .Normal)
+            }
+        }
+
+        // Quality
+        self.qualityBtn?.userInteractionEnabled = self.currentItem.torrents.count > 1
+        if let torrent = self.currentItem.currentTorrent {
+            self.torrentHealth.backgroundColor = torrent.health.color()
+            self.playButton.enabled = torrent.url != nil
+            self.qualityBtn?.setTitle("  \(self.currentItem.currentTorrent.quality! + (self.currentItem.torrents.count > 1 ? " ▾" : ""))", forState: .Normal)
+        }
+
     }
-    
+
+    // MARK: - Actions
+
     @IBAction func toggleWatched() {
         WatchlistManager.movieManager.toggleWatched(currentItem.id)
-        watchedBtn.image = getWatchedButtonImage()
+        watchedBtn.image = watchButtonImage
     }
-    
+
     @IBAction func changeQualityTapped(sender: UIButton) {
         let quality = UIAlertController(title:"Select Quality", message:nil, preferredStyle:UIAlertControllerStyle.ActionSheet)
         for torrent in currentItem.torrents {
@@ -134,11 +152,11 @@ class MovieDetailViewController: DetailItemOverviewViewController, PCTTablePicke
         fixPopOverAnchor(quality)
         presentViewController(quality, animated: true, completion: nil)
     }
-    
+
     @IBAction func changeSubtitlesTapped(sender: UIButton) {
         subtitlesTablePickerView.toggle()
     }
-    
+
     @IBAction func watchNowTapped(sender: UIButton) {
         let onWifi: Bool = (UIApplication.sharedApplication().delegate! as! AppDelegate).reachability!.isReachableViaWiFi()
         let wifiOnly: Bool = Defaults[.StreamOnCellular]
@@ -154,13 +172,20 @@ class MovieDetailViewController: DetailItemOverviewViewController, PCTTablePicke
             self.presentViewController(errorAlert, animated: true, completion: nil)
         }
     }
-    
+
+    @IBAction func watchTrailerTapped() {
+        let vc = XCDYouTubeVideoPlayerViewController(videoIdentifier: currentItem.trailerURLString)
+        presentViewController(vc, animated: true, completion: nil)
+    }
+
+    // MARK: - Data
+
     func loadMovieTorrent(media: PCTMovie, onChromecast: Bool = GCKCastContext.sharedInstance().castState == .Connected) {
         let loadingViewController = R.storyboard.commons.loadingViewController()!
         loadingViewController.transitioningDelegate = self
         loadingViewController.backgroundImage = backgroundImageView.image
         presentViewController(loadingViewController, animated: true, completion: nil)
-        
+
         downloadTorrentFile(media.currentTorrent.url!) { [unowned self] (url, error) in
             if let url = url {
                 let moviePlayer = self.storyboard!.instantiateViewControllerWithIdentifier("PCTPlayerViewController") as! PCTPlayerViewController
@@ -209,36 +234,36 @@ class MovieDetailViewController: DetailItemOverviewViewController, PCTTablePicke
             }
         }
     }
-    
-	@IBAction func watchTrailerTapped() {
-        let vc = XCDYouTubeVideoPlayerViewController(videoIdentifier: currentItem.trailerURLString)
-        presentViewController(vc, animated: true, completion: nil)
-	}
-    
+
+    // MARK: - PCTTablePickerViewDelegate
+
     func tablePickerView(tablePickerView: PCTTablePickerView, didClose items: [String]) {
         if items.count == 0 {
             currentItem.currentSubtitle = nil
-            subtitlesButton.setTitle("  None ▾", forState: .Normal)
         } else {
             let links = currentItem.subtitles!.map({$0.link})
             let index = links.indexOf(links.filter({$0 == items.first!}).first!)!
             let subtitle = currentItem.subtitles![index]
             currentItem.currentSubtitle = subtitle
-            subtitlesButton.setTitle("  " + subtitle.language + " ▾", forState: .Normal)
         }
+        self.updateUI()
     }
-    
-    func animationControllerForPresentedController(presented: UIViewController, presentingController presenting: UIViewController, sourceController source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return presented is LoadingViewController ? PCTLoadingViewAnimatedTransitioning(isPresenting: true, sourceController: source) : nil
-    }
-    
-    func animationControllerForDismissedController(dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return dismissed is LoadingViewController ? PCTLoadingViewAnimatedTransitioning(isPresenting: false, sourceController: self) : nil
-    }
+
+    // MARK: - UIScrollViewDelegate
 
     func scrollViewDidScroll(scrollView: UIScrollView) {
         let offset = scrollView.contentOffset.y
         self.headerTopConstraint.constant = offset
         self.headerHeightConstraint.constant = max(0,self.view.bounds.height * 0.6 - offset)
+    }
+
+    // MARK: - Transitions
+
+    func animationControllerForPresentedController(presented: UIViewController, presentingController presenting: UIViewController, sourceController source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return presented is LoadingViewController ? PCTLoadingViewAnimatedTransitioning(isPresenting: true, sourceController: source) : nil
+    }
+
+    func animationControllerForDismissedController(dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return dismissed is LoadingViewController ? PCTLoadingViewAnimatedTransitioning(isPresenting: false, sourceController: self) : nil
     }
 }
