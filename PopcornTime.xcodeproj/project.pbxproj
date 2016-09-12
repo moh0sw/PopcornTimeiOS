@@ -29,6 +29,7 @@
 		FA5696E91D83575A0090B0F3 /* Player.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA5696E81D83575A0090B0F3 /* Player.storyboard */; };
 		FA5696EB1D8357720090B0F3 /* Terms.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA5696EA1D8357720090B0F3 /* Terms.storyboard */; };
 		FA6A7A291D83F6AE008B2FED /* TVShowDetailTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6A7A281D83F6AE008B2FED /* TVShowDetailTableViewCell.swift */; };
+		FAB472E11D86AE8E00212C99 /* UIImage+ImageEffects.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB472E01D86AE8E00212C99 /* UIImage+ImageEffects.swift */; };
 		FABAC9871D83F37300BCEE6F /* PCTItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC541671CFB53E3001A531C /* PCTItems.swift */; };
 		FABAC9881D83F37500BCEE6F /* PCTTorrent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3CFB7A1B62B20B002F9E8C /* PCTTorrent.swift */; };
 		FABAC9891D83F37D00BCEE6F /* PCTLoadingViewAnimatedTransitioning.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DCA0F121D4A4A91003FC58E /* PCTLoadingViewAnimatedTransitioning.swift */; };
@@ -159,6 +160,7 @@
 		FA5696E81D83575A0090B0F3 /* Player.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Player.storyboard; sourceTree = "<group>"; };
 		FA5696EA1D8357720090B0F3 /* Terms.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Terms.storyboard; sourceTree = "<group>"; };
 		FA6A7A281D83F6AE008B2FED /* TVShowDetailTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TVShowDetailTableViewCell.swift; sourceTree = "<group>"; };
+		FAB472E01D86AE8E00212C99 /* UIImage+ImageEffects.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+ImageEffects.swift"; sourceTree = "<group>"; };
 		FAC39F901D83EED50024EAF1 /* AirPlayManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AirPlayManager.swift; sourceTree = "<group>"; };
 		FAC39F911D83EED50024EAF1 /* AnimeAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnimeAPI.swift; sourceTree = "<group>"; };
 		FAC39F921D83EED50024EAF1 /* GoogleCastManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GoogleCastManager.swift; sourceTree = "<group>"; };
@@ -317,6 +319,7 @@
 			children = (
 				4DCA0F121D4A4A91003FC58E /* PCTLoadingViewAnimatedTransitioning.swift */,
 				4DC5419D1CFB54A3001A531C /* UIKit+Extension.swift */,
+				FAB472E01D86AE8E00212C99 /* UIImage+ImageEffects.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -628,6 +631,7 @@
 				FAC39FAA1D83EFE30024EAF1 /* OAuthCredential.swift in Sources */,
 				FAC39FCA1D83F0150024EAF1 /* MainItemCell.swift in Sources */,
 				FAC39FB61D83EFF50024EAF1 /* TermsOfServiceViewController.swift in Sources */,
+				FAB472E11D86AE8E00212C99 /* UIImage+ImageEffects.swift in Sources */,
 				FAC39FBF1D83F0020024EAF1 /* BugReportTableViewController.swift in Sources */,
 				FA120C7D1D83F61300BCCD56 /* R.generated.swift in Sources */,
 				FA1CFBFC1D84767E001EFB2A /* UIKit+Extension.swift in Sources */,

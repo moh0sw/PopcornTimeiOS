@@ -61,7 +61,7 @@ class MovieDetailViewController: DetailItemOverviewViewController, PCTTablePicke
             self.torrentHealth.backgroundColor = self.currentItem.currentTorrent.health.color()
             self.playButton.enabled = self.currentItem.currentTorrent.url != nil
             self.qualityBtn?.userInteractionEnabled = self.currentItem.torrents.count > 1
-            self.qualityBtn?.setTitle("\(self.currentItem.currentTorrent.quality! + (self.currentItem.torrents.count > 1 ? " ▾" : ""))", forState: .Normal)
+            self.qualityBtn?.setTitle(  "\(self.currentItem.currentTorrent.quality! + (self.currentItem.torrents.count > 1 ? " ▾" : ""))", forState: .Normal)
         })
         
         OpenSubtitles.sharedInstance.login({
@@ -78,7 +78,7 @@ class MovieDetailViewController: DetailItemOverviewViewController, PCTTablePicke
                         let index = languages.indexOf(languages.filter({$0 == preferredSubtitle}).first!)!
                         let subtitle = self.currentItem.subtitles![index]
                         self.currentItem.currentSubtitle = subtitle
-                        self.subtitlesButton.setTitle(subtitle.language + " ▾", forState: .Normal)
+                        self.subtitlesButton.setTitle("  " + subtitle.language + " ▾", forState: .Normal)
                     }
                 }
                 self.subtitlesTablePickerView = PCTTablePickerView(superView: self.view, sourceDict: PCTSubtitle.dictValue(subtitles), self)
@@ -125,7 +125,7 @@ class MovieDetailViewController: DetailItemOverviewViewController, PCTTablePicke
             quality.addAction(UIAlertAction(title: "\(torrent.quality!) \(torrent.size!)", style: .Default, handler: { action in
                 self.currentItem.currentTorrent = torrent
                 self.playButton.enabled = self.currentItem.currentTorrent.url != nil
-                self.qualityBtn.setTitle("\(torrent.quality!) ▾", forState: .Normal)
+                self.qualityBtn.setTitle("  \(torrent.quality!) ▾", forState: .Normal)
                 self.torrentHealth.backgroundColor = torrent.health.color()
             }))
         }
@@ -218,13 +218,13 @@ class MovieDetailViewController: DetailItemOverviewViewController, PCTTablePicke
     func tablePickerView(tablePickerView: PCTTablePickerView, didClose items: [String]) {
         if items.count == 0 {
             currentItem.currentSubtitle = nil
-            subtitlesButton.setTitle("None ▾", forState: .Normal)
+            subtitlesButton.setTitle("  None ▾", forState: .Normal)
         } else {
             let links = currentItem.subtitles!.map({$0.link})
             let index = links.indexOf(links.filter({$0 == items.first!}).first!)!
             let subtitle = currentItem.subtitles![index]
             currentItem.currentSubtitle = subtitle
-            subtitlesButton.setTitle(subtitle.language + " ▾", forState: .Normal)
+            subtitlesButton.setTitle("  " + subtitle.language + " ▾", forState: .Normal)
         }
     }
     
