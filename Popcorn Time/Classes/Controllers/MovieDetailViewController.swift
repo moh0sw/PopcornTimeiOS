@@ -239,6 +239,6 @@ class MovieDetailViewController: DetailItemOverviewViewController, PCTTablePicke
     func scrollViewDidScroll(scrollView: UIScrollView) {
         let offset = scrollView.contentOffset.y
         self.headerTopConstraint.constant = offset
-        self.headerHeightConstraint.constant = self.view.bounds.height * 0.6 - offset
+        self.headerHeightConstraint.constant = max(0,self.view.bounds.height * 0.6 - offset)
     }
 }

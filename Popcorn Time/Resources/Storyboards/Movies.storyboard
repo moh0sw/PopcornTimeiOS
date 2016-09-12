@@ -238,8 +238,8 @@
                                                     <constraint firstItem="Dy8-8Q-4n4" firstAttribute="leading" secondItem="mgD-e1-m0E" secondAttribute="leading" id="JjG-2M-mZy"/>
                                                     <constraint firstAttribute="trailing" secondItem="Dy8-8Q-4n4" secondAttribute="trailing" id="hCc-Iv-mc8"/>
                                                     <constraint firstAttribute="trailing" secondItem="hSs-YZ-CZh" secondAttribute="trailing" id="mJo-a0-d7e"/>
-                                                    <constraint firstAttribute="bottom" secondItem="hSs-YZ-CZh" secondAttribute="bottom" id="vpJ-p9-ggC"/>
-                                                    <constraint firstItem="hSs-YZ-CZh" firstAttribute="top" secondItem="mgD-e1-m0E" secondAttribute="top" id="zqq-XD-eKY"/>
+                                                    <constraint firstAttribute="bottom" secondItem="hSs-YZ-CZh" secondAttribute="bottom" priority="750" id="vpJ-p9-ggC"/>
+                                                    <constraint firstItem="hSs-YZ-CZh" firstAttribute="top" secondItem="mgD-e1-m0E" secondAttribute="top" priority="750" id="zqq-XD-eKY"/>
                                                 </constraints>
                                             </view>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" translatesAutoresizingMaskIntoConstraints="NO" id="2oM-Dv-d9j">
