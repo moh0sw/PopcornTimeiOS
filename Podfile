@@ -22,7 +22,7 @@ target "Popcorn Time" do
     pod 'OBSlider', '~> 1.1.1'
     pod 'ColorArt', '~> 0.1.1'
     pod '1PasswordExtension', '~> 1.8.3'
-    pod 'MobileVLCKit-unstable', '3.0.0a10'
+    pod 'MobileVLCKit-unstable', '3.0.0a21'
     pod 'SwiftyTimer', '~> 1.4.1'
     pod 'SRT2VTT', '~> 1.0.1'
     pod 'R.swift', '~> 3.0.0'
