@@ -21,7 +21,7 @@ target "Popcorn Time" do
     pod 'ColorArt'
     pod '1PasswordExtension'
     pod 'PopcornTorrent', git: 'https://github.com/PopcornTimeTV/PopcornTorrent.git'
-    pod 'MobileVLCKit-unstable', '3.0.0a10'
+    pod 'MobileVLCKit-unstable', '3.0.0a21'
     pod 'SwiftyTimer'
     pod 'SRT2VTT'
 end
