@@ -5,6 +5,7 @@ import PopcornTorrent
 import GoogleCast
 import JGProgressHUD
 import SwiftyTimer
+import PopcornKit
 
 
 class CastPlayerViewController: UIViewController, GCKRemoteMediaClientListener, PCTPickerViewDelegate {
@@ -21,41 +22,41 @@ class CastPlayerViewController: UIViewController, GCKRemoteMediaClientListener, 
     @IBOutlet var compactConstraints: [NSLayoutConstraint]!
     @IBOutlet var regularConstraints: [NSLayoutConstraint]!
     
-    private var classContext = 0
-    private var elapsedTimer: NSTimer!
-    private var observingValues: Bool = false
-    private var bufferView: JGProgressHUD = {
-       let hud = JGProgressHUD(style: .Dark)
-        hud.textLabel.text = "Buffering"
-        hud.interactionType = .BlockAllTouches
-        return hud
+    fileprivate var classContext = 0
+    fileprivate var elapsedTimer: Timer!
+    fileprivate var observingValues: Bool = false
+    fileprivate var bufferView: JGProgressHUD = {
+       let hud = JGProgressHUD(style: .dark)
+        hud?.textLabel.text = "Buffering"
+        hud?.interactionType = .blockAllTouches
+        return hud!
     }()
-    private var subtitleColors: [String: UIColor] = {
+    fileprivate var subtitleColors: [String: UIColor] = {
         var colorDict = [String: UIColor]()
-        for (index, color) in UIColor.systemColors().enumerate() {
+        for (index, color) in UIColor.systemColors().enumerated() {
             colorDict[UIColor.systemColorStrings()[index]] = color
         }
         return colorDict
     }()
-    private var subtitleFonts: [String: UIFont] = {
+    fileprivate var subtitleFonts: [String: UIFont] = {
         var fontDict = [String: UIFont]()
-        for familyName in UIFont.familyNames() {
-            for fontName in UIFont.fontNamesForFamilyName(familyName) {
-                let font = UIFont(name: fontName, size: 25)!; let traits = font.fontDescriptor().symbolicTraits
-                if !traits.contains(.TraitCondensed) && !traits.contains(.TraitBold) && !traits.contains(.TraitItalic) && !fontName.contains("Thin") && !fontName.contains("Light") && !fontName.contains("Medium") && !fontName.contains("Black") {
+        for familyName in UIFont.familyNames {
+            for fontName in UIFont.fontNames(forFamilyName: familyName) {
+                let font = UIFont(name: fontName, size: 25)!; let traits = font.fontDescriptor.symbolicTraits
+                if !traits.contains(.traitCondensed) && !traits.contains(.traitBold) && !traits.contains(.traitItalic) && !fontName.contains("Thin") && !fontName.contains("Light") && !fontName.contains("Medium") && !fontName.contains("Black") {
                     fontDict[fontName] = UIFont(name: fontName, size: 25)
                 }
             }
         }
-        fontDict["Default"] = UIFont.systemFontOfSize(25)
+        fontDict["Default"] = UIFont.systemFont(ofSize: 25)
         return fontDict
     }()
-    private var subtitles = ["None": ""]
-    private var selectedSubtitleMeta: [String]
+    fileprivate var subtitles = ["None": ""]
+    fileprivate var selectedSubtitleMeta: [String]
     
     var backgroundImage: UIImage?
-    var startPosition: NSTimeInterval = 0.0
-    var media: PCTItem! {
+    var startPosition: TimeInterval = 0.0
+    var media: Media! {
         didSet {
             if let subtitles = media.subtitles {
                 var subtitleDict = [String: String]()
@@ -63,50 +64,50 @@ class CastPlayerViewController: UIViewController, GCKRemoteMediaClientListener, 
                     subtitleDict[subtitle.language] = subtitle.link
                 }
                 self.subtitles += subtitleDict
-                self.selectedSubtitleMeta[0] = media.currentSubtitle?.language ?? NSUserDefaults.standardUserDefaults().stringForKey("PreferredSubtitleLanguage") ?? "None"
+                self.selectedSubtitleMeta[0] = media.currentSubtitle?.language ?? UserDefaults.standard.string(forKey: "PreferredSubtitleLanguage") ?? "None"
             }
         }
     }
-    var directory: NSURL!
+    var directory: URL!
     var pickerView: PCTPickerView!
     
-    private var remoteMediaClient = GCKCastContext.sharedInstance().sessionManager.currentCastSession?.remoteMediaClient
-    private var timeSinceLastMediaStatusUpdate: NSTimeInterval {
-        if let remoteMediaClient = remoteMediaClient where state == .Playing {
+    fileprivate var remoteMediaClient = GCKCastContext.sharedInstance().sessionManager.currentCastSession?.remoteMediaClient
+    fileprivate var timeSinceLastMediaStatusUpdate: TimeInterval {
+        if let remoteMediaClient = remoteMediaClient , state == .playing {
             return remoteMediaClient.timeSinceLastMediaStatusUpdate
         }
         return 0.0
     }
-    private var streamPosition: NSTimeInterval {
+    fileprivate var streamPosition: TimeInterval {
         get {
             if let mediaStatus = remoteMediaClient?.mediaStatus {
                 return mediaStatus.streamPosition + timeSinceLastMediaStatusUpdate
             }
             return 0.0
         } set {
-            remoteMediaClient?.seekToTimeInterval(newValue, resumeState: GCKMediaResumeState.Play)
+            remoteMediaClient?.seek(toTimeInterval: newValue, resumeState: GCKMediaResumeState.play)
         }
     }
-    private var state: GCKMediaPlayerState {
-        return remoteMediaClient?.mediaStatus?.playerState ?? GCKMediaPlayerState.Unknown
+    fileprivate var state: GCKMediaPlayerState {
+        return remoteMediaClient?.mediaStatus?.playerState ?? GCKMediaPlayerState.unknown
     }
-    private var idleReason: GCKMediaPlayerIdleReason {
-        return remoteMediaClient?.mediaStatus?.idleReason ?? GCKMediaPlayerIdleReason.None
+    fileprivate var idleReason: GCKMediaPlayerIdleReason {
+        return remoteMediaClient?.mediaStatus?.idleReason ?? GCKMediaPlayerIdleReason.none
     }
-    private var streamDuration: NSTimeInterval {
+    fileprivate var streamDuration: TimeInterval {
         return remoteMediaClient?.mediaStatus?.mediaInformation?.streamDuration ?? 0.0
     }
-    private var elapsedTime: VLCTime {
-        return VLCTime(number: NSNumber(double: streamPosition * 1000))
+    fileprivate var elapsedTime: VLCTime {
+        return VLCTime(number: NSNumber(value: streamPosition * 1000 as Double))
     }
-    private var remainingTime: VLCTime {
-        return VLCTime(number: NSNumber(double: (streamPosition - streamDuration) * 1000))
+    fileprivate var remainingTime: VLCTime {
+        return VLCTime(number: NSNumber(value: (streamPosition - streamDuration) * 1000 as Double))
     }
     
-    @IBAction func playPause(sender: UIButton) {
-        if state == .Paused {
+    @IBAction func playPause(_ sender: UIButton) {
+        if state == .paused {
             remoteMediaClient?.play()
-        } else if state == .Playing {
+        } else if state == .playing {
             remoteMediaClient?.pause()
         }
     }
@@ -119,7 +120,7 @@ class CastPlayerViewController: UIViewController, GCKRemoteMediaClientListener, 
         streamPosition += 30
     }
     
-    @IBAction func subtitles(sender: UIButton) {
+    @IBAction func subtitles(_ sender: UIButton) {
         pickerView.toggle()
     }
     
@@ -128,13 +129,13 @@ class CastPlayerViewController: UIViewController, GCKRemoteMediaClientListener, 
     }
     
     @IBAction func progressSliderAction() {
-        streamPosition += (NSTimeInterval(progressSlider.value) * streamDuration)
+        streamPosition += (TimeInterval(progressSlider.value) * streamDuration)
     }
     
     @IBAction func progressSliderDrag() {
         remoteMediaClient?.pause()
-        elapsedTimeLabel.text = VLCTime(number: NSNumber(double: ((NSTimeInterval(progressSlider.value) * streamDuration)) * 1000)).stringValue
-        remainingTimeLabel.text = VLCTime(number: NSNumber(double: (((NSTimeInterval(progressSlider.value) * streamDuration) - streamDuration)) * 1000)).stringValue
+        elapsedTimeLabel.text = VLCTime(number: NSNumber(value: ((TimeInterval(progressSlider.value) * streamDuration)) * 1000 as Double)).stringValue
+        remainingTimeLabel.text = VLCTime(number: NSNumber(value: (((TimeInterval(progressSlider.value) * streamDuration) - streamDuration)) * 1000 as Double)).stringValue
     }
     
     @IBAction func close() {
@@ -144,55 +145,52 @@ class CastPlayerViewController: UIViewController, GCKRemoteMediaClientListener, 
         elapsedTimer?.invalidate()
         elapsedTimer = nil
         remoteMediaClient?.stop()
-        PTTorrentStreamer.sharedStreamer().cancelStreaming()
-        if NSUserDefaults.standardUserDefaults().boolForKey("removeCacheOnPlayerExit") {
-            try! NSFileManager.defaultManager().removeItemAtURL(directory)
-        }
-        dismissViewControllerAnimated(true, completion: nil)
+        PTTorrentStreamer.shared().cancelStreamingAndDeleteData(UserDefaults.standard.bool(forKey: "removeCacheOnPlayerExit"))
+        dismiss(animated: true, completion: nil)
     }
     
-    override func traitCollectionDidChange(previousTraitCollection: UITraitCollection?) {
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         for constraint in compactConstraints {
-            constraint.priority = traitCollection.horizontalSizeClass == .Compact ? 999 : traitCollection.horizontalSizeClass == .Regular && traitCollection.verticalSizeClass == .Regular ? 240 : constraint.priority
+            constraint.priority = traitCollection.horizontalSizeClass == .compact ? 999 : traitCollection.horizontalSizeClass == .regular && traitCollection.verticalSizeClass == .regular ? 240 : constraint.priority
         }
         for constraint in regularConstraints {
-            constraint.priority = traitCollection.horizontalSizeClass == .Compact ? 240 : traitCollection.horizontalSizeClass == .Regular && traitCollection.verticalSizeClass == .Regular ? 999 : constraint.priority
+            constraint.priority = traitCollection.horizontalSizeClass == .compact ? 240 : traitCollection.horizontalSizeClass == .regular && traitCollection.verticalSizeClass == .regular ? 999 : constraint.priority
         }
-        UIView.animateWithDuration(animationLength, animations: {
+        UIView.animate(withDuration: animationLength, animations: {
             self.view.layoutIfNeeded()
         })
     }
     
     
-    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
-        if context == &classContext,  let newValue = change?[NSKeyValueChangeNewKey] {
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        if context == &classContext,  let newValue = change?[NSKeyValueChangeKey.newKey] {
             if keyPath == "playerState" {
-                let type: TraktTVAPI.type = media is PCTMovie ? .Movies : .Shows
+                let type: Trakt.MediaType = media is Movie ? .movies : .shows
                 bufferView.dismiss()
                 switch GCKMediaPlayerState(rawValue: newValue as! Int)! {
-                case .Paused:
-                    UIApplication.sharedApplication().idleTimerDisabled = false
-                    TraktTVAPI.sharedInstance.scrobble(media.id, progress: progressSlider.value, type: type, status: .Paused)
-                    playPauseButton.setImage(UIImage(named: "Play"), forState: .Normal)
+                case .paused:
+                    UIApplication.shared.isIdleTimerDisabled = false
+                    TraktManager.shared.scrobble(media.id, progress: progressSlider.value, type: type, status: .paused)
+                    playPauseButton.setImage(UIImage(named: "Play"), for: .normal)
                     elapsedTimer.invalidate()
                     elapsedTimer = nil
-                case .Playing:
-                    UIApplication.sharedApplication().idleTimerDisabled = true
-                    TraktTVAPI.sharedInstance.scrobble(media.id, progress: progressSlider.value, type: type, status: .Watching)
-                    playPauseButton.setImage(UIImage(named: "Pause"), forState: .Normal)
+                case .playing:
+                    UIApplication.shared.isIdleTimerDisabled = true
+                    TraktManager.shared.scrobble(media.id, progress: progressSlider.value, type: type, status: .watching)
+                    playPauseButton.setImage(UIImage(named: "Pause"), for: .normal)
                     if elapsedTimer == nil {
-                        elapsedTimer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: #selector(updateTime), userInfo: nil, repeats: true)
+                        elapsedTimer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(updateTime), userInfo: nil, repeats: true)
                     }
-                case .Buffering:
-                    UIApplication.sharedApplication().idleTimerDisabled = true
-                    playPauseButton.setImage(UIImage(named: "Play"), forState: .Normal)
-                    bufferView.showInView(view)
-                case .Idle:
+                case .buffering:
+                    UIApplication.shared.isIdleTimerDisabled = true
+                    playPauseButton.setImage(UIImage(named: "Play"), for: .normal)
+                    bufferView.show(in: view)
+                case .idle:
                     switch idleReason {
-                    case .None:
+                    case .none:
                         break
                     default:
-                        TraktTVAPI.sharedInstance.scrobble(media.id, progress: progressSlider.value, type: type, status: .Finished)
+                        TraktManager.shared.scrobble(media.id, progress: progressSlider.value, type: type, status: .finished)
                         close()
                     }
                 default:
@@ -200,7 +198,7 @@ class CastPlayerViewController: UIViewController, GCKRemoteMediaClientListener, 
                 }
             }
         } else {
-            super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
+            super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
         }
     }
     
@@ -209,16 +207,15 @@ class CastPlayerViewController: UIViewController, GCKRemoteMediaClientListener, 
         remainingTimeLabel.text = remainingTime.stringValue
         elapsedTimeLabel.text = elapsedTime.stringValue
     }
-    
-    func remoteMediaClient(client: GCKRemoteMediaClient, didUpdateMediaStatus mediaStatus: GCKMediaStatus) {
-        if unsafeAddressOf(mediaStatus) != nil // mediaStatus can be uninitialised when this delegate method is called even though it is not marked as an optional value. Stupid google-cast-sdk.
+    func remoteMediaClient(_ client: GCKRemoteMediaClient, didUpdate mediaStatus: GCKMediaStatus) {
+        if mediaStatus != nil // mediaStatus can be uninitialised when this delegate method is called even though it is not marked as an optional value. Stupid google-cast-sdk.
         {
             if !observingValues {
                 if let subtitles = media.subtitles, let subtitle = media.currentSubtitle {
-                    remoteMediaClient?.setActiveTrackIDs([NSNumber(integer: subtitles.indexOf(subtitle)!)])
+                    remoteMediaClient?.setActiveTrackIDs([NSNumber(value: subtitles.index{$0.link == subtitle.link}! as Int)])
                 }
-                elapsedTimer = elapsedTimer ?? NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: #selector(updateTime), userInfo: nil, repeats: true)
-                mediaStatus.addObserver(self, forKeyPath: "playerState", options: .New, context: &classContext)
+                elapsedTimer = elapsedTimer ?? Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(updateTime), userInfo: nil, repeats: true)
+                mediaStatus.addObserver(self, forKeyPath: "playerState", options: .new, context: &classContext)
                 observingValues = true
                 streamPosition = startPosition * streamDuration
                 self.volumeSlider?.setValue(mediaStatus.volume, animated: true)
@@ -227,10 +224,10 @@ class CastPlayerViewController: UIViewController, GCKRemoteMediaClientListener, 
     }
     
     required init?(coder aDecoder: NSCoder) {
-        selectedSubtitleMeta = ["None", NSUserDefaults.standardUserDefaults().stringForKey("PreferredSubtitleColor") ?? "White", NSUserDefaults.standardUserDefaults().stringForKey("PreferredSubtitleFont") ?? "Default"]
+        selectedSubtitleMeta = ["None", UserDefaults.standard.string(forKey: "PreferredSubtitleColor") ?? "White", UserDefaults.standard.string(forKey: "PreferredSubtitleFont") ?? "Default"]
         super.init(coder: aDecoder)
-        remoteMediaClient?.addListener(self)
-        UIApplication.sharedApplication().idleTimerDisabled = true
+        remoteMediaClient?.add(self)
+        UIApplication.shared.isIdleTimerDisabled = true
     }
     
     override func viewDidLayoutSubviews() {
@@ -246,35 +243,36 @@ class CastPlayerViewController: UIViewController, GCKRemoteMediaClientListener, 
             backgroundImageView.image = image
         }
         titleLabel.text = title
-        pickerView = PCTPickerView(superView: view, componentDataSources: [subtitles, subtitleColors, subtitleFonts], delegate: self, selectedItems: selectedSubtitleMeta, attributesForComponents: [nil, NSForegroundColorAttributeName, NSFontAttributeName])
+        pickerView = PCTPickerView(superView: view, componentDataSources: [subtitles as Dictionary<String, AnyObject>, subtitleColors, subtitleFonts], delegate: self, selectedItems: selectedSubtitleMeta, attributesForComponents: [nil, NSForegroundColorAttributeName, NSFontAttributeName])
         view.addSubview(pickerView)
-        bufferView.showInView(view)
-        NSTimer.after(30.0) { [weak self] in
+        bufferView.show(in: view)
+        Timer.after(30.0) { [weak self] in
             if let weakSelf = self {
-                if weakSelf.bufferView.visible && weakSelf.streamPosition == 0.0 {
+                if weakSelf.bufferView.isVisible && weakSelf.streamPosition == 0.0 {
                     weakSelf.bufferView.indicatorView = JGProgressHUDErrorIndicatorView()
                     weakSelf.bufferView.textLabel.text = "Error loading movie."
-                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(3.0 * Double(NSEC_PER_SEC))), dispatch_get_main_queue(), {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 3.0, execute: {
                         weakSelf.close()
                     })
                 }
             }            
         }
-        volumeSlider?.setThumbImage(UIImage(named: "Scrubber Image"), forState: .Normal)
+        volumeSlider?.setThumbImage(UIImage(named: "Scrubber Image"), for: .normal)
     }
     
-    func pickerView(pickerView: PCTPickerView, didClose items: [String : AnyObject]) {
+    func pickerView(_ pickerView: PCTPickerView, didClose items: [String : AnyObject]) {
         selectedSubtitleMeta = Array(items.keys)
         let trackStyle = GCKMediaTextTrackStyle.createDefault()
-        for (index, value) in items.values.enumerate() {
+        for (index, value) in items.values.enumerated() {
             if let font = value as? UIFont {
                 trackStyle.fontFamily = font.familyName
             } else if let color = value as? UIColor {
-                trackStyle.foregroundColor = GCKColor(UIColor: color)
+                trackStyle.foregroundColor = GCKColor(uiColor: color)
             } else if let link = value as? String {
                 if link != "None" {
-                    downloadSubtitle(link, fileName: NSLocale.langs.allKeysForValue(Array(items.keys)[index]).first! + ".vtt", downloadDirectory: directory, covertToVTT: true, completion: { _ in
-                        self.remoteMediaClient?.setActiveTrackIDs([NSNumber(integer: index)])
+                    PopcornKit.downloadSubtitleFile(link, fileName: Locale.langs.allKeysForValue(Array(items.keys)[index]).first! + ".vtt", downloadDirectory: directory, convertToVTT: true, completion: { (_, error) in
+                        guard error == nil else { return }
+                        self.remoteMediaClient?.setActiveTrackIDs([NSNumber(value: index as Int)])
                     })
                 } else {
                     remoteMediaClient?.setActiveTrackIDs(nil)
@@ -285,15 +283,15 @@ class CastPlayerViewController: UIViewController, GCKRemoteMediaClientListener, 
     }
     
     deinit {
-        UIApplication.sharedApplication().idleTimerDisabled = false
+        UIApplication.shared.isIdleTimerDisabled = false
     }
     
-    override func shouldAutorotate() -> Bool {
-        return UIDevice.currentDevice().userInterfaceIdiom == .Pad
+    override var shouldAutorotate : Bool {
+        return UIDevice.current.userInterfaceIdiom == .pad
     }
     
-    override func preferredStatusBarStyle() -> UIStatusBarStyle {
-        return .LightContent
+    override var preferredStatusBarStyle : UIStatusBarStyle {
+        return .lightContent
     }
 
 }

@@ -1,9 +1,10 @@
 
 
 import UIKit
+import PopcornKit
 import SafariServices
 
-class SettingsTableViewController: UITableViewController, PCTTablePickerViewDelegate, PCTPickerViewDelegate {
+class SettingsTableViewController: UITableViewController, PCTTablePickerViewDelegate, PCTPickerViewDelegate, TraktManagerDelegate {
 
     @IBOutlet var streamOnCellularSwitch: UISwitch!
     @IBOutlet var removeCacheOnPlayerExitSwitch: UISwitch!
@@ -14,26 +15,22 @@ class SettingsTableViewController: UITableViewController, PCTTablePickerViewDele
 	var tablePickerView: PCTTablePickerView!
     var pickerView: PCTPickerView!
     
-    var safariViewController: SFSafariViewController!
-    let ud = NSUserDefaults.standardUserDefaults()
-    var state: String!
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-        tablePickerView = PCTTablePickerView(superView: view, sourceArray: NSLocale.commonLanguages(), self)
+        tablePickerView = PCTTablePickerView(superView: view, sourceArray: Locale.commonLanguages(), self)
         tabBarController?.view.addSubview(tablePickerView)
         pickerView = PCTPickerView(superView: view, componentDataSources: [[String : AnyObject]](), delegate: self, selectedItems: [String]())
         tabBarController?.view.addSubview(pickerView)
-        updateSignedInStatus(traktSignInButton, isSignedIn: ud.boolForKey("AuthorizedTrakt"))
-        updateSignedInStatus(openSubsSignInButton, isSignedIn: ud.boolForKey("AuthorizedOpenSubs"))
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(safariLogin(_:)), name: safariLoginNotification, object: nil)
-        streamOnCellularSwitch.on = ud.boolForKey("StreamOnCellular")
-        removeCacheOnPlayerExitSwitch.on = ud.boolForKey("removeCacheOnPlayerExit")
+        updateSignedInStatus(traktSignInButton, isSignedIn: UserDefaults.standard.bool(forKey: "AuthorizedTrakt"))
+        updateSignedInStatus(openSubsSignInButton, isSignedIn: UserDefaults.standard.bool(forKey: "AuthorizedOpenSubs"))
+        streamOnCellularSwitch.isOn = UserDefaults.standard.bool(forKey: "StreamOnCellular")
+        removeCacheOnPlayerExitSwitch.isOn = UserDefaults.standard.bool(forKey: "removeCacheOnPlayerExit")
         for index in 0..<qualitySegmentedControl.numberOfSegments {
-            if qualitySegmentedControl.titleForSegmentAtIndex(index) == ud.stringForKey("PreferredQuality") {
+            if qualitySegmentedControl.titleForSegment(at: index) == UserDefaults.standard.string(forKey: "PreferredQuality") {
                 qualitySegmentedControl.selectedSegmentIndex = index
             }
         }
+        TraktManager.shared.delegate = self
     }
     
     override func viewDidLayoutSubviews() {
@@ -46,58 +43,58 @@ class SettingsTableViewController: UITableViewController, PCTTablePickerViewDele
     
     // MARK: - UITableViewDelegate
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let cell = tableView.cellForRowAtIndexPath(indexPath)!
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let cell = tableView.cellForRow(at: indexPath)!
         switch indexPath.section {
         case 0 where indexPath.row == 2:
             tablePickerView?.toggle()
         case 2:
-            let selectedItem = ud.stringForKey("PreferredSubtitle\(cell.textLabel!.text!.capitalizedString.whiteSpacelessString)")
+            let selectedItem = UserDefaults.standard.string(forKey: "PreferredSubtitle\(cell.textLabel!.text!.capitalized.whiteSpacelessed)")
             var dict = [String: AnyObject]()
             if indexPath.row == 0 || indexPath.row == 2 {
-                for (index, color) in UIColor.systemColors().enumerate() {
+                for (index, color) in UIColor.systemColors().enumerated() {
                     dict[UIColor.systemColorStrings()[index]] = color
                 }
                 if indexPath.row == 2 {
-                    dict["None"] = UIColor.clearColor()
+                    dict["None"] = UIColor.clear
                 }
                 pickerView.componentDataSources = [dict]
                 pickerView.selectedItems = [selectedItem ?? cell.detailTextLabel!.text!]
                 pickerView.attributesForComponents = [NSForegroundColorAttributeName]
             } else if indexPath.row == 1 {
                 for size in 16...40 {
-                    dict["\(size) pt"] = UIFont.systemFontOfSize(CGFloat(size))
+                    dict["\(size) pt"] = UIFont.systemFont(ofSize: CGFloat(size))
                 }
                 pickerView.componentDataSources = [dict]
                 pickerView.selectedItems = [selectedItem ?? cell.detailTextLabel!.text! + " pt"]
                 pickerView.attributesForComponents = [NSFontAttributeName]
             } else if indexPath.row == 3 {
-                for familyName in UIFont.familyNames() {
-                    for fontName in UIFont.fontNamesForFamilyName(familyName) {
-                        let font = UIFont(name: fontName, size: 16)!; let traits = font.fontDescriptor().symbolicTraits
-                        if !traits.contains(.TraitCondensed) && !traits.contains(.TraitBold) && !traits.contains(.TraitItalic) && !fontName.contains("Thin") && !fontName.contains("Light") && !fontName.contains("Medium") && !fontName.contains("Black") {
+                for familyName in UIFont.familyNames {
+                    for fontName in UIFont.fontNames(forFamilyName: familyName) {
+                        let font = UIFont(name: fontName, size: 16)!; let traits = font.fontDescriptor.symbolicTraits
+                        if !traits.contains(.traitCondensed) && !traits.contains(.traitBold) && !traits.contains(.traitItalic) && !fontName.contains("Thin") && !fontName.contains("Light") && !fontName.contains("Medium") && !fontName.contains("Black") {
                             dict[fontName] = UIFont(name: fontName, size: 16)
                         }
                     }
                 }
-                dict["Default"] = UIFont.systemFontOfSize(16)
+                dict["Default"] = UIFont.systemFont(ofSize: 16)
                 pickerView.componentDataSources = [dict]
                 pickerView.selectedItems = [selectedItem ?? cell.detailTextLabel!.text!]
                 pickerView.attributesForComponents = [NSFontAttributeName]
             } else if indexPath.row == 4 {
-                dict = ["Normal": UIFont.systemFontOfSize(16), "Bold": UIFont.boldSystemFontOfSize(16), "Italic": UIFont.italicSystemFontOfSize(16), "Bold-Italic": UIFont.systemFontOfSize(16).boldItalic()]
+                dict = ["Normal": UIFont.systemFont(ofSize: 16), "Bold": UIFont.boldSystemFont(ofSize: 16), "Italic": UIFont.italicSystemFont(ofSize: 16), "Bold-Italic": UIFont.systemFont(ofSize: 16).boldItalic()]
                 pickerView.componentDataSources = [dict]
                 pickerView.selectedItems = [selectedItem ?? cell.detailTextLabel!.text!]
                 pickerView.attributesForComponents = [NSFontAttributeName]
             }
             pickerView.toggle()
         case 3 where indexPath.row == 1:
-            let controller = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
-            controller.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
+            let controller = UIAlertController(title: nil, message: nil, preferredStyle: .alert)
+            controller.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
             do {
-                let size = NSFileManager.defaultManager().folderSizeAtPath(downloadsDirectory)
-                for path in try NSFileManager.defaultManager().contentsOfDirectoryAtPath(downloadsDirectory) {
-                   try NSFileManager.defaultManager().removeItemAtPath(downloadsDirectory + "/\(path)")
+                let size = FileManager.default.folderSizeAtPath(downloadsDirectory)
+                for path in try FileManager.default.contentsOfDirectory(atPath: downloadsDirectory) {
+                   try FileManager.default.removeItem(atPath: downloadsDirectory + "/\(path)")
                 }
                 controller.title = "Success"
                 if size == 0 {
@@ -110,44 +107,44 @@ class SettingsTableViewController: UITableViewController, PCTTablePickerViewDele
                 controller.message = "Error cleaning cache."
                 print("Error: \(error)")
             }
-            presentViewController(controller, animated: true, completion: nil)
-            tableView.deselectRowAtIndexPath(indexPath, animated: true)
+            present(controller, animated: true, completion: nil)
+            tableView.deselectRow(at: indexPath, animated: true)
         case 4:
-            if indexPath.row == 2 {
-                let alert = UIAlertController(title: nil, message: nil, preferredStyle: .Alert)
+            if indexPath.row == 1 {
+                let alert = UIAlertController(title: nil, message: nil, preferredStyle: .alert)
                 let loadingView: UIViewController = {
                     let viewController = UIViewController()
                     viewController.view.translatesAutoresizingMaskIntoConstraints = false
-                    let label = UILabel(frame: CGRect(origin: CGPointZero, size: CGSize(width: 200, height: 20)))
+                    let label = UILabel(frame: CGRect(origin: CGPoint.zero, size: CGSize(width: 200, height: 20)))
                     label.translatesAutoresizingMaskIntoConstraints = false
                     label.text = "Checking for updates..."
-                    label.font = UIFont.systemFontOfSize(16, weight: UIFontWeightBold)
+                    label.font = UIFont.systemFont(ofSize: 16, weight: UIFontWeightBold)
                     label.sizeToFit()
-                    let activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
+                    let activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: .gray)
                     activityIndicator.translatesAutoresizingMaskIntoConstraints = false
                     activityIndicator.startAnimating()
                     viewController.view.addSubview(activityIndicator)
                     viewController.view.addSubview(label)
-                    viewController.view.centerXAnchor.constraintEqualToAnchor(label.centerXAnchor, constant: -10).active = true
-                    viewController.view.centerYAnchor.constraintEqualToAnchor(label.centerYAnchor).active = true
-                    label.leadingAnchor.constraintEqualToAnchor(activityIndicator.trailingAnchor, constant: 7.0).active = true
-                    viewController.view.centerYAnchor.constraintEqualToAnchor(activityIndicator.centerYAnchor).active = true
+                    viewController.view.centerXAnchor.constraint(equalTo: label.centerXAnchor, constant: -10).isActive = true
+                    viewController.view.centerYAnchor.constraint(equalTo: label.centerYAnchor).isActive = true
+                    label.leadingAnchor.constraint(equalTo: activityIndicator.trailingAnchor, constant: 7.0).isActive = true
+                    viewController.view.centerYAnchor.constraint(equalTo: activityIndicator.centerYAnchor).isActive = true
                     return viewController
                 }()
                 alert.setValue(loadingView, forKey: "contentViewController")
-                alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
-                presentViewController(alert, animated: true, completion: nil)
-                tableView.deselectRowAtIndexPath(indexPath, animated: true)
-                UpdateManager.sharedManager.checkVersion(.Immediately) { [weak self] success in
-                    alert.dismissViewControllerAnimated(true, completion: nil)
+                alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+                present(alert, animated: true, completion: nil)
+                tableView.deselectRow(at: indexPath, animated: true)
+                UpdateManager.shared.checkVersion(.immediately) { [weak self] success in
+                    alert.dismiss(animated: true, completion: nil)
                     self?.tableView.reloadData()
                     if !success {
-                        let alert = UIAlertController(title: "No Updates Available", message: "There are no updates available for Popcorn Time at this time.", preferredStyle: .Alert)
-                        alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
-                        self?.presentViewController(alert, animated: true, completion: nil)
+                        let alert = UIAlertController(title: "No Updates Available", message: "There are no updates available for Popcorn Time at this time.", preferredStyle: .alert)
+                        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                        self?.present(alert, animated: true, completion: nil)
                     }
                 }
-            } else if indexPath.row == 3 {
+            } else if indexPath.row == 2 {
                 openUrl("https://github.com/PopcornTimeTV/PopcornTimeiOS/blob/master/NOTICE.md")
             }
         default:
@@ -157,27 +154,27 @@ class SettingsTableViewController: UITableViewController, PCTTablePickerViewDele
     
     // MARK: - UITableViewDataSource
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = super.tableView(tableView, cellForRowAtIndexPath: indexPath)
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
         switch indexPath.section {
         case 0 where indexPath.row == 2:
             cell.detailTextLabel?.text = "None"
             tablePickerView.selectedItems.removeAll()
-            if let preferredSubtitleLanguage = ud.stringForKey("PreferredSubtitleLanguage") where preferredSubtitleLanguage != "None" {
+            if let preferredSubtitleLanguage = UserDefaults.standard.string(forKey: "PreferredSubtitleLanguage") , preferredSubtitleLanguage != "None" {
                 self.tablePickerView.selectedItems = [preferredSubtitleLanguage]
                 cell.detailTextLabel?.text = preferredSubtitleLanguage
             }
         case 2:
-            if let string = ud.stringForKey("PreferredSubtitle\(cell.textLabel!.text!.capitalizedString.whiteSpacelessString)") {
+            if let string = UserDefaults.standard.string(forKey: "PreferredSubtitle\(cell.textLabel!.text!.capitalized.whiteSpacelessed)") {
                 cell.detailTextLabel?.text = string
             }
         case 4:
             if indexPath.row == 1 {
-              cell.detailTextLabel?.text = "\(NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleShortVersionString")!).\(NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleVersion")!)"
+              cell.detailTextLabel?.text = "\(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString")!).\(Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion")!)"
             } else if indexPath.row == 2 {
                 var date = "Never."
-                if let lastChecked = NSUserDefaults.standardUserDefaults().objectForKey("lastVersionCheckPerformedOnDate") as? NSDate {
-                    date = NSDateFormatter.localizedStringFromDate(lastChecked, dateStyle: .ShortStyle, timeStyle: .ShortStyle)
+                if let lastChecked = UserDefaults.standard.object(forKey: "lastVersionCheckPerformedOnDate") as? Date {
+                    date = DateFormatter.localizedString(from: lastChecked, dateStyle: .short, timeStyle: .short)
                 }
                 cell.detailTextLabel?.text = "Last checked: \(date)"
             }
@@ -188,134 +185,119 @@ class SettingsTableViewController: UITableViewController, PCTTablePickerViewDele
         return cell
     }
     
-    func updateSignedInStatus(sender: UIButton, isSignedIn: Bool) {
-        sender.setTitle(isSignedIn ? "Sign Out": "Authorize", forState: .Normal)
-        sender.setTitleColor(isSignedIn ? UIColor(red: 230.0/255.0, green: 46.0/255.0, blue: 37.0/255.0, alpha: 1.0) : view.window?.tintColor!, forState: .Normal)
+    func updateSignedInStatus(_ sender: UIButton, isSignedIn: Bool) {
+        sender.setTitle(isSignedIn ? "Sign Out": "Authorize", for: .normal)
+        sender.setTitleColor(isSignedIn ? UIColor(red: 230.0/255.0, green: 46.0/255.0, blue: 37.0/255.0, alpha: 1.0) : view.window?.tintColor!, for: .normal)
     }
     
     // MARK: - PCTTablePickerViewDelegate
     
-    func tablePickerView(tablePickerView: PCTTablePickerView, didClose items: [String]) {
-        ud.setObject(items.first ?? "None", forKey: "PreferredSubtitleLanguage")
+    func tablePickerView(_ tablePickerView: PCTTablePickerView, didClose items: [String]) {
+        UserDefaults.standard.set(items.first ?? "None", forKey: "PreferredSubtitleLanguage")
         tableView.reloadData()
     }
     
-    func tablePickerView(tablePickerView: PCTTablePickerView, willClose items: [String]) {
+    func tablePickerView(_ tablePickerView: PCTTablePickerView, willClose items: [String]) {
         if let indexPath = tableView.indexPathForSelectedRow {
-            tableView.deselectRowAtIndexPath(indexPath, animated: true)
+            tableView.deselectRow(at: indexPath, animated: true)
         }
     }
     
     // MARK: - PCTPickerViewDelegate
     
-    func pickerView(pickerView: PCTPickerView, didClose items: [String : AnyObject]) {
-        if let index = tableView.indexPathForSelectedRow, let text = tableView.cellForRowAtIndexPath(index)?.textLabel?.text {
-            ud.setObject(items.keys.first, forKey: "PreferredSubtitle\(text.capitalizedString.whiteSpacelessString)")
+    func pickerView(_ pickerView: PCTPickerView, didClose items: [String : AnyObject]) {
+        if let index = tableView.indexPathForSelectedRow, let text = tableView.cellForRow(at: index)?.textLabel?.text {
+            UserDefaults.standard.set(items.keys.first, forKey: "PreferredSubtitle\(text.capitalized.whiteSpacelessed)")
         }
         tableView.reloadData()
     }
 
-    func pickerView(pickerView: PCTPickerView, willClose items: [String : AnyObject]) {
+    func pickerView(_ pickerView: PCTPickerView, willClose items: [String : AnyObject]) {
         if let index = tableView.indexPathForSelectedRow {
-            tableView.deselectRowAtIndexPath(index, animated: true)
+            tableView.deselectRow(at: index, animated: true)
         }
     }
     
-    @IBAction func streamOnCellular(sender: UISwitch) {
-        ud.setBool(sender.on, forKey: "StreamOnCellular")
+    @IBAction func streamOnCellular(_ sender: UISwitch) {
+        UserDefaults.standard.set(sender.isOn, forKey: "StreamOnCellular")
     }
     
-    @IBAction func removeCacheOnPlayerExit(sender: UISwitch) {
-        ud.setBool(sender.on, forKey: "removeCacheOnPlayerExit")
+    @IBAction func removeCacheOnPlayerExit(_ sender: UISwitch) {
+        UserDefaults.standard.set(sender.isOn, forKey: "removeCacheOnPlayerExit")
     }
     
-    @IBAction func preferredQuality(control: UISegmentedControl) {
-        ud.setObject(control.titleForSegmentAtIndex(control.selectedSegmentIndex), forKey: "PreferredQuality")
+    @IBAction func preferredQuality(_ control: UISegmentedControl) {
+        UserDefaults.standard.set(control.titleForSegment(at: control.selectedSegmentIndex), forKey: "PreferredQuality")
     }
     
     // MARK: - Authorization
     
-    @IBAction func authorizeTraktTV(sender: UIButton) {
-        if ud.boolForKey("AuthorizedTrakt") {
-            let alert = UIAlertController(title: "Sign Out", message: "Are you sure you want to Sign Out?", preferredStyle: .Alert)
-            alert.addAction(UIAlertAction(title: "Yes", style: .Destructive, handler: { action in
-                OAuthCredential.deleteCredentialWithIdentifier("trakt")
-                self.ud.setBool(false, forKey: "AuthorizedTrakt")
+    @IBAction func authorizeTraktTV(_ sender: UIButton) {
+        if UserDefaults.standard.bool(forKey: "AuthorizedTrakt") {
+            let alert = UIAlertController(title: "Sign Out", message: "Are you sure you want to Sign Out?", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Yes", style: .destructive, handler: { action in
+                TraktManager.shared.logout()
                 self.updateSignedInStatus(sender, isSignedIn: false)
             }))
-            alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
-            presentViewController(alert, animated: true, completion: nil)
+            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+            present(alert, animated: true, completion: nil)
         } else {
-            state = randomString(length: 15)
-            openUrl("https://trakt.tv/oauth/authorize?client_id=a3b34d7ce9a7f8c1bb216eed6c92b11f125f91ee0e711207e1030e7cdc965e19&redirect_uri=PopcornTime%3A%2F%2Ftrakt&response_type=code&state=\(state)")
+            present(TraktManager.shared.loginViewController(), animated: true, completion: nil)
         }
     }
     
-    @IBAction func authorizeOpenSubs(sender: UIButton) {
-        if ud.boolForKey("AuthorizedOpenSubs") {
-            let alert = UIAlertController(title: "Sign Out", message: "Are you sure you want to Sign Out?", preferredStyle: .Alert)
-            alert.addAction(UIAlertAction(title: "Yes", style: .Destructive, handler: { action in
+    @IBAction func authorizeOpenSubs(_ sender: UIButton) {
+        if UserDefaults.standard.bool(forKey: "AuthorizedOpenSubs") {
+            let alert = UIAlertController(title: "Sign Out", message: "Are you sure you want to Sign Out?", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Yes", style: .destructive, handler: { action in
             
-                let credential = NSURLCredentialStorage.sharedCredentialStorage().credentialsForProtectionSpace(OpenSubtitles.sharedInstance.protectionSpace)!.values.first!
-                NSURLCredentialStorage.sharedCredentialStorage().removeCredential(credential, forProtectionSpace: OpenSubtitles.sharedInstance.protectionSpace)
-                self.ud.setBool(false, forKey: "AuthorizedOpenSubs")
+                let credential = URLCredentialStorage.shared.credentials(for: SubtitlesManager.shared.protectionSpace)!.values.first!
+                URLCredentialStorage.shared.remove(credential, for: SubtitlesManager.shared.protectionSpace)
+                UserDefaults.standard.set(false, forKey: "AuthorizedOpenSubs")
                 self.updateSignedInStatus(sender, isSignedIn: false)
             }))
-            alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
-            presentViewController(alert, animated: true, completion: nil)
+            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+            present(alert, animated: true, completion: nil)
         } else {
-            var alert = UIAlertController(title: "Sign In", message: "VIP account required.", preferredStyle: .Alert)
-            alert.addTextFieldWithConfigurationHandler({ (textField) in
+            var alert = UIAlertController(title: "Sign In", message: "VIP account required.", preferredStyle: .alert)
+            alert.addTextField(configurationHandler: { (textField) in
                 textField.placeholder = "Username"
             })
-            alert.addTextFieldWithConfigurationHandler({ (textField) in
+            alert.addTextField(configurationHandler: { (textField) in
                 textField.placeholder = "Password"
-                textField.secureTextEntry = true
+                textField.isSecureTextEntry = true
             })
-            alert.addAction(UIAlertAction(title: "Sign In", style: .Default, handler: { (action) in
-                let credential = NSURLCredential(user: alert.textFields![0].text!, password: alert.textFields![1].text!, persistence: .Permanent)
-                NSURLCredentialStorage.sharedCredentialStorage().setCredential(credential, forProtectionSpace: OpenSubtitles.sharedInstance.protectionSpace)
-                OpenSubtitles.sharedInstance.login({
-                    self.ud.setBool(true, forKey: "AuthorizedOpenSubs")
+            alert.addAction(UIAlertAction(title: "Sign In", style: .default, handler: { (action) in
+                let credential = URLCredential(user: alert.textFields![0].text!, password: alert.textFields![1].text!, persistence: .permanent)
+                URLCredentialStorage.shared.set(credential, for: SubtitlesManager.shared.protectionSpace)
+                SubtitlesManager.shared.login({
+                    UserDefaults.standard.set(true, forKey: "AuthorizedOpenSubs")
                     self.updateSignedInStatus(sender, isSignedIn: true)
                     }, error: { error in
-                        NSURLCredentialStorage.sharedCredentialStorage().removeCredential(credential, forProtectionSpace: OpenSubtitles.sharedInstance.protectionSpace)
-                        alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .Alert)
-                        alert.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-                        self.presentViewController(alert, animated: true, completion: nil)
+                        URLCredentialStorage.shared.remove(credential, for: SubtitlesManager.shared.protectionSpace)
+                        alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
+                        alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+                        self.present(alert, animated: true, completion: nil)
                 })
             }))
-            alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
-            presentViewController(alert, animated: true, completion: nil)
+            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+            present(alert, animated: true, completion: nil)
         }
     }
     
-    func openUrl(url: String) {
-        safariViewController = SFSafariViewController(URL: NSURL(string: url)!)
-        self.safariViewController.view.tintColor = UIColor(red:0.37, green:0.41, blue:0.91, alpha:1.0)
-        presentViewController(self.safariViewController, animated: true, completion: nil)
+    func openUrl(_ url: String) {
+        present(SFSafariViewController(url: URL(string: url)!), animated: true, completion: nil)
     }
     
-    // MARK: - TraktOAuth
+    // MARK: - TraktManagerDelegate
     
-    func safariLogin(notification: NSNotification) {
-        safariViewController.dismissViewControllerAnimated(true, completion: nil)
-        guard let query = (notification.object as? NSURL)?.query?.urlStringValues() where query["state"] == self.state else {return}
-        dispatch_async(dispatch_get_global_queue(Int(QOS_CLASS_USER_INITIATED.rawValue), 0)) {
-            do {
-                let credential = try OAuthCredential(URLString: "https://api-v2launch.trakt.tv/oauth/token", code: query["code"]!, redirectURI: "PopcornTime://trakt", clientID: TraktTVAPI.sharedInstance.clientId, clientSecret: TraktTVAPI.sharedInstance.clientSecret, useBasicAuthentication: false)
-                OAuthCredential.storeCredential(credential!, identifier: "trakt")
-                dispatch_async(dispatch_get_main_queue(), {
-                    self.ud.setBool(true, forKey: "AuthorizedTrakt")
-                    self.updateSignedInStatus(self.traktSignInButton, isSignedIn: true)
-                })
-            } catch {}
-        }
-        let error = UIAlertController(title: "Error", message: "Uh Oh! It looks like your connection has been compromised. You may be a victim of Cross Site Request Forgery. If you are on a public WiFi network please disconnect immediately and contact the network administrator.", preferredStyle: .Alert)
-        error.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-        error.addAction(UIAlertAction(title: "Learn More", style: .Default, handler: { action in
-            UIApplication.sharedApplication().openURL(NSURL(string: "http://www.veracode.com/security/csrf")!)
-        }))
-        presentViewController(error, animated: true, completion: nil)
+    func authenticationDidSucceed() {
+        updateSignedInStatus(traktSignInButton, isSignedIn: true)
+    }
+    
+    func authenticationDidFail(withError error: NSError) {
+        let alert = UIAlertController(title: "Error authenticating.", message: error.localizedDescription, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+        present(alert, animated: true, completion: nil)
     }
 }

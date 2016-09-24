@@ -2,6 +2,9 @@
 
 import Foundation
 import GoogleCast
+import PopcornKit
+
+typealias CastMetaData = (title: String, image: URL?, contentType: String, subtitles: [Subtitle]?, url: String, mediaAssetsPath: URL)
 
 class GoogleCastManager: NSObject, GCKDeviceScannerListener, GCKSessionManagerListener {
     
@@ -12,23 +15,23 @@ class GoogleCastManager: NSObject, GCKDeviceScannerListener, GCKSessionManagerLi
     
     /// If a user is connected to a device and wants to connect to another, a queue has to be made as the disconnect operation is asyncronous. When the user has successfully disconnected from the first device, this device should then be connected to.
     private var deviceAwaitingConnection: GCKDevice?
-    var castMetadata: PCTCastMetaData?
+    var castMetadata: CastMetaData?
     
     override init() {
         super.init()
         deviceScanner = GCKDeviceScanner(filterCriteria: GCKFilterCriteria(forAvailableApplicationWithID: kGCKMediaDefaultReceiverApplicationID))
-        deviceScanner!.addListener(self)
+        deviceScanner!.add(self)
         deviceScanner!.startScan()
-        GCKCastContext.sharedInstance().sessionManager.addListener(self)
+        GCKCastContext.sharedInstance().sessionManager.add(self)
     }
     
     /// If you chose to initialise with this method, no delegate requests will be recieved.
-    init(castMetadata: PCTCastMetaData) {
+    init(castMetadata: CastMetaData) {
         super.init()
         self.castMetadata = castMetadata
     }
     
-    func didSelectRoute(device: GCKDevice, castMetadata: PCTCastMetaData? = nil) {
+    func didSelectRoute(_ device: GCKDevice, castMetadata: CastMetaData? = nil) {
         self.castMetadata = castMetadata
         if let session = GCKCastContext.sharedInstance().sessionManager.currentSession {
             GCKCastContext.sharedInstance().sessionManager.endSession()
@@ -36,53 +39,53 @@ class GoogleCastManager: NSObject, GCKDeviceScannerListener, GCKSessionManagerLi
                deviceAwaitingConnection = device
             }
         } else {
-            GCKCastContext.sharedInstance().sessionManager.startSessionWithDevice(device)
+            GCKCastContext.sharedInstance().sessionManager.startSession(with: device)
         }
     }
     
     // MARK: - GCKDeviceScannerListener
     
-    func deviceDidComeOnline(device: GCKDevice) {
+    func deviceDidComeOnline(_ device: GCKDevice) {
         dataSourceArray.append(device)
-        delegate?.updateTableView(dataSource: dataSourceArray, updateType: .Insert, indexPaths: [NSIndexPath(forRow: dataSourceArray.count - 1, inSection: 1)])
+        delegate?.updateTableView(dataSource: dataSourceArray, updateType: .insert, indexPaths: [IndexPath(row: dataSourceArray.count - 1, section: 1)])
     }
     
 
-    func deviceDidGoOffline(device: GCKDevice) {
-        for (index, oldDevice) in dataSourceArray.enumerate() {
+    func deviceDidGoOffline(_ device: GCKDevice) {
+        for (index, oldDevice) in dataSourceArray.enumerated() {
             if device === oldDevice {
-                dataSourceArray.removeAtIndex(index)
-                delegate?.updateTableView(dataSource: dataSourceArray, updateType: .Delete, indexPaths: [NSIndexPath(forRow: index, inSection: 1)])
+                dataSourceArray.remove(at: index)
+                delegate?.updateTableView(dataSource: dataSourceArray, updateType: .delete, indexPaths: [IndexPath(row: index, section: 1)])
             }
         }
     }
     
-    func deviceDidChange(device: GCKDevice) {
-        for (index, oldDevice) in dataSourceArray.enumerate() {
+    func deviceDidChange(_ device: GCKDevice) {
+        for (index, oldDevice) in dataSourceArray.enumerated() {
             if device === oldDevice {
                 dataSourceArray[index] = device
-                delegate?.updateTableView(dataSource: dataSourceArray, updateType: .Reload, indexPaths: [NSIndexPath(forRow: index, inSection: 1)])
+                delegate?.updateTableView(dataSource: dataSourceArray, updateType: .reload, indexPaths: [IndexPath(row: index, section: 1)])
             }
         }
     }
     
     // MARK: - GCKSessionManagerListener
     
-    func sessionManager(sessionManager: GCKSessionManager, didEndSession session: GCKSession, withError error: NSError?) {
+    func sessionManager(_ sessionManager: GCKSessionManager, didEnd session: GCKSession, withError error: Error?) {
         guard error == nil else { print(error); return }
         if let device = deviceAwaitingConnection {
-            GCKCastContext.sharedInstance().sessionManager.startSessionWithDevice(device)
+            GCKCastContext.sharedInstance().sessionManager.startSession(with: device)
         } else {
             delegate?.didConnectToDevice(deviceIsChromecast: true)
         }
     }
     
-    func sessionManager(sessionManager: GCKSessionManager, didStartSession session: GCKSession) {
+    func sessionManager(_ sessionManager: GCKSessionManager, didStart session: GCKSession) {
         if let castMetadata = castMetadata {
             if let subtitles = castMetadata.subtitles {
                 var mediaTracks = [GCKMediaTrack]()
-                for (index, subtitle) in subtitles.enumerate() {
-                    mediaTracks.append(GCKMediaTrack(identifier: index, contentIdentifier: castMetadata.mediaAssetsPath.URLByAppendingPathComponent("Subtitles", isDirectory: true).URLByAppendingPathComponent(subtitle.ISO639 + ".vtt").relativeString!, contentType: "text/vtt", type: .Text, textSubtype: .Captions, name: subtitle.language, languageCode: subtitle.ISO639, customData: nil))
+                for (index, subtitle) in subtitles.enumerated() {
+                    mediaTracks.append(GCKMediaTrack(identifier: index, contentIdentifier: castMetadata.mediaAssetsPath.appendingPathComponent("Subtitles", isDirectory: true).appendingPathComponent(subtitle.ISO639 + ".vtt").relativeString, contentType: "text/vtt", type: .text, textSubtype: .captions, name: subtitle.language, languageCode: subtitle.ISO639, customData: nil))
                 }
                 self.streamToDevice(mediaTracks, sessionManager: sessionManager, castMetadata: castMetadata)
                 self.delegate?.didConnectToDevice(deviceIsChromecast: true)
@@ -95,22 +98,22 @@ class GoogleCastManager: NSObject, GCKDeviceScannerListener, GCKSessionManagerLi
         }
     }
     
-    func streamToDevice(mediaTrack: [GCKMediaTrack]? = nil, sessionManager: GCKSessionManager, castMetadata: PCTCastMetaData) {
-        let metadata = GCKMediaMetadata(metadataType: .Movie)
+    func streamToDevice(_ mediaTrack: [GCKMediaTrack]? = nil, sessionManager: GCKSessionManager, castMetadata: CastMetaData) {
+        let metadata = GCKMediaMetadata(metadataType: .movie)
         metadata.setString(castMetadata.title, forKey: kGCKMetadataKeyTitle)
-        if let url = castMetadata.imageUrl {
-            metadata.addImage(GCKImage(URL: url, width: 480, height: 720))
+        if let url = castMetadata.image {
+            metadata.addImage(GCKImage(url: url as URL, width: 480, height: 720))
         }
-        let mediaInfo = GCKMediaInformation(contentID: castMetadata.url, streamType: .Buffered, contentType: castMetadata.contentType, metadata: metadata, streamDuration: 0, mediaTracks: nil, textTrackStyle: GCKMediaTextTrackStyle.createDefault(), customData: nil)
-        sessionManager.currentCastSession!.remoteMediaClient.loadMedia(mediaInfo, autoplay: true)
+        let mediaInfo = GCKMediaInformation(contentID: castMetadata.url, streamType: .buffered, contentType: castMetadata.contentType, metadata: metadata, streamDuration: 0, mediaTracks: nil, textTrackStyle: GCKMediaTextTrackStyle.createDefault(), customData: nil)
+        sessionManager.currentCastSession?.remoteMediaClient?.loadMedia(mediaInfo, autoplay: true)
     }
 
     
     deinit {
-        if let deviceScanner = deviceScanner where deviceScanner.scanning {
+        if let deviceScanner = deviceScanner , deviceScanner.scanning {
             deviceScanner.stopScan()
-            deviceScanner.removeListener(self)
-            GCKCastContext.sharedInstance().sessionManager.removeListener(self)
+            deviceScanner.remove(self)
+            GCKCastContext.sharedInstance().sessionManager.remove(self)
         }
         deviceAwaitingConnection = nil
         castMetadata = nil

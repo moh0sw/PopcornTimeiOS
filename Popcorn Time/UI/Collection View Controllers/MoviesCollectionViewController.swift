@@ -2,12 +2,13 @@
 
 import UIKit
 import AlamofireImage
+import PopcornKit
 
 class MoviesCollectionViewController: ItemOverviewCollectionViewController, UIPopoverPresentationControllerDelegate, GenresDelegate, ItemOverviewDelegate {
     
-    var movies = [PCTMovie]()
+    var movies = [Movie]()
     
-    var currentGenre = MovieAPI.genres.All {
+    var currentGenre = MovieManager.Genres.all {
         didSet {
             movies.removeAll()
             collectionView?.reloadData()
@@ -15,7 +16,7 @@ class MoviesCollectionViewController: ItemOverviewCollectionViewController, UIPo
             loadNextPage(currentPage)
         }
     }
-    var currentFilter = MovieAPI.filters.Trending {
+    var currentFilter = MovieManager.Filters.trending {
         didSet {
             movies.removeAll()
             collectionView?.reloadData()
@@ -24,19 +25,19 @@ class MoviesCollectionViewController: ItemOverviewCollectionViewController, UIPo
         }
     }
     
-    @IBAction func searchBtnPressed(sender: UIBarButtonItem) {
-        presentViewController(searchController, animated: true, completion: nil)
+    @IBAction func searchBtnPressed(_ sender: UIBarButtonItem) {
+        present(searchController, animated: true, completion: nil)
     }
     
-    @IBAction func filter(sender: AnyObject) {
+    @IBAction func filter(_ sender: AnyObject) {
         self.collectionView?.performBatchUpdates({
-            self.filterHeader!.hidden = !self.filterHeader!.hidden
+            self.filterHeader!.isHidden = !self.filterHeader!.isHidden
             }, completion: nil)
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        WatchlistManager.movieManager.getWatched() {
+        WatchlistManager.movie.getWatched() {
             self.collectionView?.reloadData()
         }
     }
@@ -47,43 +48,41 @@ class MoviesCollectionViewController: ItemOverviewCollectionViewController, UIPo
         loadNextPage(currentPage)
     }
     
-    func segmentedControlDidChangeSegment(segmentedControl: UISegmentedControl) {
-        currentFilter = MovieAPI.filters.arrayValue[segmentedControl.selectedSegmentIndex]
+    func segmentedControlDidChangeSegment(_ segmentedControl: UISegmentedControl) {
+        currentFilter = MovieManager.Filters.array[segmentedControl.selectedSegmentIndex]
     }
     
     // MARK: - ItemOverviewDelegate
     
-    func loadNextPage(pageNumber: Int, searchTerm: String? = nil, removeCurrentData: Bool = false) {
-        guard isLoading else {
-            isLoading = true
-            hasNextPage = false
-            MovieAPI.sharedInstance.load(currentPage, filterBy: currentFilter, genre: currentGenre, searchTerm: searchTerm) { items in
-                self.isLoading = false
-                if removeCurrentData {
-                    self.movies.removeAll()
-                }
-                self.movies += items
-                if items.isEmpty // If the array passed in is empty, there are no more results so the content inset of the collection view is reset.
-                {
-                    self.collectionView?.contentInset = UIEdgeInsetsMake(69, 0, 0, 0)
-                    
-                } else {
-                    self.hasNextPage = true
-                }
-                self.collectionView?.reloadData()
+    func loadNextPage(_ pageNumber: Int, searchTerm: String? = nil, removeCurrentData: Bool = false) {
+        guard !isLoading else { return }
+        isLoading = true
+        hasNextPage = false
+        PopcornKit.loadMovies(currentPage, filterBy: currentFilter, genre: currentGenre, searchTerm: searchTerm) { (movies, error) in
+            self.isLoading = false
+            guard let movies = movies else { self.error = error; self.collectionView?.reloadData(); return }
+            if removeCurrentData {
+                self.movies.removeAll()
             }
-            return
+            self.movies += movies
+            if movies.isEmpty // If the array passed in is empty, there are no more results so the content inset of the collection view is reset.
+            {
+                self.collectionView?.contentInset.bottom = 0.0
+            } else {
+                self.hasNextPage = true
+            }
+            self.collectionView?.reloadData()
         }
     }
     
-    func didDismissSearchController(searchController: UISearchController) {
+    func didDismissSearchController(_ searchController: UISearchController) {
         movies.removeAll()
         collectionView?.reloadData()
         currentPage = 1
         loadNextPage(currentPage)
     }
     
-    func search(text: String) {
+    func search(_ text: String?) {
         movies.removeAll()
         collectionView?.reloadData()
         currentPage = 1
@@ -96,41 +95,40 @@ class MoviesCollectionViewController: ItemOverviewCollectionViewController, UIPo
     
     // MARK: - Navigation
     
-    @IBAction func genresButtonTapped(sender: UIBarButtonItem) {
-        let controller = cache.objectForKey(TraktTVAPI.type.Movies.rawValue) as? UINavigationController ?? (storyboard?.instantiateViewControllerWithIdentifier("GenresNavigationController"))! as! UINavigationController
-        cache.setObject(controller, forKey: TraktTVAPI.type.Movies.rawValue)
-        controller.modalPresentationStyle = .Popover
+    @IBAction func genresButtonTapped(_ sender: UIBarButtonItem) {
+        let controller = cache.object(forKey: Trakt.MediaType.movies.rawValue as AnyObject) ?? (storyboard?.instantiateViewController(withIdentifier: "GenresNavigationController"))! as! UINavigationController
+        cache.setObject(controller, forKey: Trakt.MediaType.movies.rawValue as AnyObject)
+        controller.modalPresentationStyle = .popover
         controller.popoverPresentationController?.barButtonItem = sender
         controller.popoverPresentationController?.backgroundColor = UIColor(red: 30.0/255.0, green: 30.0/255.0, blue: 30.0/255.0, alpha: 1.0)
-        (controller.viewControllers[0] as! GenresTableViewController).delegate = self
-        presentViewController(controller, animated: true, completion: nil)
+        (controller.viewControllers.first as! GenresTableViewController).delegate = self
+        present(controller, animated: true, completion: nil)
     }
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        fixIOS9PopOverAnchor(segue)
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "showDetail" {
-            let movieDetail = segue.destinationViewController as! MovieDetailViewController
+            let movieDetail = segue.destination as! MovieDetailViewController
             let cell = sender as! CoverCollectionViewCell
-            movieDetail.currentItem = self.movies[(collectionView?.indexPathForCell(cell)?.row)!]
+            movieDetail.currentItem = self.movies[(collectionView?.indexPath(for: cell)?.row)!]
         }
     }
     
     // MARK: - Collection view data source
     
-    override func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
+    override func numberOfSections(in collectionView: UICollectionView) -> Int {
         collectionView.backgroundView = nil
         if movies.count == 0 {
             if error != nil {
-                let background = NSBundle.mainBundle().loadNibNamed("TableViewBackground", owner: self, options: nil).first as! TableViewBackground
+                let background = Bundle.main.loadNibNamed("TableViewBackground", owner: self, options: nil)?.first as! TableViewBackground
                 background.setUpView(error: error!)
                 collectionView.backgroundView = background
             } else if isLoading {
-                let indicator = UIActivityIndicatorView(activityIndicatorStyle: .White)
+                let indicator = UIActivityIndicatorView(activityIndicatorStyle: .white)
                 indicator.center = collectionView.center
                 collectionView.backgroundView = indicator
                 indicator.sizeToFit()
                 indicator.startAnimating()
             } else {
-                let background = NSBundle.mainBundle().loadNibNamed("TableViewBackground", owner: self, options: nil).first as! TableViewBackground
+                let background = Bundle.main.loadNibNamed("TableViewBackground", owner: self, options: nil)?.first as! TableViewBackground
                 background.setUpView(image: UIImage(named: "Search")!, title: "No results found.", description: "No search results found for \(searchController.searchBar.text!). Please check the spelling and try again.")
                 collectionView.backgroundView = background
             }
@@ -138,31 +136,31 @@ class MoviesCollectionViewController: ItemOverviewCollectionViewController, UIPo
         return 1
     }
     
-    override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return movies.count
     }
     
-    override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("cell", forIndexPath: indexPath) as! CoverCollectionViewCell
-        if let image = movies[indexPath.row].coverImageAsString,
-            let url = NSURL(string: image) {
-            cell.coverImage.af_setImageWithURL(url, placeholderImage: UIImage(named: "Placeholder"), imageTransition: .CrossDissolve(animationLength))
+    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! CoverCollectionViewCell
+        if let image = movies[indexPath.row].mediumCoverImage,
+            let url = URL(string: image) {
+            cell.coverImage.af_setImage(withURL: url, placeholderImage: UIImage(named: "Placeholder"), imageTransition: .crossDissolve(animationLength))
         }
         cell.titleLabel.text = movies[indexPath.row].title
         cell.yearLabel.text = movies[indexPath.row].year
-        cell.watched = WatchlistManager.movieManager.isWatched(movies[indexPath.row].id)
+        cell.watched = WatchlistManager.movie.isWatched(movies[indexPath.row].id)
         return cell
     }
     
-    override func collectionView(collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, atIndexPath indexPath: NSIndexPath) -> UICollectionReusableView {
+    override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         filterHeader = filterHeader ?? {
-            let reuseableView = collectionView.dequeueReusableSupplementaryViewOfKind(kind, withReuseIdentifier: "filter", forIndexPath: indexPath) as! FilterCollectionReusableView
+            let reuseableView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "filter", for: indexPath) as! FilterCollectionReusableView
             reuseableView.segmentedControl?.removeAllSegments()
-            for (index, filterValue) in MovieAPI.filters.arrayValue.enumerate() {
-                reuseableView.segmentedControl?.insertSegmentWithTitle(filterValue.stringValue(), atIndex: index, animated: false)
+            for (index, filterValue) in MovieManager.Filters.array.enumerated() {
+                reuseableView.segmentedControl?.insertSegment(withTitle: filterValue.string, at: index, animated: false)
             }
-            reuseableView.hidden = true
-            reuseableView.segmentedControl?.addTarget(self, action: #selector(segmentedControlDidChangeSegment(_:)), forControlEvents: .ValueChanged)
+            reuseableView.isHidden = true
+            reuseableView.segmentedControl?.addTarget(self, action: #selector(segmentedControlDidChangeSegment(_:)), for: .valueChanged)
             reuseableView.segmentedControl?.selectedSegmentIndex = 0
             return reuseableView
         }()
@@ -171,17 +169,15 @@ class MoviesCollectionViewController: ItemOverviewCollectionViewController, UIPo
     
     // MARK: - GenresDelegate
     
-    func finished(genreArrayIndex: Int) {
-        navigationItem.title = MovieAPI.genres.arrayValue[genreArrayIndex].rawValue
-        if MovieAPI.genres.arrayValue[genreArrayIndex] == .All {
+    func finished(_ genreArrayIndex: Int) {
+        navigationItem.title = MovieManager.Genres.array[genreArrayIndex].rawValue
+        if MovieManager.Genres.array[genreArrayIndex] == .all {
             navigationItem.title = "Movies"
         }
-        currentGenre = MovieAPI.genres.arrayValue[genreArrayIndex]
+        currentGenre = MovieManager.Genres.array[genreArrayIndex]
     }
     
-    func populateDataSourceArray(inout array: [String]) {
-        for genre in MovieAPI.genres.arrayValue {
-            array.append(genre.rawValue)
-        }
+    func populateDataSourceArray(_ array: inout [String]) {
+        array = MovieManager.Genres.array.map({$0.rawValue})
     }
 }

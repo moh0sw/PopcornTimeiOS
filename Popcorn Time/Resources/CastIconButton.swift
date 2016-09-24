@@ -4,27 +4,27 @@ import UIKit
 
 class CastIconButton: UIButton {
     
-    var status: GCKCastState = .NoDevicesAvailable {
+    var status: GCKCastState = .noDevicesAvailable {
         didSet {
             switch status {
-            case .NoDevicesAvailable:
+            case .noDevicesAvailable:
                 imageView?.stopAnimating()
-                hidden = true
-            case .NotConnected:
-                hidden = false
+                isHidden = true
+            case .notConnected:
+                isHidden = false
                 imageView!.stopAnimating()
-                setImage(castOff, forState: .Normal)
+                setImage(castOff, for: .normal)
                 tintColor = superview?.tintColor
-            case .Connecting:
-                hidden = false
+            case .connecting:
+                isHidden = false
                 tintColor = superview?.tintColor
-                setImage(castOff, forState: .Normal)
+                setImage(castOff, for: .normal)
                 imageView!.startAnimating()
-            case .Connected:
-                hidden = false
+            case .connected:
+                isHidden = false
                 imageView!.stopAnimating()
-                setImage(castOn, forState: .Normal)
-                tintColor = UIColor.appColor()
+                setImage(castOn, for: .normal)
+                tintColor = UIColor.app
             }
         }
     }
@@ -49,8 +49,9 @@ class CastIconButton: UIButton {
 class CastIconBarButtonItem: UIBarButtonItem {
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        customView = CastIconButton(frame: CGRectMake(0,0,26,26))
+        customView = CastIconButton(frame: CGRect(x: 0,y: 0,width: 26,height: 26))
     }
 }
+
 
 

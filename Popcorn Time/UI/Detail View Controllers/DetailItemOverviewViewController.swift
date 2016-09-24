@@ -2,7 +2,7 @@
 
 import UIKit
 import GoogleCast
-import FloatRatingView
+import PopcornKit
 
 class DetailItemOverviewViewController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewDelegate, UIPopoverPresentationControllerDelegate, PCTPlayerViewControllerDelegate {
     
@@ -10,7 +10,7 @@ class DetailItemOverviewViewController: UIViewController, UIGestureRecognizerDel
     var lastTranslation: CGFloat = 0.0
     var lastHeaderHeight: CGFloat = 0.0
     var minimumHeight: CGFloat {
-        if let navigationBar = navigationController?.navigationBar where navigationBar.hidden == false { return navigationBar.bounds.size.height + statusBarHeight() }
+        if let navigationBar = navigationController?.navigationBar , navigationBar.isHidden == false { return navigationBar.bounds.size.height + statusBarHeight() }
         return statusBarHeight()
     }
     var maximumHeight: CGFloat {
@@ -30,21 +30,21 @@ class DetailItemOverviewViewController: UIViewController, UIGestureRecognizerDel
     @IBOutlet var infoLabel: UILabel!
 
     enum ScrollDirection {
-        case Down
-        case Up
+        case down
+        case up
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(updateCastStatus), name: kGCKCastStateDidChangeNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(layoutNavigationBar), name: UIDeviceOrientationDidChangeNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(updateCastStatus), name: NSNotification.Name.gckCastStateDidChange, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(layoutNavigationBar), name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
         updateCastStatus()
-        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), forBarMetrics:.Default)
+        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for:.default)
         self.navigationController?.navigationBar.shadowImage = UIImage()
-        self.navigationController?.navigationBar.backgroundColor = UIColor.clearColor()
-        self.navigationController?.navigationBar.tintColor = UIColor.whiteColor()
-        self.navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor().colorWithAlphaComponent(self.progressiveness)]
-        if transitionCoordinator()?.viewControllerForKey(UITransitionContextFromViewControllerKey) is PCTPlayerViewController || transitionCoordinator()?.viewControllerForKey(UITransitionContextFromViewControllerKey) is CastPlayerViewController {
+        self.navigationController?.navigationBar.backgroundColor = UIColor.clear
+        self.navigationController?.navigationBar.tintColor = UIColor.white
+        self.navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white.withAlphaComponent(self.progressiveness)]
+        if transitionCoordinator?.viewController(forKey: UITransitionContextViewControllerKey.from) is PCTPlayerViewController || transitionCoordinator?.viewController(forKey: UITransitionContextViewControllerKey.from) is CastPlayerViewController {
             self.navigationController?.setNavigationBarHidden(false, animated: false)
             self.headerHeightConstraint.constant = self.lastHeaderHeight
             self.updateScrolling(false)
@@ -54,24 +54,24 @@ class DetailItemOverviewViewController: UIViewController, UIGestureRecognizerDel
             if let showDetail = self as? TVShowDetailViewController {
                 showDetail.segmentedControl.alpha = 1.0
             }
-            if let frame = self.tabBarController?.tabBar.frame where frame.origin.y > self.view.bounds.height - frame.height {
+            if let frame = self.tabBarController?.tabBar.frame , frame.origin.y > self.view.bounds.height - frame.height {
                 let offsetY = -frame.size.height
-                self.tabBarController?.tabBar.frame = CGRectOffset(frame, 0, offsetY)
+                self.tabBarController?.tabBar.frame = frame.offsetBy(dx: 0, dy: offsetY)
             }
             
         }
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        NSNotificationCenter.defaultCenter().removeObserver(self)
-        if transitionCoordinator()?.viewControllerForKey(UITransitionContextToViewControllerKey) == self.navigationController?.topViewController {
-            self.navigationController?.navigationBar.setBackgroundImage(nil, forBarMetrics:.Default)
-            self.navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor()]
+        NotificationCenter.default.removeObserver(self)
+        if transitionCoordinator?.viewController(forKey: UITransitionContextViewControllerKey.to) == self.navigationController?.topViewController {
+            self.navigationController?.navigationBar.setBackgroundImage(nil, for:.default)
+            self.navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
         }
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         layoutNavigationBar()
     }
@@ -79,13 +79,13 @@ class DetailItemOverviewViewController: UIViewController, UIGestureRecognizerDel
     override func viewDidLoad() {
         super.viewDidLoad()
         headerHeightConstraint.constant = maximumHeight
-        (castButton.customView as! CastIconButton).addTarget(self, action: #selector(castButtonTapped), forControlEvents: .TouchUpInside)
+        (castButton.customView as! CastIconButton).addTarget(self, action: #selector(castButtonTapped), for: .touchUpInside)
     }
     
     /// On iPhones, status bar hides when view traits become compact so we need to force an update for the header size.
     func layoutNavigationBar() {
         let scrollingView: UIScrollView! = tableView ?? scrollView
-        if headerHeightConstraint.constant < minimumHeight || scrollingView.valueForKey("programaticScrollEnabled")!.boolValue
+        if headerHeightConstraint.constant < minimumHeight || (scrollingView.value(forKey: "programaticScrollEnabled")! as AnyObject).boolValue
         {
             headerHeightConstraint.constant = minimumHeight
         }
@@ -98,14 +98,14 @@ class DetailItemOverviewViewController: UIViewController, UIGestureRecognizerDel
         updateScrolling(true)
     }
     
-    @IBAction func handleGesture(sender: UIPanGestureRecognizer) {
-        let translation = sender.translationInView(sender.view!.superview!)
+    @IBAction func handleGesture(_ sender: UIPanGestureRecognizer) {
+        let translation = sender.translation(in: sender.view!.superview!)
         let scrollingView: UIScrollView! = tableView ?? scrollView
-        if sender.state == .Changed || sender.state == .Began {
+        if sender.state == .changed || sender.state == .began {
             let offset = translation.y - lastTranslation
-            let scrollDirection: ScrollDirection = offset > 0 ? .Up : .Down
+            let scrollDirection: ScrollDirection = offset > 0 ? .up : .down
             
-            if (headerHeightConstraint.constant + offset) >= minimumHeight && scrollingView.valueForKey("programaticScrollEnabled")!.boolValue == false {
+            if (headerHeightConstraint.constant + offset) >= minimumHeight && (scrollingView.value(forKey: "programaticScrollEnabled")! as AnyObject).boolValue == false {
                 if ((headerHeightConstraint.constant + offset) - minimumHeight) <= 8.0 // Stops scrolling from sticking just before we transition to scroll view input.
                 {
                     headerHeightConstraint.constant = self.minimumHeight
@@ -117,7 +117,7 @@ class DetailItemOverviewViewController: UIViewController, UIGestureRecognizerDel
             }
             if headerHeightConstraint.constant == minimumHeight && scrollingView.isAtTop
             {
-                if scrollDirection == .Up {
+                if scrollDirection == .up {
                     scrollingView.setValue(false, forKey: "programaticScrollEnabled")
                 } else // If header is fully collapsed and we are not at the end of scroll view, hand scrolling to scroll view
                 {
@@ -125,7 +125,7 @@ class DetailItemOverviewViewController: UIViewController, UIGestureRecognizerDel
                 }
             }
             lastTranslation = translation.y
-        } else if sender.state == .Ended {
+        } else if sender.state == .ended {
             if headerHeightConstraint.constant > maximumHeight {
                 headerHeightConstraint.constant = maximumHeight
                 updateScrolling(true)
@@ -137,21 +137,21 @@ class DetailItemOverviewViewController: UIViewController, UIGestureRecognizerDel
     }
     
     
-    func updateScrolling(animated: Bool) {
+    func updateScrolling(_ animated: Bool) {
         self.progressiveness = 1.0 - (self.headerHeightConstraint.constant - self.minimumHeight)/(self.maximumHeight - self.minimumHeight)
         if animated {
-            UIView.animateWithDuration(0.46, delay: 0.0, usingSpringWithDamping: 0.9, initialSpringVelocity: 0.2, options: [.AllowUserInteraction, .CurveEaseInOut], animations: {
+            UIView.animate(withDuration: 0.46, delay: 0.0, usingSpringWithDamping: 0.9, initialSpringVelocity: 0.2, options: .allowUserInteraction, animations: {
                 self.view.layoutIfNeeded()
                 self.blurView.alpha = self.progressiveness
-                self.navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor().colorWithAlphaComponent(self.progressiveness)]
+                self.navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white.withAlphaComponent(self.progressiveness)]
                 }, completion: nil)
         } else {
             self.blurView.alpha = self.progressiveness
-            self.navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor().colorWithAlphaComponent(self.progressiveness)]
+            self.navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white.withAlphaComponent(self.progressiveness)]
         }
     }
     
-    func resetToEnd(scrollingView: UIScrollView, animated: Bool = true) {
+    func resetToEnd(_ scrollingView: UIScrollView, animated: Bool = true) {
         headerHeightConstraint.constant += scrollingView.frame.size.height - (scrollingView.contentSize.height + scrollingView.contentInset.bottom)
         if headerHeightConstraint.constant > maximumHeight {
             headerHeightConstraint.constant = maximumHeight
@@ -163,50 +163,49 @@ class DetailItemOverviewViewController: UIViewController, UIGestureRecognizerDel
         updateScrolling(animated)
     }
     
-    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         return true
     }
     
     // MARK: - PCTPlayerViewControllerDelegate
     
-    func playNext(episode: PCTEpisode) {}
-    func presentCastPlayer(media: PCTItem, videoFilePath: NSURL, startPosition: NSTimeInterval) {
-        dismissViewControllerAnimated(true, completion: nil)
-        let castPlayerViewController = self.storyboard?.instantiateViewControllerWithIdentifier("CastPlayerViewController") as! CastPlayerViewController
+    func playNext(_ episode: Episode) {}
+    func presentCastPlayer(_ media: Media, videoFilePath: URL, startPosition: TimeInterval) {
+        self.dismiss(animated: true, completion: nil)
+        let castPlayerViewController = self.storyboard?.instantiateViewController(withIdentifier: "CastPlayerViewController") as! CastPlayerViewController
         castPlayerViewController.backgroundImage = self.backgroundImageView.image
         castPlayerViewController.title = media.title
         castPlayerViewController.media = media
         castPlayerViewController.startPosition = startPosition
-        castPlayerViewController.directory = videoFilePath.URLByDeletingLastPathComponent!
-        presentViewController(castPlayerViewController, animated: true, completion: nil)
+        castPlayerViewController.directory = videoFilePath.deletingLastPathComponent()
+        present(castPlayerViewController, animated: true, completion: nil)
     }
     
     // MARK: - Presentation
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        fixIOS9PopOverAnchor(segue)
-        if segue.identifier == "showCasts", let vc = (segue.destinationViewController as? UINavigationController)?.viewControllers.first as? StreamToDevicesTableViewController {
-            segue.destinationViewController.popoverPresentationController?.delegate = self
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "showCasts", let vc = (segue.destination as? UINavigationController)?.viewControllers.first as? StreamToDevicesTableViewController {
+            segue.destination.popoverPresentationController?.delegate = self
             vc.onlyShowCastDevices = true
         }
     }
     
     func castButtonTapped() {
-        performSegueWithIdentifier("showCasts", sender: castButton)
+        performSegue(withIdentifier: "showCasts", sender: castButton)
     }
     
     func updateCastStatus() {
         (castButton.customView as! CastIconButton).status = GCKCastContext.sharedInstance().castState
     }
     
-    func presentationController(controller: UIPresentationController, viewControllerForAdaptivePresentationStyle style: UIModalPresentationStyle) -> UIViewController? {
-        (controller.presentedViewController as! UINavigationController).topViewController?.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Cancel", style: .Plain, target: self, action: #selector(dismiss))
+    func presentationController(_ controller: UIPresentationController, viewControllerForAdaptivePresentationStyle style: UIModalPresentationStyle) -> UIViewController? {
+        (controller.presentedViewController as! UINavigationController).topViewController?.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(cancelButtonPressed))
         return controller.presentedViewController
         
     }
     
-    func dismiss() {
-        dismissViewControllerAnimated(true, completion: nil)
+    func cancelButtonPressed() {
+        self.dismiss(animated: true, completion: nil)
     }
 }
 
@@ -216,7 +215,7 @@ class PCTScrollView: UIScrollView {
     override var contentOffset: CGPoint {
         didSet {
             if !programaticScrollEnabled {
-                super.contentOffset = CGPointZero
+                super.contentOffset = CGPoint.zero
             }
         }
     }
@@ -228,7 +227,7 @@ class PCTTableView: UITableView {
     override var contentOffset: CGPoint {
         didSet {
             if !programaticScrollEnabled {
-                super.contentOffset = CGPointZero
+                super.contentOffset = CGPoint.zero
             }
         }
     }

@@ -5,13 +5,13 @@ import MediaPlayer
 
 
 enum TableViewUpdates {
-    case Reload
-    case Insert
-    case Delete
+    case reload
+    case insert
+    case delete
 }
 
 protocol ConnectDevicesProtocol: class {
-    func updateTableView(dataSource newDataSource: [AnyObject], updateType: TableViewUpdates, indexPaths: [NSIndexPath]?)
+    func updateTableView(dataSource newDataSource: [AnyObject], updateType: TableViewUpdates, indexPaths: [IndexPath]?)
     func didConnectToDevice(deviceIsChromecast chromecast: Bool)
 }
 
@@ -32,11 +32,11 @@ class AirPlayManager: NSObject {
         audioDeviceController.setRouteDiscoveryEnabled!(true)
         routingController.setDelegate!(self)
         updateAirPlayDevices()
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(updateAirPlayDevices), name: MPVolumeViewWirelessRouteActiveDidChangeNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(updateAirPlayDevices), name: NSNotification.Name.MPVolumeViewWirelessRouteActiveDidChange, object: nil)
     }
     
-    func mirrorChanged(sender: UISwitch, selectedRoute: MPAVRouteProtocol) {
-        if sender.on {
+    func mirrorChanged(_ sender: UISwitch, selectedRoute: MPAVRouteProtocol) {
+        if sender.isOn {
             routingController.pickRoute!(selectedRoute.wirelessDisplayRoute!())
         } else {
             routingController.pickRoute!(selectedRoute)
@@ -46,32 +46,32 @@ class AirPlayManager: NSObject {
     func updateAirPlayDevices() {
         routingController.fetchAvailableRoutesWithCompletionHandler! { (routes) in
             if routes.count > self.dataSourceArray.count {
-                var indexPaths = [NSIndexPath]()
+                var indexPaths = [IndexPath]()
                 for index in self.dataSourceArray.count..<routes.count {
-                    indexPaths.append(NSIndexPath(forRow: index, inSection: 0))
+                    indexPaths.append(IndexPath(row: index, section: 0))
                 }
                 self.dataSourceArray = routes
-                self.delegate?.updateTableView(dataSource: self.dataSourceArray, updateType: .Insert, indexPaths: indexPaths)
+                self.delegate?.updateTableView(dataSource: self.dataSourceArray, updateType: .insert, indexPaths: indexPaths)
             } else if routes.count < self.dataSourceArray.count {
-                var indexPaths = [NSIndexPath]()
-                for (index, route) in self.dataSourceArray.enumerate() {
-                    if !routes.contains({ $0.routeUID!() == route.routeUID!() }) // If the new array doesn't contain an object in the old array it must have been removed
+                var indexPaths = [IndexPath]()
+                for (index, route) in self.dataSourceArray.enumerated() {
+                    if !routes.contains(where: { $0.routeUID!() == route.routeUID!() }) // If the new array doesn't contain an object in the old array it must have been removed
                     {
-                        indexPaths.append(NSIndexPath(forRow: index, inSection: 0))
+                        indexPaths.append(IndexPath(row: index, section: 0))
                     }
                 }
                 self.dataSourceArray = routes
-                self.delegate?.updateTableView(dataSource: self.dataSourceArray, updateType: .Delete, indexPaths: indexPaths)
+                self.delegate?.updateTableView(dataSource: self.dataSourceArray, updateType: .delete, indexPaths: indexPaths)
             } else {
                 self.dataSourceArray = routes
-                self.delegate?.updateTableView(dataSource: self.dataSourceArray, updateType: .Reload, indexPaths: nil)
+                self.delegate?.updateTableView(dataSource: self.dataSourceArray, updateType: .reload, indexPaths: nil)
             }
         }
     }
     
-    func airPlayItemImage(row: Int) -> UIImage {
-        if let routeType = self.audioDeviceController.routeDescriptionAtIndex!(row)["AirPlayPortExtendedInfo"]?["model"] as? String {
-            if routeType.containsString("AppleTV") {
+    func airPlayItemImage(_ row: Int) -> UIImage {
+        if let dict = self.audioDeviceController.routeDescriptionAtIndex!(row)["AirPlayPortExtendedInfo"] as? [String: AnyObject], let routeType = dict["model"] as? String {
+            if routeType.contains("AppleTV") {
                 return UIImage(named: "AirTV")!
             } else {
                 return UIImage(named: "AirSpeaker")!
@@ -81,18 +81,18 @@ class AirPlayManager: NSObject {
         }
     }
     
-    func didSelectRoute(selectedRoute: MPAVRouteProtocol) {
+    func didSelectRoute(_ selectedRoute: MPAVRouteProtocol) {
         self.routingController.pickRoute!(selectedRoute)
     }
     
     // MARK: - MPAVRoutingControllerDelegate
     
-    func routingControllerAvailableRoutesDidChange(controller: MPAVRoutingControllerProtocol) {
+    func routingControllerAvailableRoutesDidChange(_ controller: MPAVRoutingControllerProtocol) {
         updateAirPlayDevices()
     }
     
     deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
         audioDeviceController.setRouteDiscoveryEnabled!(false)
     }
 }
@@ -100,31 +100,31 @@ class AirPlayManager: NSObject {
 // MARK: - MPProtocols
 
 @objc protocol MPAVRoutingControllerProtocol {
-    optional func availableRoutes() -> NSArray
-    optional func discoveryMode() -> Int
-    optional func fetchAvailableRoutesWithCompletionHandler(completion: (routes: [MPAVRouteProtocol]) -> Void)
-    optional func name() -> AnyObject
-    optional func pickRoute(route: MPAVRouteProtocol) -> Bool
-    optional func pickRoute(route: MPAVRouteProtocol, withPassword: String) -> Bool
-    optional func videoRouteForRoute(route: MPAVRouteProtocol) -> MPAVRouteProtocol
-    optional func clearCachedRoutes()
-    optional func setDelegate(delegate: NSObject)
+    @objc optional func availableRoutes() -> NSArray
+    @objc optional func discoveryMode() -> Int
+    @objc optional func fetchAvailableRoutesWithCompletionHandler(_ completion: (_ routes: [MPAVRouteProtocol]) -> Void)
+    @objc optional func name() -> AnyObject
+    @objc optional func pickRoute(_ route: MPAVRouteProtocol) -> Bool
+    @objc optional func pickRoute(_ route: MPAVRouteProtocol, withPassword: String) -> Bool
+    @objc optional func videoRouteForRoute(_ route: MPAVRouteProtocol) -> MPAVRouteProtocol
+    @objc optional func clearCachedRoutes()
+    @objc optional func setDelegate(_ delegate: NSObject)
 }
 
 @objc protocol MPAVRouteProtocol {
-    optional func routeName() -> String
-    optional func routeSubtype() -> Int
-    optional func routeType() -> Int
-    optional func requiresPassword() -> Bool
-    optional func routeUID() -> String
-    optional func isPicked() -> Bool
-    optional func passwordType() -> Int
-    optional func wirelessDisplayRoute() -> MPAVRouteProtocol
+    @objc optional func routeName() -> String
+    @objc optional func routeSubtype() -> Int
+    @objc optional func routeType() -> Int
+    @objc optional func requiresPassword() -> Bool
+    @objc optional func routeUID() -> String
+    @objc optional func isPicked() -> Bool
+    @objc optional func passwordType() -> Int
+    @objc optional func wirelessDisplayRoute() -> MPAVRouteProtocol
 }
 
 @objc protocol MPAudioDeviceControllerProtocol {
-    optional func setRouteDiscoveryEnabled(enabled: Bool)
-    optional func routeDescriptionAtIndex(index: Int) -> [String: AnyObject]
+    @objc optional func setRouteDiscoveryEnabled(_ enabled: Bool)
+    @objc optional func routeDescriptionAtIndex(_ index: Int) -> [String: AnyObject]
 }
 
 extension NSObject: MPAVRoutingControllerProtocol, MPAVRouteProtocol, MPAudioDeviceControllerProtocol {}

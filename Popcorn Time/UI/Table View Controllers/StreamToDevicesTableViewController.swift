@@ -13,7 +13,7 @@ class StreamToDevicesTableViewController: UITableViewController, GCKDeviceScanne
     var googleCastManager: GoogleCastManager!
     
     var onlyShowCastDevices: Bool = false
-    var castMetadata: PCTCastMetaData?
+    var castMetadata: CastMetaData?
     
     
     override func viewDidLoad() {
@@ -25,12 +25,12 @@ class StreamToDevicesTableViewController: UITableViewController, GCKDeviceScanne
         googleCastManager.delegate = self
     }
     
-    @IBAction func mirroringChanged(sender: UISwitch) {
-        let selectedRoute = airPlayDevices[tableView.indexPathForCell(sender.superview?.superview as! AirPlayTableViewCell)!.row]
+    @IBAction func mirroringChanged(_ sender: UISwitch) {
+        let selectedRoute = airPlayDevices[tableView.indexPath(for: sender.superview?.superview as! AirPlayTableViewCell)!.row]
         airPlayManager.mirrorChanged(sender, selectedRoute: selectedRoute)
     }
     
-    func updateTableView(dataSource newDataSource: [AnyObject], updateType: TableViewUpdates, indexPaths: [NSIndexPath]?) {
+    func updateTableView(dataSource newDataSource: [AnyObject], updateType: TableViewUpdates, indexPaths: [IndexPath]?) {
         self.tableView.beginUpdates()
         if let dataSource = newDataSource as? [GCKDevice] {
             googleCastDevices = dataSource
@@ -38,15 +38,15 @@ class StreamToDevicesTableViewController: UITableViewController, GCKDeviceScanne
             airPlayDevices = newDataSource as! [MPAVRouteProtocol]
         }
         switch updateType {
-        case .Insert:
-            self.tableView.insertRowsAtIndexPaths(indexPaths!, withRowAnimation: .Middle)
+        case .insert:
+            self.tableView.insertRows(at: indexPaths!, with: .middle)
             fallthrough
-        case .Reload:
+        case .reload:
             if let visibleIndexPaths = self.tableView.indexPathsForVisibleRows {
-                self.tableView.reloadRowsAtIndexPaths(visibleIndexPaths, withRowAnimation: .None)
+                self.tableView.reloadRows(at: visibleIndexPaths, with: .none)
             }
-        case .Delete:
-            self.tableView.deleteRowsAtIndexPaths(indexPaths!, withRowAnimation: .Middle)
+        case .delete:
+            self.tableView.deleteRows(at: indexPaths!, with: .middle)
         }
         self.tableView.endUpdates()
     }
@@ -54,24 +54,24 @@ class StreamToDevicesTableViewController: UITableViewController, GCKDeviceScanne
 
     // MARK: - Table view data source
 
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         if airPlayDevices.isEmpty && googleCastDevices.isEmpty {
-            let label = UILabel(frame: CGRectMake(0,0,100,100))
+            let label = UILabel(frame: CGRect(x: 0,y: 0,width: 100,height: 100))
             label.text = "No devices available"
-            label.textColor = UIColor.lightGrayColor()
+            label.textColor = UIColor.lightGray
             label.numberOfLines = 0
-            label.textAlignment = .Center
+            label.textAlignment = .center
             label.sizeToFit()
             tableView.backgroundView = label
-            tableView.separatorStyle = .None
+            tableView.separatorStyle = .none
         } else {
             tableView.backgroundView = nil
-            tableView.separatorStyle = .SingleLine
+            tableView.separatorStyle = .singleLine
         }
         return 2
     }
     
-    override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         switch section {
         case 0:
             return airPlayDevices.isEmpty ? nil : "AirPlay"
@@ -82,15 +82,15 @@ class StreamToDevicesTableViewController: UITableViewController, GCKDeviceScanne
         }
     }
 
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return section == 0 ? airPlayDevices.count : googleCastDevices.count
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! AirPlayTableViewCell
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! AirPlayTableViewCell
         if indexPath.section == 0 {
             cell.picked = airPlayDevices[indexPath.row].isPicked!()
-            if let mirroringRoute = airPlayDevices[indexPath.row].wirelessDisplayRoute?() where mirroringRoute.isPicked!() {
+            if let mirroringRoute = airPlayDevices[indexPath.row].wirelessDisplayRoute?() , mirroringRoute.isPicked!() {
                 cell.picked = true
                 cell.mirrorSwitch?.setOn(true, animated: true)
             } else {
@@ -110,27 +110,27 @@ class StreamToDevicesTableViewController: UITableViewController, GCKDeviceScanne
         return cell
     }
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.section == 0 {
             airPlayManager.didSelectRoute(airPlayDevices[indexPath.row])
         } else {
             googleCastManager.didSelectRoute(googleCastDevices[indexPath.row], castMetadata: castMetadata)
         }
-        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+        tableView.deselectRow(at: indexPath, animated: true)
     }
     
-    override func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         if section == 0 && airPlayDevices.isEmpty {
-            return CGFloat.min
+            return CGFloat.leastNormalMagnitude
         } else if section == 1 && googleCastDevices.isEmpty {
-            return CGFloat.min
+            return CGFloat.leastNormalMagnitude
         }
         return 18
     }
     
-    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if indexPath.section == 0 {
-            if let _ = airPlayDevices[indexPath.row].wirelessDisplayRoute?() where airPlayDevices[indexPath.row].isPicked!() || airPlayDevices[indexPath.row].wirelessDisplayRoute!().isPicked!() {
+            if let _ = airPlayDevices[indexPath.row].wirelessDisplayRoute?() , airPlayDevices[indexPath.row].isPicked!() || airPlayDevices[indexPath.row].wirelessDisplayRoute!().isPicked!() {
                 return 88
             }
         }
@@ -139,11 +139,11 @@ class StreamToDevicesTableViewController: UITableViewController, GCKDeviceScanne
     
     func didConnectToDevice(deviceIsChromecast chromecast: Bool) {
         if chromecast, let playerViewController = presentingViewController as? PCTPlayerViewController {
-            dismissViewControllerAnimated(false, completion: {
-                playerViewController.delegate?.presentCastPlayer(playerViewController.media, videoFilePath: playerViewController.directory, startPosition: NSTimeInterval(playerViewController.positionSlider.value))
+            dismiss(animated: false, completion: {
+                playerViewController.delegate?.presentCastPlayer(playerViewController.media, videoFilePath: playerViewController.directory, startPosition: TimeInterval(playerViewController.positionSlider.value))
             })
         } else {
-           dismissViewControllerAnimated(true, completion: nil)
+           dismiss(animated: true, completion: nil)
         }
     }
 }

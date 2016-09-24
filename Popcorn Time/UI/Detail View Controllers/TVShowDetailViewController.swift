@@ -3,6 +3,7 @@
 import UIKit
 import AlamofireImage
 import ColorArt
+import PopcornKit
 import PopcornTorrent
 
 class TVShowDetailViewController: DetailItemOverviewViewController, UITableViewDataSource, UITableViewDelegate, UIViewControllerTransitioningDelegate {
@@ -18,11 +19,9 @@ class TVShowDetailViewController: DetailItemOverviewViewController, UITableViewD
     
     let interactor = PCTEpisodeDetailPercentDrivenInteractiveTransition()
 
-    var currentType: TraktTVAPI.type = .Shows
-    var currentItem: PCTShow!
-    var episodes: [PCTEpisode]?
-    var seasons: [Int]?
-    var episodesLeftInShow: [PCTEpisode]!
+    var currentType: Trakt.MediaType = .shows
+    var currentItem: Show!
+    var episodesLeftInShow: [Episode]!
     
     /* Because UISplitViewControllers are not meant to be pushed to the navigation heirarchy, we are tricking it into thinking it is a root view controller when in fact it is just a childViewController of TVShowContainerViewController. Because of the fact that child view controllers should not be aware of their container view controllers, this variable had to be created to access the navigationController and the tabBarController of the viewController. In order to further trick the view controller, navigationController, navigationItem and tabBarController properties have been overridden to point to their corrisponding parent properties.
      */
@@ -47,36 +46,35 @@ class TVShowDetailViewController: DetailItemOverviewViewController, UITableViewD
             self.tableView.reloadData()
         }
     }
-    var currentSeasonArray = [PCTEpisode]()
+    var currentSeasonArray = [Episode]()
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.navigationBar.frame.size.width = splitViewController?.primaryColumnWidth ?? view.bounds.width
-        WatchlistManager.episodeManager.getProgress()
-        WatchlistManager.showManager.getWatched() {
+        WatchlistManager.episode.getProgress()
+        WatchlistManager.show.getWatched() {
             self.tableView.reloadData()
         }
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        navigationController?.navigationBar.frame.size.width = UIScreen.mainScreen().bounds.width
+        navigationController?.navigationBar.frame.size.width = UIScreen.main.bounds.width
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         navigationController?.navigationBar.frame.size.width = splitViewController?.primaryColumnWidth ?? view.bounds.width
-        splitViewController?.minimumPrimaryColumnWidth = UIScreen.mainScreen().bounds.width/1.7
-        splitViewController?.maximumPrimaryColumnWidth = UIScreen.mainScreen().bounds.width/1.7
+        splitViewController?.minimumPrimaryColumnWidth = UIScreen.main.bounds.width/1.7
+        splitViewController?.maximumPrimaryColumnWidth = UIScreen.main.bounds.width/1.7
         self.tableView.sizeHeaderToFit()
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        currentItem.coverImageAsString = currentItem.coverImageAsString?.stringByReplacingOccurrencesOfString("thumb", withString: "medium")
         splitViewController?.delegate = self
-        splitViewController?.preferredDisplayMode = .AllVisible
-        let adjustForTabbarInsets = UIEdgeInsetsMake(0, 0, CGRectGetHeight(tabBarController!.tabBar.frame), 0)
+        splitViewController?.preferredDisplayMode = .allVisible
+        let adjustForTabbarInsets = UIEdgeInsetsMake(0, 0, tabBarController!.tabBar.frame.height, 0)
         tableView.contentInset = adjustForTabbarInsets
         tableView.scrollIndicatorInsets = adjustForTabbarInsets
         tableView.rowHeight = UITableViewAutomaticDimension
@@ -84,53 +82,32 @@ class TVShowDetailViewController: DetailItemOverviewViewController, UITableViewD
         navigationItem.title = currentItem.title
         infoLabel.text = currentItem.year
         ratingView.rating = currentItem.rating
-        if currentType == .Animes {
-            AnimeAPI.sharedInstance.getAnimeInfo(currentItem.id, completion: { (status, synopsis, episodes, seasons) in
-                self.currentItem.status = status
-                self.currentItem.synopsis = synopsis
-                var updatedEpisodes = [PCTEpisode]()
-                for episode in episodes {
-                    episode.show = self.currentItem
-                    updatedEpisodes.append(episode)
-                }
-                self.episodes = updatedEpisodes
-                self.seasons = seasons
-                self.summaryView.text = synopsis
-                self.infoLabel.text = "\(self.currentItem.year) ● \(self.currentItem.status!.capitalizedString) ● \(self.currentItem.genres![0].capitalizedString)"
-                self.setUpSegmenedControl()
-                self.tableView.reloadData()
-            })
+        let completion: (Show?, NSError?) -> Void = { (show, error) in
+            guard let show = show else { return }
+            self.currentItem = show
+            self.summaryView.text = self.currentItem.summary
+            self.infoLabel.text = "\(self.currentItem.year) ● \(self.currentItem.status!.capitalized) ● \(self.currentItem.genres.first!.capitalized)"
+            self.setUpSegmenedControl()
+            self.tableView.reloadData()
+        }
+        if currentType == .animes {
+            PopcornKit.getAnimeInfo(currentItem.id, completion: completion)
         } else {
-            TVAPI.sharedInstance.getShowInfo(currentItem.id) { (genres, status, synopsis, episodes, seasons) in
-                self.currentItem.genres = genres
-                self.currentItem.status = status
-                self.currentItem.synopsis = synopsis
-                var updatedEpisodes = [PCTEpisode]()
-                for episode in episodes {
-                    episode.show = self.currentItem
-                    updatedEpisodes.append(episode)
-                }
-                self.episodes = updatedEpisodes
-                self.seasons = seasons
-                self.summaryView.text = synopsis
-                self.infoLabel.text = "\(self.currentItem.year) ● \(self.currentItem.status!.capitalizedString) ● \(self.currentItem.genres![0].capitalizedString)"
-                self.setUpSegmenedControl()
-                self.tableView.reloadData()
-            }
+            PopcornKit.getShowInfo(currentItem.id, completion: completion)
         }
     }
     
-    override func traitCollectionDidChange(previousTraitCollection: UITraitCollection?) {
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
-        if let coverImageAsString = currentItem.coverImageAsString,
-            let backgroundImageAsString = currentItem.backgroundImageAsString {
-            backgroundImageView.af_setImageWithURLRequest(NSURLRequest(URL: NSURL(string: splitViewController?.traitCollection.horizontalSizeClass == .Compact ? coverImageAsString : backgroundImageAsString)!), placeholderImage: UIImage(named: "Placeholder"), imageTransition: .CrossDissolve(animationLength))
+        if let coverImageAsString = currentItem.mediumCoverImage,
+            let backgroundImageAsString = currentItem.largeBackgroundImage {
+            backgroundImageView.af_setImage(withURLRequest: URLRequest(url: URL(string: splitViewController?.traitCollection.horizontalSizeClass == .compact ? coverImageAsString : backgroundImageAsString)!), placeholderImage: UIImage(named: "Placeholder"), imageTransition: .crossDissolve(animationLength))
         }
     }
     
     // MARK: - UITableViewDataSource
     
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         if segmentedControl.selectedSegmentIndex == 0 {
             tableView.tableHeaderView = tableHeaderView
             return 0
@@ -139,8 +116,8 @@ class TVShowDetailViewController: DetailItemOverviewViewController, UITableViewD
         return 1
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if episodes != nil {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if !currentItem.episodes.isEmpty {
             currentSeasonArray.removeAll()
             currentSeasonArray = getGroupedEpisodesBySeason(currentSeason)
             return currentSeasonArray.count
@@ -148,18 +125,18 @@ class TVShowDetailViewController: DetailItemOverviewViewController, UITableViewD
         return 0
     }
     
-    func getGroupedEpisodesBySeason(season: Int) -> [PCTEpisode] {
-        var array = [PCTEpisode]()
-        for index in seasons! {
+    func getGroupedEpisodesBySeason(_ season: Int) -> [Episode] {
+        var array = [Episode]()
+        for index in currentItem.seasonNumbers {
             if season == index {
-                array += episodes!.filter({$0.season == index})
+                array += currentItem.episodes.filter({$0.season == index})
             }
         }
         return array
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! TVShowDetailTableViewCell
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TVShowDetailTableViewCell
         cell.titleLabel.text = currentSeasonArray[indexPath.row].title
         cell.seasonLabel.text = "E" + String(currentSeasonArray[indexPath.row].episode)
         cell.tvdbId = currentSeasonArray[indexPath.row].id
@@ -171,17 +148,17 @@ class TVShowDetailViewController: DetailItemOverviewViewController, UITableViewD
     
     func setUpSegmenedControl() {
         segmentedControl.removeAllSegments()
-        segmentedControl.insertSegmentWithTitle("ABOUT", atIndex: 0, animated: true)
-        for index in seasons! {
-            segmentedControl.insertSegmentWithTitle("SEASON \(index)", atIndex: index, animated: true)
+        segmentedControl.insertSegment(withTitle: "ABOUT", at: 0, animated: true)
+        for index in currentItem.seasonNumbers {
+            segmentedControl.insertSegment(withTitle: "SEASON \(index)", at: index, animated: true)
         }
         segmentedControl.selectedSegmentIndex = 0
-        segmentedControl.setTitleTextAttributes([NSFontAttributeName: UIFont.systemFontOfSize(11, weight: UIFontWeightMedium)],forState: UIControlState.Normal)
+        segmentedControl.setTitleTextAttributes([NSFontAttributeName: UIFont.systemFont(ofSize: 11, weight: UIFontWeightMedium)],for: .normal)
         segmentedControlDidChangeSegment(segmentedControl)
     }
     
-    @IBAction func segmentedControlDidChangeSegment(segmentedControl: UISegmentedControl) {
-        currentSeason = segmentedControl.selectedSegmentIndex == 0 ? Int.max: seasons?[segmentedControl.selectedSegmentIndex - 1]
+    @IBAction func segmentedControlDidChangeSegment(_ segmentedControl: UISegmentedControl) {
+        currentSeason = segmentedControl.selectedSegmentIndex == 0 ? Int.max: currentItem.seasonNumbers[segmentedControl.selectedSegmentIndex - 1]
         if tableView.frame.height > tableView.contentSize.height + tableView.contentInset.bottom {
             resetToEnd(tableView)
         }
@@ -189,15 +166,15 @@ class TVShowDetailViewController: DetailItemOverviewViewController, UITableViewD
     
     // MARK: - Navigation
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        super.prepareForSegue(segue, sender: sender)
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        super.prepare(for: segue, sender: sender)
         if segue.identifier == "showDetail" {
-            let indexPath = tableView.indexPathForCell(sender as! TVShowDetailTableViewCell)
-            let destinationController = segue.destinationViewController as! EpisodeDetailViewController
+            let indexPath = tableView.indexPath(for: sender as! TVShowDetailTableViewCell)
+            let destinationController = segue.destination as! EpisodeDetailViewController
             destinationController.currentItem = currentSeasonArray[indexPath!.row]
-            var allEpisodes = [PCTEpisode]()
+            var allEpisodes = [Episode]()
             for index in segmentedControl.selectedSegmentIndex..<segmentedControl.numberOfSegments {
-                let season = seasons![index - 1]
+                let season = currentItem.seasonNumbers[index - 1]
                 allEpisodes += getGroupedEpisodesBySeason(season)
                 if season == currentSeason // Remove episodes up to the next episode eg. If row 2 is selected, row 0-2 will be deleted.
                 {
@@ -207,77 +184,77 @@ class TVShowDetailViewController: DetailItemOverviewViewController, UITableViewD
             episodesLeftInShow = allEpisodes
             destinationController.delegate = self
             destinationController.transitioningDelegate = self
-            destinationController.modalPresentationStyle = .Custom
+            destinationController.modalPresentationStyle = .custom
             destinationController.interactor = interactor
         }
     }
     
-    func loadMovieTorrent(media: PCTEpisode, animated: Bool, onChromecast: Bool = GCKCastContext.sharedInstance().castState == .Connected) {
-        let loadingViewController = storyboard!.instantiateViewControllerWithIdentifier("LoadingViewController") as! LoadingViewController
+    func loadMovieTorrent(_ media: Episode, animated: Bool, onChromecast: Bool = GCKCastContext.sharedInstance().castState == .connected) {
+        let loadingViewController = storyboard!.instantiateViewController(withIdentifier: "LoadingViewController") as! LoadingViewController
         loadingViewController.transitioningDelegate = self
         loadingViewController.backgroundImage = backgroundImageView.image
-        presentViewController(loadingViewController, animated: animated, completion: nil)
-        downloadTorrentFile(media.currentTorrent.url!) { [unowned self] (url, error) in
+        present(loadingViewController, animated: animated, completion: nil)
+        PopcornKit.downloadTorrentFile(media.currentTorrent!.url!) { [unowned self] (url, error) in
             if let url = url {
-                let moviePlayer = self.storyboard!.instantiateViewControllerWithIdentifier("PCTPlayerViewController") as! PCTPlayerViewController
+                let moviePlayer = self.storyboard!.instantiateViewController(withIdentifier: "PCTPlayerViewController") as! PCTPlayerViewController
                 moviePlayer.delegate = self
-                let currentProgress = WatchlistManager.episodeManager.currentProgress(media.id)
+                let currentProgress = WatchlistManager.episode.currentProgress(media.id)
                 let castDevice = GCKCastContext.sharedInstance().sessionManager.currentSession?.device
-                PTTorrentStreamer.sharedStreamer().startStreamingFromFileOrMagnetLink(url, progress: { status in
+                PTTorrentStreamer.shared().startStreaming(fromFileOrMagnetLink: url, progress: { status in
                     loadingViewController.progress = status.bufferingProgress
                     loadingViewController.speed = Int(status.downloadSpeed)
                     loadingViewController.seeds = Int(status.seeds)
                     loadingViewController.updateProgress()
                     moviePlayer.bufferProgressView?.progress = status.totalProgreess
                     }, readyToPlay: {(videoFileURL, videoFilePath) in
-                        loadingViewController.dismissViewControllerAnimated(false, completion: nil)
-                        var nextEpisode: PCTEpisode? = nil
+                        loadingViewController.dismiss(animated: false, completion: nil)
+                        var nextEpisode: Episode? = nil
                         if self.episodesLeftInShow.count > 0 {
                             nextEpisode = self.episodesLeftInShow.first
                             self.episodesLeftInShow.removeFirst()
                         }
                         if onChromecast {
                             if GCKCastContext.sharedInstance().sessionManager.currentSession == nil {
-                                GCKCastContext.sharedInstance().sessionManager.startSessionWithDevice(castDevice!)
+                                GCKCastContext.sharedInstance().sessionManager.startSession(with: castDevice!)
                             }
-                            let castPlayerViewController = self.storyboard?.instantiateViewControllerWithIdentifier("CastPlayerViewController") as! CastPlayerViewController
-                            let castMetadata = PCTCastMetaData(episode: media, url: videoFileURL.relativeString!, mediaAssetsPath: videoFilePath.URLByDeletingLastPathComponent!)
-                            GoogleCastManager(castMetadata: castMetadata).sessionManager(GCKCastContext.sharedInstance().sessionManager, didStartSession: GCKCastContext.sharedInstance().sessionManager.currentSession!)
+                            let castPlayerViewController = self.storyboard?.instantiateViewController(withIdentifier: "CastPlayerViewController") as! CastPlayerViewController
+                            let castMetadata: CastMetaData = (title: media.title, image: media.show!.smallCoverImage != nil ? URL(string: media.show!.smallCoverImage!) : nil, contentType: "video/x-matroska", subtitles: media.subtitles, url: videoFileURL!.relativeString, mediaAssetsPath: videoFilePath!.deletingLastPathComponent())
+                            GoogleCastManager(castMetadata: castMetadata).sessionManager(GCKCastContext.sharedInstance().sessionManager, didStart: GCKCastContext.sharedInstance().sessionManager.currentSession!)
                             castPlayerViewController.backgroundImage = self.backgroundImageView.image
                             castPlayerViewController.title = media.title
                             castPlayerViewController.media = media
-                            castPlayerViewController.startPosition = NSTimeInterval(currentProgress)
-                            castPlayerViewController.directory = videoFilePath.URLByDeletingLastPathComponent!
-                            self.presentViewController(castPlayerViewController, animated: true, completion: nil)
+                            castPlayerViewController.startPosition = TimeInterval(currentProgress)
+                            castPlayerViewController.directory = videoFilePath!.deletingLastPathComponent()
+                            self.present(castPlayerViewController, animated: true, completion: nil)
                         } else {
-                            moviePlayer.play(media, fromURL: videoFileURL, progress: currentProgress, nextEpisode: nextEpisode, directory: videoFilePath.URLByDeletingLastPathComponent!)
-                            self.presentViewController(moviePlayer, animated: true, completion: nil)
+                            moviePlayer.play(media, fromURL: videoFileURL!, progress: currentProgress, nextEpisode: nextEpisode, directory: videoFilePath!.deletingLastPathComponent())
+                            self.present(moviePlayer, animated: true, completion: nil)
                         }
                 }) { error in
                     loadingViewController.cancelButtonPressed()
-                    let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .Alert)
-                    alert.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-                    self.presentViewController(alert, animated: true, completion: nil)
+                    let alert = UIAlertController(title: "Error", message: error!.localizedDescription, preferredStyle: .alert)
+                    alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+                    self.present(alert, animated: true, completion: nil)
                     print("Error is \(error)")
                 }
             } else if let error = error {
-                loadingViewController.dismissViewControllerAnimated(true, completion: { [unowned self] in
-                    let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .Alert)
-                    alert.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-                    self.presentViewController(alert, animated: true, completion: nil)
+                loadingViewController.dismiss(animated: true, completion: { [unowned self] in
+                    let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
+                    alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+                    self.present(alert, animated: true, completion: nil)
                 })
             }
         }
     }
     
-    override func playNext(episode: PCTEpisode) {
-        episode.currentTorrent = episode.currentTorrent ?? episode.torrents.first!
+    override func playNext(_ episode: Episode) {
+        var episode = episode; episode.currentTorrent = episode.currentTorrent ?? episode.torrents.first!
         loadMovieTorrent(episode, animated: false)
     }
     
     // MARK: - Presentation
     
-    func animationControllerForPresentedController(presented: UIViewController, presentingController presenting: UIViewController, sourceController source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         if presented is LoadingViewController {
             return PCTLoadingViewAnimatedTransitioning(isPresenting: true, sourceController: source)
         } else if presented is EpisodeDetailViewController {
@@ -287,7 +264,7 @@ class TVShowDetailViewController: DetailItemOverviewViewController, UITableViewD
         
     }
     
-    func animationControllerForDismissedController(dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         if dismissed is LoadingViewController {
             return PCTLoadingViewAnimatedTransitioning(isPresenting: false, sourceController: self)
         } else if dismissed is EpisodeDetailViewController {
@@ -296,12 +273,12 @@ class TVShowDetailViewController: DetailItemOverviewViewController, UITableViewD
         return nil
     }
     
-    func presentationControllerForPresentedViewController(presented: UIViewController, presentingViewController presenting: UIViewController, sourceViewController source: UIViewController) -> UIPresentationController? {
-        return presented is EpisodeDetailViewController ? PCTEpisodeDetailPresentationController(presentedViewController: presented, presentingViewController: presenting) : nil
+    func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
+        return presented is EpisodeDetailViewController ? PCTEpisodeDetailPresentationController(presentedViewController: presented, presenting: presenting) : nil
     }
     
-    func interactionControllerForDismissal(animator: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
-        if animator is PCTEpisodeDetailAnimatedTransitioning && interactor.hasStarted && splitViewController!.collapsed  {
+    func interactionControllerForDismissal(using animator: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
+        if animator is PCTEpisodeDetailAnimatedTransitioning && interactor.hasStarted && splitViewController!.isCollapsed  {
             return interactor
         }
         return nil
@@ -309,13 +286,13 @@ class TVShowDetailViewController: DetailItemOverviewViewController, UITableViewD
 }
 
 extension TVShowDetailViewController: UISplitViewControllerDelegate {
-    func splitViewController(splitViewController: UISplitViewController, collapseSecondaryViewController secondaryViewController: UIViewController, ontoPrimaryViewController primaryViewController: UIViewController) -> Bool {
-        guard let secondaryViewController = secondaryViewController as? EpisodeDetailViewController where secondaryViewController.currentItem != nil else { return false }
-        primaryViewController.presentViewController(secondaryViewController, animated: true, completion: nil)
+    func splitViewController(_ splitViewController: UISplitViewController, collapseSecondary secondaryViewController: UIViewController, onto primaryViewController: UIViewController) -> Bool {
+        guard let secondaryViewController = secondaryViewController as? EpisodeDetailViewController , secondaryViewController.currentItem != nil else { return false }
+        primaryViewController.present(secondaryViewController, animated: true, completion: nil)
         return true
     }
     
-    func splitViewController(splitViewController: UISplitViewController, separateSecondaryViewControllerFromPrimaryViewController primaryViewController: UIViewController) -> UIViewController? {
+    func splitViewController(_ splitViewController: UISplitViewController, separateSecondaryFrom primaryViewController: UIViewController) -> UIViewController? {
         if primaryViewController.presentedViewController is EpisodeDetailViewController {
             return primaryViewController.presentedViewController
         }

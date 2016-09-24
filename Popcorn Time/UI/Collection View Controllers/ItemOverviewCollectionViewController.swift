@@ -4,9 +4,9 @@ import UIKit
 import Reachability
 
 protocol ItemOverviewDelegate: class {
-    func search(text: String)
-    func didDismissSearchController(searchController: UISearchController)
-    func loadNextPage(page: Int, searchTerm: String?, removeCurrentData: Bool)
+    func search(_ text: String?)
+    func didDismissSearchController(_ searchController: UISearchController)
+    func loadNextPage(_ page: Int, searchTerm: String?, removeCurrentData: Bool)
     func shouldRefreshCollectionView() -> Bool
 }
 
@@ -14,73 +14,66 @@ class ItemOverviewCollectionViewController: UICollectionViewController, UISearch
     
     weak var delegate: ItemOverviewDelegate?
     
-    let searchBlockDelay: CGFloat = 0.25
-    var searchBlock: dispatch_cancelable_block_t?
+    let searchBlockDelay: TimeInterval = 0.25
+    var searchBlock: DispatchCancelableBlock?
     
     var isLoading: Bool = false
     var hasNextPage: Bool = false
     var currentPage: Int = 1
     
-    let cache = NSCache()
-    private var classContext = 0
+    let cache = NSCache<AnyObject, UINavigationController>()
+    fileprivate var classContext = 0
     
     var error: NSError?
     
     var filterHeader: FilterCollectionReusableView?
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
         collectionView?.removeObserver(self, forKeyPath: "frame")
-        searchController.searchBar.hidden = true
+        searchController.searchBar.isHidden = true
         searchController.searchBar.resignFirstResponder()
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(reloadWithError), name: errorNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(reachabilityChanged(_:)), name: kReachabilityChangedNotification, object: nil)
-        collectionView?.addObserver(self, forKeyPath: "frame", options: .New, context: &classContext)
-        searchController.searchBar.hidden = false
+        collectionView?.addObserver(self, forKeyPath: "frame", options: .new, context: &classContext)
+        searchController.searchBar.isHidden = false
         searchController.searchBar.becomeFirstResponder()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         let refreshControl = UIRefreshControl()
-        refreshControl.addTarget(self, action: #selector(refreshCollectionView(_:)), forControlEvents: .ValueChanged)
+        refreshControl.addTarget(self, action: #selector(refreshCollectionView(_:)), for: .valueChanged)
         collectionView?.addSubview(refreshControl)
     }
     
-    override func traitCollectionDidChange(previousTraitCollection: UITraitCollection?) {
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         collectionView?.performBatchUpdates(nil, completion: nil)
     }
     
-    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
-        if let keyPath = keyPath where keyPath == "frame" && context == &classContext {
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        if let keyPath = keyPath , keyPath == "frame" && context == &classContext {
             collectionView?.performBatchUpdates(nil, completion: nil)
         } else {
-            super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
+            super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
         }
     }
     
-    func reachabilityChanged(notification: NSNotification) {
+    func reachabilityChanged(_ notification: Notification) {
         let reachability = notification.object! as! Reachability
         if reachability.isReachableViaWiFi() || reachability.isReachableViaWWAN() {
-            if let delegate = delegate where delegate.shouldRefreshCollectionView() {
+            if let delegate = delegate , delegate.shouldRefreshCollectionView() {
                 delegate.loadNextPage(currentPage, searchTerm: searchController.searchBar.text, removeCurrentData: true)
             }
         }
     }
     
-    func refreshCollectionView(sender: UIRefreshControl) {
+    func refreshCollectionView(_ sender: UIRefreshControl) {
         delegate?.loadNextPage(currentPage, searchTerm: searchController.searchBar.text, removeCurrentData: true)
         sender.endRefreshing()
-    }
-    
-    func reloadWithError(error: NSNotification) {
-        self.error = (error.object as! NSError)
-        collectionView?.reloadData()
     }
     
     lazy var searchController: UISearchController = {
@@ -88,15 +81,15 @@ class ItemOverviewCollectionViewController: UICollectionViewController, UISearch
         svc.searchResultsUpdater = self
         svc.delegate = self
         svc.searchBar.delegate = self
-        svc.searchBar.barStyle = .Black
-        svc.searchBar.translucent = false
+        svc.searchBar.barStyle = .black
+        svc.searchBar.isTranslucent = false
         svc.hidesNavigationBarDuringPresentation = false
         svc.dimsBackgroundDuringPresentation = false
-        svc.searchBar.keyboardAppearance = .Dark
+        svc.searchBar.keyboardAppearance = .dark
         return svc
     }()
     
-    override func scrollViewDidScroll(scrollView: UIScrollView) {
+    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if scrollView == collectionView {
             let y = scrollView.contentOffset.y + scrollView.bounds.size.height - scrollView.contentInset.bottom
             let height = scrollView.contentSize.height
@@ -104,12 +97,12 @@ class ItemOverviewCollectionViewController: UICollectionViewController, UISearch
             if(y > height + reloadDistance && isLoading == false && hasNextPage == true) {
                 collectionView?.contentInset.bottom = 80
                 let background = UIView(frame: collectionView!.frame)
-                let indicator = UIActivityIndicatorView(activityIndicatorStyle: .White)
+                let indicator = UIActivityIndicatorView(activityIndicatorStyle: .white)
                 indicator.startAnimating()
                 indicator.translatesAutoresizingMaskIntoConstraints = false
                 background.addSubview(indicator)
-                background.addConstraint(NSLayoutConstraint(item: indicator, attribute: .CenterX, relatedBy: .Equal, toItem: background, attribute: .CenterX, multiplier: 1, constant: 0))
-                background.addConstraint(NSLayoutConstraint(item: indicator, attribute: .Bottom, relatedBy: .Equal, toItem: background, attribute: .Bottom, multiplier: 1, constant: -55))
+                background.addConstraint(NSLayoutConstraint(item: indicator, attribute: .centerX, relatedBy: .equal, toItem: background, attribute: .centerX, multiplier: 1, constant: 0))
+                background.addConstraint(NSLayoutConstraint(item: indicator, attribute: .bottom, relatedBy: .equal, toItem: background, attribute: .bottom, multiplier: 1, constant: -55))
                 collectionView?.backgroundView = background
                 currentPage += 1
                 delegate?.loadNextPage(currentPage, searchTerm: nil, removeCurrentData: false)
@@ -117,20 +110,16 @@ class ItemOverviewCollectionViewController: UICollectionViewController, UISearch
         }
     }
     
-    func updateSearchResultsForSearchController(searchController: UISearchController) {
-        if !(searchController.searchBar.text?.isEmpty)! {
-            if searchBlock != nil {
-                cancel_block(searchBlock)
-            }
-            searchBlock = dispatch_after_delay(searchBlockDelay, {
-                self.delegate?.search(searchController.searchBar.text!)
-            })
+    func updateSearchResults(for searchController: UISearchController) {
+        searchBlock = DispatchQueue.main.asyncAfter(delay: searchBlockDelay) {
+            self.delegate?.search(searchController.searchBar.text)
         }
+        searchBlock?(true)
     }
     
-    func collectionView(collectionView: UICollectionView,layout collectionViewLayout: UICollectionViewLayout,sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
+    func collectionView(_ collectionView: UICollectionView,layout collectionViewLayout: UICollectionViewLayout,sizeForItemAt indexPath: IndexPath) -> CGSize {
         var width = (collectionView.bounds.width/CGFloat(2))-8
-        if traitCollection.horizontalSizeClass == .Regular
+        if traitCollection.horizontalSizeClass == .regular
         {
             var items = 1
             while (collectionView.bounds.width/CGFloat(items))-8 > 195 {
@@ -140,18 +129,18 @@ class ItemOverviewCollectionViewController: UICollectionViewController, UISearch
         }
         let ratio = width/195.0
         let height = 280.0 * ratio
-        return CGSizeMake(width, height)
+        return CGSize(width: width, height: height)
     }
     
-    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        return filterHeader?.hidden == true ? CGSizeMake(CGFloat.min, CGFloat.min): CGSizeMake(view.frame.size.width, 50)
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        return filterHeader?.isHidden == true ? CGSize(width: CGFloat.leastNormalMagnitude, height: CGFloat.leastNormalMagnitude): CGSize(width: view.frame.size.width, height: 50)
     }
 
 }
 
 extension UISearchController {
-    public override func preferredStatusBarStyle() -> UIStatusBarStyle {
+    open override var preferredStatusBarStyle : UIStatusBarStyle {
         // Fixes status bar color changing from black to white upon presentation.
-        return .LightContent
+        return .lightContent
     }
 }

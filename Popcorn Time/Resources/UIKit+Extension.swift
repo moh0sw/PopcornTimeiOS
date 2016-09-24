@@ -20,7 +20,7 @@ import MediaPlayer
         }
     }
     
-    override class func layerClass() -> AnyClass {
+    override class var layerClass : AnyClass {
         return CAGradientLayer.self
     }
     
@@ -42,10 +42,10 @@ import MediaPlayer
     func configureView() {
         let layer = self.layer as! CAGradientLayer
         let locations = [ 0.0, 1.0 ]
-        layer.locations = locations
+        layer.locations = locations as [NSNumber]?
         let color1: UIColor = topColor ?? self.tintColor
-        let color2: UIColor = bottomColor ?? UIColor.blackColor()
-        let colors = [ color1.CGColor, color2.CGColor ]
+        let color2: UIColor = bottomColor ?? UIColor.black
+        let colors = [ color1.cgColor, color2.cgColor ]
         layer.colors = colors
     }
     
@@ -66,7 +66,7 @@ import MediaPlayer
     }
     @IBInspectable var borderColor: UIColor? {
         didSet {
-            layer.borderColor = borderColor?.CGColor
+            layer.borderColor = borderColor?.cgColor
         }
     }
     
@@ -86,19 +86,19 @@ extension UIView {
         if let superview = self.superview {
             for constraint in superview.constraints {
                 if constraint.firstItem as? UIView == self || constraint.secondItem as? UIView == self {
-                    constraint.active = false
+                    constraint.isActive = false
                 }
             }
         }
         for constraint in constraints {
-            constraint.active = false
+            constraint.isActive = false
         }
     }
     
     var parentViewController: UIViewController? {
         var parentResponder: UIResponder? = self
         while parentResponder != nil {
-            parentResponder = parentResponder!.nextResponder()
+            parentResponder = parentResponder!.next
             if let viewController = parentResponder as? UIViewController {
                 return viewController
             }
@@ -123,36 +123,36 @@ extension UIView {
     }
     @IBInspectable var borderColor: UIColor? {
         didSet {
-            layer.borderColor = borderColor?.CGColor
-            setTitleColor(borderColor, forState: .Normal)
+            layer.borderColor = borderColor?.cgColor
+            setTitleColor(borderColor, for: .normal)
         }
     }
-    override var highlighted: Bool {
+    override var isHighlighted: Bool {
         didSet {
-            updateColor(highlighted, borderColor)
+            updateColor(isHighlighted, borderColor)
         }
     }
     
     override func tintColorDidChange() {
-        if tintAdjustmentMode == .Dimmed {
+        if tintAdjustmentMode == .dimmed {
             updateColor(false)
         } else {
             updateColor(false, borderColor)
         }
     }
     
-    func updateColor(highlighted: Bool, _ color: UIColor? = nil) {
-        UIView.animateWithDuration(0.25) {
+    func updateColor(_ highlighted: Bool, _ color: UIColor? = nil) {
+        UIView.animate(withDuration: 0.25, animations: {
             if highlighted {
                 self.backgroundColor =  color ?? self.tintColor
-                self.layer.borderColor = color?.CGColor ?? self.tintColor?.CGColor
-                self.setTitleColor(UIColor.whiteColor(), forState: .Highlighted)
+                self.layer.borderColor = color?.cgColor ?? self.tintColor?.cgColor
+                self.setTitleColor(UIColor.white, for: .highlighted)
             } else {
-                self.backgroundColor = UIColor.clearColor()
-                self.layer.borderColor = color?.CGColor ?? self.tintColor?.CGColor
-                self.setTitleColor(color ?? self.tintColor, forState: .Normal)
+                self.backgroundColor = UIColor.clear
+                self.layer.borderColor = color?.cgColor ?? self.tintColor?.cgColor
+                self.setTitleColor(color ?? self.tintColor, for: .normal)
             }
-        }
+        }) 
     }
 }
 
@@ -163,25 +163,25 @@ extension UIView {
             backgroundView.layer.masksToBounds = cornerRadius > 0
         }
     }
-    @IBInspectable var blurTint: UIColor = UIColor.clearColor() {
+    @IBInspectable var blurTint: UIColor = UIColor.clear {
         didSet {
             backgroundView.contentView.backgroundColor = blurTint
         }
     }
-    var blurStyle: UIBlurEffectStyle = .Light {
+    var blurStyle: UIBlurEffectStyle = .light {
         didSet {
             backgroundView.effect = UIBlurEffect(style: blurStyle)
         }
     }
     
-    var imageTransform: CGAffineTransform = CGAffineTransformMakeScale(0.5, 0.5) {
+    var imageTransform: CGAffineTransform = CGAffineTransform(scaleX: 0.5, y: 0.5) {
         didSet {
             updatedImageView.transform = imageTransform
         }
     }
     
     var backgroundView: UIVisualEffectView
-    private var updatedImageView = UIImageView()
+    fileprivate var updatedImageView = UIImageView()
     
     override init(frame: CGRect) {
         backgroundView = UIVisualEffectView(effect: UIBlurEffect(style: blurStyle))
@@ -197,103 +197,81 @@ extension UIView {
     
     func setUpButton() {
         backgroundView.frame = bounds
-        backgroundView.userInteractionEnabled = false
-        insertSubview(backgroundView, atIndex: 0)
+        backgroundView.isUserInteractionEnabled = false
+        insertSubview(backgroundView, at: 0)
         updatedImageView = UIImageView(image: self.imageView!.image)
         updatedImageView.frame = self.imageView!.bounds
-        updatedImageView.center = CGPointMake(CGRectGetMidX(bounds), CGRectGetMidY(bounds))
-        updatedImageView.userInteractionEnabled = false
+        updatedImageView.center = CGPoint(x: bounds.midX, y: bounds.midY)
+        updatedImageView.isUserInteractionEnabled = false
         self.imageView?.removeFromSuperview()
         addSubview(updatedImageView)
         updatedImageView.transform = imageTransform
         cornerRadius = frame.width/2
     }
     
-    override var highlighted: Bool {
+    override var isHighlighted: Bool {
         didSet {
-            updateColor(highlighted)
+            updateColor(isHighlighted)
         }
     }
     
-    func updateColor(tint: Bool) {
-        UIView.animateWithDuration(0.25, delay: 0.0, options: .CurveEaseInOut, animations: { 
-            self.backgroundView.contentView.backgroundColor = tint ? UIColor.whiteColor() : self.blurTint
+    func updateColor(_ tint: Bool) {
+        UIView.animate(withDuration: 0.25, delay: 0.0, options: UIViewAnimationOptions(), animations: { 
+            self.backgroundView.contentView.backgroundColor = tint ? UIColor.white : self.blurTint
             }, completion: nil)
     }
 }
 
 @IBDesignable class PCTHighlightedImageButton: UIButton {
-    @IBInspectable var highlightedImageTintColor: UIColor = UIColor.whiteColor()
+    @IBInspectable var highlightedImageTintColor: UIColor = UIColor.white
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        setImage(self.imageView?.image?.withColor(highlightedImageTintColor), forState: .Highlighted)
+        setImage(self.imageView?.image?.withColor(highlightedImageTintColor), for: .highlighted)
     }
     
-    override func setImage(image: UIImage?, forState state: UIControlState) {
-        super.setImage(image, forState: state)
-        super.setImage(image?.withColor(highlightedImageTintColor), forState: .Highlighted)
+    override func setImage(_ image: UIImage?, for state: UIControlState) {
+        super.setImage(image, for: state)
+        super.setImage(image?.withColor(highlightedImageTintColor), for: .highlighted)
     }
 }
-
-
-
 // MARK: - String
 
-func randomString(length length: Int) -> String {
-    let alphabet = "-_1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    let upperBound = UInt32(alphabet.characters.count)
-    return String((0..<length).map { _ -> Character in
-        return alphabet[alphabet.startIndex.advancedBy(Int(arc4random_uniform(upperBound)))]
-        })
-}
-
 let downloadsDirectory: String = {
-    let cachesPath = NSURL(fileURLWithPath: NSTemporaryDirectory())
-    let downloadsDirectoryPath = cachesPath.URLByAppendingPathComponent("Downloads")
-    if !NSFileManager.defaultManager().fileExistsAtPath(downloadsDirectoryPath.relativePath!) {
-        try! NSFileManager.defaultManager().createDirectoryAtPath(downloadsDirectoryPath.relativePath!, withIntermediateDirectories: true, attributes: nil)
+    let cachesPath = URL(fileURLWithPath: NSTemporaryDirectory())
+    let downloadsDirectoryPath = cachesPath.appendingPathComponent("Downloads")
+    if !FileManager.default.fileExists(atPath: downloadsDirectoryPath.relativePath) {
+        try! FileManager.default.createDirectory(atPath: downloadsDirectoryPath.relativePath, withIntermediateDirectories: true, attributes: nil)
     }
     return downloadsDirectoryPath.absoluteString
 }()
 
 extension String {
-    func urlStringValues() -> [String: String] {
-        var queryStringDictionary = [String: String]()
-        let urlComponents = componentsSeparatedByString("&")
-        for keyValuePair in urlComponents {
-            let pairComponents = keyValuePair.componentsSeparatedByString("=")
-            let key = pairComponents.first?.stringByRemovingPercentEncoding
-            let value = pairComponents.last?.stringByRemovingPercentEncoding
-            queryStringDictionary[key!] = value!
-        }
-        return queryStringDictionary
-    }
     
-    func sliceFrom(start: String, to: String) -> String? {
-        return (rangeOfString(start)?.endIndex).flatMap { sInd in
-            let eInd = rangeOfString(to, range: sInd..<endIndex)
+    func sliceFrom(_ start: String, to: String) -> String? {
+        return (range(of: start)?.upperBound).flatMap { sInd in
+            let eInd = range(of: to, range: sInd..<endIndex)
             if eInd != nil {
-                return (eInd?.startIndex).map { eInd in
-                    return substringWithRange(sInd..<eInd)
+                return (eInd?.lowerBound).map { eInd in
+                    return substring(with: sInd..<eInd)
                 }
             }
-            return substringWithRange(sInd..<endIndex)
+            return substring(with: sInd..<endIndex)
         }
     }
     
-    func contains(aString: String) -> Bool {
-        return rangeOfString(aString, options: NSStringCompareOptions.CaseInsensitiveSearch) != nil
+    func contains(_ aString: String) -> Bool {
+        return range(of: aString, options: NSString.CompareOptions.caseInsensitive) != nil
     }
     /// Produce a string of which all spaces are removed.
-    var whiteSpacelessString: String {
-        return stringByReplacingOccurrencesOfString(" ", withString: "")
+    var whiteSpacelessed: String {
+        return replacingOccurrences(of: " ", with: "")
     }
     /// Produce a string of which all spaces are removed and all letters capitalised except for the first.
-    var camelCaseString: String {
+    var lowerCamelCased: String {
         guard characters.count < 1 else {
-            var camelString = capitalizedString.whiteSpacelessString
-            camelString.replaceRange(startIndex..<startIndex.advancedBy(1), with: String(capitalizedString.characters.first!).lowercaseString)
+            var camelString = capitalized.whiteSpacelessed
+            camelString.replaceSubrange(startIndex..<characters.index(startIndex, offsetBy: 1), with: String(capitalized.characters.first!).lowercased())
             return camelString
         }
         return self
@@ -302,29 +280,26 @@ extension String {
 
 // MARK: - Dictionary
 
-extension Dictionary {
-    
-    func filter(predicate: Element -> Bool) -> Dictionary {
-        var filteredDictionary = Dictionary()
-        
-        for (key, value) in self {
-            if predicate(key, value) {
-                filteredDictionary[key] = value
-            }
+extension Dictionary
+{
+    public init(keys: [Key], values: [Value])
+    {
+        precondition(keys.count == values.count)
+        self.init()
+        for (index, key) in keys.enumerated()
+        {
+            self[key] = values[index]
         }
-        
-        return filteredDictionary
     }
-    
 }
 
 extension Dictionary where Value : Equatable {
-    func allKeysForValue(val : Value) -> [Key] {
+    func allKeysForValue(_ val : Value) -> [Key] {
         return self.filter { $1 == val }.map { $0.0 }
     }
 }
 
-func += <K, V> (inout left: [K:V], right: [K:V]) {
+func += <K, V> (left: inout [K:V], right: [K:V]) {
     for (k, v) in right {
         left.updateValue(v, forKey: k)
     }
@@ -333,7 +308,7 @@ func += <K, V> (inout left: [K:V], right: [K:V]) {
 // MARK: - NSLocale
 
 
-extension NSLocale {
+extension Locale {
     
     static var langs: [String: String] {
         get {
@@ -442,7 +417,7 @@ extension UITableViewCell {
 
 class DismissSegue: UIStoryboardSegue {
     override func perform() {
-        sourceViewController.dismissViewControllerAnimated(true, completion: nil)
+        source.dismiss(animated: true, completion: nil)
     }
 }
 
@@ -450,70 +425,70 @@ class DismissSegue: UIStoryboardSegue {
 
 extension UIImage {
 
-    func crop(rect: CGRect) -> UIImage {
+    func crop(_ rect: CGRect) -> UIImage {
         var rect = rect
         if self.scale > 1.0 {
-            rect = CGRectMake(rect.origin.x * self.scale,
-                              rect.origin.y * self.scale,
-                              rect.size.width * self.scale,
-                              rect.size.height * self.scale)
+            rect = CGRect(x: rect.origin.x * self.scale,
+                              y: rect.origin.y * self.scale,
+                              width: rect.size.width * self.scale,
+                              height: rect.size.height * self.scale)
         }
         
-        let imageRef = CGImageCreateWithImageInRect(self.CGImage, rect)
-        return UIImage(CGImage: imageRef!, scale: self.scale, orientation: self.imageOrientation)
+        let imageRef = self.cgImage?.cropping(to: rect)
+        return UIImage(cgImage: imageRef!, scale: self.scale, orientation: self.imageOrientation)
     }
     
-    func withColor(color: UIColor?) -> UIImage {
+    func withColor(_ color: UIColor?) -> UIImage {
         var color: UIColor! = color
-        color = color ?? UIColor.appColor()
-        UIGraphicsBeginImageContextWithOptions(self.size, false, UIScreen.mainScreen().scale)
+        color = color ?? UIColor.app
+        UIGraphicsBeginImageContextWithOptions(self.size, false, UIScreen.main.scale)
         let context = UIGraphicsGetCurrentContext()
         color.setFill()
-        CGContextTranslateCTM(context, 0, self.size.height)
-        CGContextScaleCTM(context, 1.0, -1.0)
-        CGContextSetBlendMode(context, CGBlendMode.ColorBurn)
-        let rect = CGRectMake(0, 0, self.size.width, self.size.height)
-        CGContextDrawImage(context, rect, self.CGImage)
-        CGContextSetBlendMode(context, CGBlendMode.SourceIn)
-        CGContextAddRect(context, rect)
-        CGContextDrawPath(context, CGPathDrawingMode.Fill)
+        context?.translateBy(x: 0, y: self.size.height)
+        context?.scaleBy(x: 1.0, y: -1.0)
+        context?.setBlendMode(CGBlendMode.colorBurn)
+        let rect = CGRect(x: 0, y: 0, width: self.size.width, height: self.size.height)
+        context?.draw(self.cgImage!, in: rect)
+        context?.setBlendMode(CGBlendMode.sourceIn)
+        context?.addRect(rect)
+        context?.drawPath(using: CGPathDrawingMode.fill)
         let coloredImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
-        return coloredImage
+        return coloredImage!
     }
     
-    class func fromColor(color: UIColor?, inRect rect: CGRect = CGRectMake(0, 0, 1, 1)) -> UIImage {
+    class func fromColor(_ color: UIColor?, inRect rect: CGRect = CGRect(x: 0, y: 0, width: 1, height: 1)) -> UIImage {
         var color: UIColor! = color
-        color = color ?? UIColor.appColor()
+        color = color ?? UIColor.app
         UIGraphicsBeginImageContext(rect.size)
         let context = UIGraphicsGetCurrentContext()
-        CGContextSetFillColorWithColor(context, color.CGColor)
-        CGContextFillRect(context, rect)
+        context?.setFillColor(color.cgColor)
+        context?.fill(rect)
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
-        return image
+        return image!
     }
 
 }
 
 // MARK: - NSFileManager
 
-extension NSFileManager {
-    func fileSizeAtPath(path: String) -> Int64 {
+extension FileManager {
+    func fileSizeAtPath(_ path: String) -> Int64 {
         do {
-            return try attributesOfItemAtPath(path)[NSFileSize]!.longLongValue
+            return try (attributesOfItem(atPath: path)[FileAttributeKey.size]! as AnyObject).int64Value
         } catch {
             print("Error reading filesize: \(error)")
             return 0
         }
     }
     
-    func folderSizeAtPath(path: String) -> Int64 {
+    func folderSizeAtPath(_ path: String) -> Int64 {
         var size : Int64 = 0
         do {
-            let files = try subpathsOfDirectoryAtPath(path)
+            let files = try subpathsOfDirectory(atPath: path)
             for i in 0 ..< files.count {
-                size += fileSizeAtPath((path as NSString).stringByAppendingPathComponent(files[i]) as String)
+                size += fileSizeAtPath((path as NSString).appendingPathComponent(files[i]) as String)
             }
         } catch {
             print("Error reading directory.")
@@ -526,45 +501,45 @@ extension NSFileManager {
 
 class PCTBarSlider: OBSlider {
     
-    override func trackRectForBounds(bounds: CGRect) -> CGRect {
-        var customBounds = super.trackRectForBounds(bounds)
+    override func trackRect(forBounds bounds: CGRect) -> CGRect {
+        var customBounds = super.trackRect(forBounds: bounds)
         customBounds.size.height = 3
         customBounds.origin.y -= 1
         return customBounds
     }
     
     override func awakeFromNib() {
-        self.setThumbImage(UIImage(named: "Scrubber Image"), forState: .Normal)
+        self.setThumbImage(UIImage(named: "Scrubber Image"), for: .normal)
         super.awakeFromNib()
     }
 }
 
 class PCTProgressSlider: UISlider {
     
-    override func trackRectForBounds(bounds: CGRect) -> CGRect {
-        var customBounds = super.trackRectForBounds(bounds)
+    override func trackRect(forBounds bounds: CGRect) -> CGRect {
+        var customBounds = super.trackRect(forBounds: bounds)
         customBounds.size.height = 3
         customBounds.origin.y -= 1
         return customBounds
     }
     
     override func awakeFromNib() {
-        setThumbImage(UIImage(named: "Progress Indicator")?.withColor(minimumTrackTintColor), forState: .Normal)
-        setMinimumTrackImage(UIImage.fromColor(minimumTrackTintColor), forState: .Normal)
-        setMaximumTrackImage(UIImage.fromColor(maximumTrackTintColor), forState: .Normal)
+        setThumbImage(UIImage(named: "Progress Indicator")?.withColor(minimumTrackTintColor), for: .normal)
+        setMinimumTrackImage(UIImage.fromColor(minimumTrackTintColor), for: .normal)
+        setMaximumTrackImage(UIImage.fromColor(maximumTrackTintColor), for: .normal)
         super.awakeFromNib()
     }
     
-    override func pointInside(point: CGPoint, withEvent event: UIEvent?) -> Bool {
+    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
         var bounds = self.bounds
-        bounds = CGRectInset(bounds, 0, -5)
-        return CGRectContainsPoint(bounds, point)
+        bounds = bounds.insetBy(dx: 0, dy: -5)
+        return bounds.contains(point)
     }
     
-    override func thumbRectForBounds(bounds: CGRect, trackRect rect: CGRect, value: Float) -> CGRect {
+    override func thumbRect(forBounds bounds: CGRect, trackRect rect: CGRect, value: Float) -> CGRect {
         var rect = rect
         rect.size.width -= 4
-        var frame = super.thumbRectForBounds(bounds, trackRect: rect, value: value)
+        var frame = super.thumbRect(forBounds: bounds, trackRect: rect, value: value)
         frame.origin.y += rect.origin.y
         frame.origin.x += 2
         return frame
@@ -572,40 +547,12 @@ class PCTProgressSlider: UISlider {
     
 }
 
-// MARK: - Magnets
-
-func makeMagnetLink(torrHash: String) -> String {
-    let trackers = [
-        "udp://tracker.opentrackr.org:1337/announce",
-        "udp://glotorrents.pw:6969/announce",
-        "udp://torrent.gresille.org:80/announce",
-        "udp://tracker.openbittorrent.com:80",
-        "udp://tracker.coppersurfer.tk:6969",
-        "udp://tracker.leechers-paradise.org:6969",
-        "udp://p4p.arenabg.ch:1337",
-        "udp://tracker.internetwarriors.net:1337",
-        "udp://open.demonii.com:80",
-        "udp://tracker.coppersurfer.tk:80",
-        "udp://tracker.leechers-paradise.org:6969",
-        "udp://exodus.desync.com:6969"
-    ]
-    let magnetURL = "magnet:?xt=urn:btih:\(torrHash)&tr=" + trackers.joinWithSeparator("&tr=")
-    return magnetURL
-}
-
-func cleanMagnet(url: String) -> String {
-    if !url.isEmpty {
-        return makeMagnetLink(url.sliceFrom("magnet:?xt=urn:btih:", to: url.containsString("&dn=") ? "&dn=" : "")!)
-    }
-    return url
-}
-
 // MARK: - UITableView
 
 extension UITableView {
     func sizeHeaderToFit() {
         if let headerView = tableHeaderView {
-            let height = headerView.systemLayoutSizeFittingSize(UILayoutFittingCompressedSize).height
+            let height = headerView.systemLayoutSizeFitting(UILayoutFittingCompressedSize).height
             var headerFrame = headerView.frame
             if height != headerFrame.size.height {
                 headerFrame.size.height = height
@@ -615,11 +562,11 @@ extension UITableView {
         }
     }
     
-    var indexPathsForAllCells: [NSIndexPath] {
-        var allIndexPaths = [NSIndexPath]()
+    var indexPathsForAllCells: [IndexPath] {
+        var allIndexPaths = [IndexPath]()
         for section in 0..<numberOfSections {
-            for row in 0..<numberOfRowsInSection(section) {
-                allIndexPaths.append(NSIndexPath(forRow: row, inSection: section))
+            for row in 0..<numberOfRows(inSection: section) {
+                allIndexPaths.append(IndexPath(row: row, section: section))
             }
         }
         return allIndexPaths
@@ -629,40 +576,25 @@ extension UITableView {
 // MARK: - CGSize
 
 extension CGSize {
-    static let max = CGSizeMake(CGFloat.max, CGFloat.max)
+    static let max = CGSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude)
 }
 
 // MARK: - UIViewController
 
 extension UIViewController {
-    func fixIOS9PopOverAnchor(segue: UIStoryboardSegue?)
-    {
-        if let popOver = segue?.destinationViewController.popoverPresentationController,
-            let anchor  = popOver.sourceView
-            where popOver.sourceRect == CGRect()
-                && segue!.sourceViewController === self
-        { popOver.sourceRect = anchor.bounds }
-    }
-    func fixPopOverAnchor(controller: UIAlertController)
-    {
-        if let popOver = controller.popoverPresentationController,
-            let anchor = popOver.sourceView
-            where popOver.sourceRect == CGRect()
-        { popOver.sourceRect = anchor.bounds }
-    }
     
     func statusBarHeight() -> CGFloat {
-        let statusBarSize = UIApplication.sharedApplication().statusBarFrame.size
+        let statusBarSize = UIApplication.shared.statusBarFrame.size
         return Swift.min(statusBarSize.width, statusBarSize.height)
     }
     
-    func dismissUntilAnimated<T: UIViewController>(animated: Bool, viewController: T.Type, completion: ((viewController: T) -> Void)?) {
+    func dismissUntilAnimated<T: UIViewController>(_ animated: Bool, viewController: T.Type, completion: ((_ viewController: T) -> Void)?) {
         var vc = presentingViewController!
-        while let new = vc.presentingViewController where !(new is T) {
+        while let new = vc.presentingViewController , !(new is T) {
             vc = new
         }
-        vc.dismissViewControllerAnimated(animated, completion: {
-            completion?(viewController: vc as! T)
+        vc.dismiss(animated: animated, completion: {
+            completion?(vc as! T)
         })
     }
 }
@@ -694,10 +626,10 @@ extension UIScrollView {
 
 // MARK: - NSUserDefaults
 
-extension NSUserDefaults {
+extension UserDefaults {
     func reset() {
         for key in dictionaryRepresentation().keys {
-            removeObjectForKey(key)
+            removeObject(forKey: key)
         }
     }
 }
@@ -705,12 +637,10 @@ extension NSUserDefaults {
 // MARK: - UIColor 
 
 extension UIColor {
-    class func appColor() -> UIColor {
-        return UIColor(red:0.37, green:0.41, blue:0.91, alpha:1.0)
-    }
+    static var app = UIColor(red:0.37, green:0.41, blue:0.91, alpha:1.0)
     
     class func systemColors() -> [UIColor] {
-        return [UIColor.blackColor(), UIColor.darkGrayColor(), UIColor.lightGrayColor(), UIColor.whiteColor(), UIColor.grayColor(), UIColor.redColor(), UIColor.greenColor(), UIColor.blueColor(), UIColor.cyanColor(), UIColor.yellowColor(), UIColor.magentaColor(), UIColor.orangeColor(), UIColor.purpleColor(), UIColor.brownColor()]
+        return [UIColor.black, UIColor.darkGray, UIColor.lightGray, UIColor.white, UIColor.gray, UIColor.red, UIColor.green, UIColor.blue, UIColor.cyan, UIColor.yellow, UIColor.magenta, UIColor.orange, UIColor.purple, UIColor.brown]
     }
     
     class func systemColorStrings() -> [String] {
@@ -718,19 +648,19 @@ extension UIColor {
     }
     
     func hexString() -> String {
-        let colorSpace = CGColorSpaceGetModel(CGColorGetColorSpace(self.CGColor))
-        let components = CGColorGetComponents(self.CGColor)
+        let colorSpace = self.cgColor.colorSpace?.model
+        let components = self.cgColor.components
         
         var r, g, b: CGFloat!
         
-        if (colorSpace == .Monochrome) {
-            r = components[0]
-            g = components[0]
-            b = components[0]
-        } else if (colorSpace == .RGB) {
-            r = components[0]
-            g = components[1]
-            b = components[2]
+        if (colorSpace == .monochrome) {
+            r = components?[0]
+            g = components?[0]
+            b = components?[0]
+        } else if (colorSpace == .rgb) {
+            r = components?[0]
+            g = components?[1]
+            b = components?[2]
         }
         
         return NSString(format: "#%02lX%02lX%02lX", lroundf(Float(r) * 255), lroundf(Float(g) * 255), lroundf(Float(b) * 255)) as String
@@ -739,9 +669,9 @@ extension UIColor {
     func hexInt() -> UInt32 {
         let hex = hexString()
         var rgb: UInt32 = 0
-        let s = NSScanner(string: hex)
+        let s = Scanner(string: hex)
         s.scanLocation = 1
-        s.scanHexInt(&rgb)
+        s.scanHexInt32(&rgb)
         return rgb
     }
 }
@@ -750,66 +680,66 @@ extension UIColor {
 
 extension UIFont {
     
-    func withTraits(traits:UIFontDescriptorSymbolicTraits...) -> UIFont {
-        let descriptor = self.fontDescriptor()
-            .fontDescriptorWithSymbolicTraits(UIFontDescriptorSymbolicTraits(traits))
-        return UIFont(descriptor: descriptor, size: 0)
+    func withTraits(_ traits:UIFontDescriptorSymbolicTraits...) -> UIFont {
+        let descriptor = self.fontDescriptor
+            .withSymbolicTraits(UIFontDescriptorSymbolicTraits(traits))
+        return UIFont(descriptor: descriptor!, size: 0)
     }
     
     func boldItalic() -> UIFont {
-        return withTraits(.TraitBold, .TraitItalic)
+        return withTraits(.traitBold, .traitItalic)
     }
     
     func bold() -> UIFont {
-        return withTraits(.TraitBold)
+        return withTraits(.traitBold)
     }
     
     func italic() -> UIFont {
-        return withTraits(.TraitItalic)
+        return withTraits(.traitItalic)
     }
 }
 
 extension GCKMediaTextTrackStyle {
     
     class func pct_createDefault() -> Self {
-        let ud = NSUserDefaults.standardUserDefaults()
-        let windowType = GCKMediaTextTrackStyleWindowType.None
-        let windowColor = GCKColor(UIColor: UIColor.clearColor())
+        let ud = UserDefaults.standard
+        let windowType = GCKMediaTextTrackStyleWindowType.none
+        let windowColor = GCKColor(uiColor: UIColor.clear)
         var fontFamily: String?
         var edgeColor: GCKColor?
         let edgeType: GCKMediaTextTrackStyleEdgeType
         let fontScale: CGFloat
         var foregroundColor: GCKColor?
-        if let font = ud.stringForKey("PreferredSubtitleFont") {
+        if let font = ud.string(forKey: "PreferredSubtitleFont") {
             fontFamily = UIFont(name: font, size: 0)?.familyName
         }
-        var fontStyle = GCKMediaTextTrackStyleFontStyle.Normal
-        if let style = ud.stringForKey("PreferredSubtitleFontStyle") {
+        var fontStyle = GCKMediaTextTrackStyleFontStyle.normal
+        if let style = ud.string(forKey: "PreferredSubtitleFontStyle") {
             switch style {
             case "Bold":
-                fontStyle = .Bold
+                fontStyle = .bold
             case "Italic":
-                fontStyle = .Italic
+                fontStyle = .italic
             case "Bold-Italic":
-                fontStyle = .BoldItalic
+                fontStyle = .boldItalic
             default:
                 break
             }
         }
-        if let color = ud.stringForKey("PreferredSubtitleOutlineColor")?.camelCaseString {
-            edgeColor = GCKColor(UIColor: UIColor.performSelector(Selector(color + "Color")).takeRetainedValue() as! UIColor)
+        if let color = ud.string(forKey: "PreferredSubtitleOutlineColor")?.lowerCamelCased {
+            edgeColor = GCKColor(uiColor: UIColor.perform(Selector(color + "Color")).takeRetainedValue() as! UIColor)
         }
-        edgeType = edgeColor != nil ? .Outline : .DropShadow
+        edgeType = edgeColor != nil ? .outline : .dropShadow
         var scale: CGFloat = 25
-        if let size = ud.stringForKey("PreferredSubtitleSize") {
-            scale = CGFloat(Float(size.stringByReplacingOccurrencesOfString(" pt", withString: ""))!)
+        if let size = ud.string(forKey: "PreferredSubtitleSize") {
+            scale = CGFloat(Float(size.replacingOccurrences(of: " pt", with: ""))!)
         }
         fontScale = scale
-        var textColor = UIColor.whiteColor()
-        if let color = ud.stringForKey("PreferredSubtitleColor")?.camelCaseString {
-            textColor = UIColor.performSelector(Selector(color + "Color")).takeRetainedValue() as! UIColor
+        var textColor = UIColor.white
+        if let color = ud.string(forKey: "PreferredSubtitleColor")?.lowerCamelCased {
+            textColor = UIColor.perform(Selector(color + "Color")).takeRetainedValue() as! UIColor
         }
-        foregroundColor = GCKColor(UIColor: textColor)
+        foregroundColor = GCKColor(uiColor: textColor)
         let swizzledSelf = self.init()
         swizzledSelf.windowType = windowType
         swizzledSelf.windowColor = windowColor
@@ -822,17 +752,14 @@ extension GCKMediaTextTrackStyle {
         return swizzledSelf
     }
     
-    public override class func initialize() {
-        struct Static {
-            static var token: dispatch_once_t = 0
-        }
+    open override class func initialize() {
         
         // make sure this isn't a subclass
         if self !== GCKMediaTextTrackStyle.self {
             return
         }
         
-        dispatch_once(&Static.token) {
+        DispatchQueue.once { 
             let originalSelector = #selector(createDefault)
             let swizzledSelector = #selector(pct_createDefault)
             let originalMethod = class_getClassMethod(self, originalSelector)
@@ -844,11 +771,11 @@ extension GCKMediaTextTrackStyle {
 
 // MARK: - UITextView
 
-@IBDesignable public class PCTTextView: UITextView {
+@IBDesignable open class PCTTextView: UITextView {
     
     @IBInspectable var moreButtonText: String = "...more" {
         didSet {
-            moreButton.setTitle(moreButtonText, forState: .Normal)
+            moreButton.setTitle(moreButtonText, for: .normal)
         }
     }
     
@@ -864,63 +791,63 @@ extension GCKMediaTextTrackStyle {
         }
     }
     
-    private var heightConstraint: NSLayoutConstraint!
+    fileprivate var heightConstraint: NSLayoutConstraint!
     
-    public let moreButton = UIButton(type: .System)
+    open let moreButton = UIButton(type: .system)
     
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         moreButtonBackgroundColor = backgroundColor
-        heightConstraint = NSLayoutConstraint(item: self, attribute: .Height, relatedBy: .LessThanOrEqual, toItem: nil, attribute: .NotAnAttribute, multiplier: 1.0, constant: maxHeight)
+        heightConstraint = NSLayoutConstraint(item: self, attribute: .height, relatedBy: .lessThanOrEqual, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: maxHeight)
         loadButton()
     }
     
     override init(frame: CGRect, textContainer: NSTextContainer?) {
         super.init(frame: frame, textContainer: textContainer)
         moreButtonBackgroundColor = backgroundColor
-        heightConstraint = NSLayoutConstraint(item: self, attribute: .Height, relatedBy: .LessThanOrEqual, toItem: nil, attribute: .NotAnAttribute, multiplier: 1.0, constant: maxHeight)
+        heightConstraint = NSLayoutConstraint(item: self, attribute: .height, relatedBy: .lessThanOrEqual, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: maxHeight)
         loadButton()
     }
     
-    private func loadButton() {
+    fileprivate func loadButton() {
         textContainer.maximumNumberOfLines = 0
-        textContainer.lineBreakMode = .ByWordWrapping
-        moreButton.frame = CGRect(origin: CGPointZero, size: CGSize.max)
-        moreButton.setTitle(moreButtonText, forState: .Normal)
+        textContainer.lineBreakMode = .byWordWrapping
+        moreButton.frame = CGRect(origin: CGPoint.zero, size: CGSize.max)
+        moreButton.setTitle(moreButtonText, for: .normal)
         moreButton.sizeToFit()
         insertSubview(moreButton, aboveSubview: self)
-        moreButton.addTarget(self, action: #selector(expandView), forControlEvents: .TouchUpInside)
-        moreButton.hidden = true
+        moreButton.addTarget(self, action: #selector(expandView), for: .touchUpInside)
+        moreButton.isHidden = true
         addConstraint(heightConstraint)
     }
     
-    public func expandView() {
-        heightConstraint.active = false
+    open func expandView() {
+        heightConstraint.isActive = false
         self.superview?.setNeedsLayout()
-        UIView.animateWithDuration(animationLength, animations: {
+        UIView.animate(withDuration: animationLength, animations: {
             self.superview?.layoutIfNeeded()
-        }) { _ in
+        }, completion: { _ in
             self.superview?.parentViewController?.viewDidLayoutSubviews()
-        }
+        }) 
     }
     
     
     var totalNumberOfLines: Int {
-        let maxSize = CGSizeMake(frame.size.width, CGFloat.max)
-        let attributedText = NSAttributedString(string: text, attributes: [NSFontAttributeName: font ?? UIFont.systemFontOfSize(17)])
-        return Int(round((attributedText.boundingRectWithSize(maxSize, options: .UsesLineFragmentOrigin, context: nil).size.height - textContainerInset.top - textContainerInset.bottom) / (font ?? UIFont.systemFontOfSize(17)).lineHeight))
+        let maxSize = CGSize(width: frame.size.width, height: CGFloat.greatestFiniteMagnitude)
+        let attributedText = NSAttributedString(string: text, attributes: [NSFontAttributeName: font ?? UIFont.systemFont(ofSize: 17)])
+        return Int(round((attributedText.boundingRect(with: maxSize, options: .usesLineFragmentOrigin, context: nil).size.height - textContainerInset.top - textContainerInset.bottom) / (font ?? UIFont.systemFont(ofSize: 17)).lineHeight))
     }
     
     var visibleNumberOfLines: Int {
-       return Int(round(contentSize.height - textContainerInset.top - textContainerInset.bottom) / (font ?? UIFont.systemFontOfSize(17)).lineHeight)
+       return Int(round(contentSize.height - textContainerInset.top - textContainerInset.bottom) / (font ?? UIFont.systemFont(ofSize: 17)).lineHeight)
     }
     
     
-    override public func layoutSubviews() {
+    override open func layoutSubviews() {
         super.layoutSubviews()
         moreButton.frame.origin.x = bounds.width - moreButton.frame.width - 5
         moreButton.frame.origin.y = bounds.height - moreButton.frame.height - 2.5
-        moreButton.hidden = totalNumberOfLines <= visibleNumberOfLines
+        moreButton.isHidden = totalNumberOfLines <= visibleNumberOfLines
     }
 }
 
@@ -928,35 +855,26 @@ extension UITextView {
     /// When you disable selectable option on UITextView instance, text font property is reset. This bug has been in Xcode since 2013 and has yet to be fixed by apple.
     @nonobjc var text: String! {
         get {
-            return performSelector(Selector("text")).takeUnretainedValue() as? String ?? ""
+            return perform(Selector("text")).takeUnretainedValue() as? String ?? ""
         } set {
-            let originalSelectableValue = selectable
-            selectable = true
-            performSelector(Selector("setText:"), withObject: newValue)
-            selectable = originalSelectableValue
+            let originalSelectableValue = isSelectable
+            isSelectable = true
+            perform(Selector("setText:"), with: newValue)
+            isSelectable = originalSelectableValue
         }
     }
     
-}
-
-// MARK: - CollectionType
-
-extension CollectionType {
-    /// Returns the element at the specified index if it is within bounds, otherwise nil.
-    subscript (safe index: Index) -> Generator.Element? {
-        return indices.contains(index) ? self[index] : nil
-    }
 }
 
 // MARK: - UIAlertController
 
 extension UIAlertController {
     func show() {
-        let window = UIWindow(frame: UIScreen.mainScreen().bounds)
+        let window = UIWindow(frame: UIScreen.main.bounds)
         window.rootViewController = UIViewController()
         window.windowLevel = UIWindowLevelAlert + 1
         window.makeKeyAndVisible()
-        if let presentedViewController = window.rootViewController?.presentedViewController where presentedViewController is UIAlertController {return}
-        window.rootViewController!.presentViewController(self, animated: true, completion: nil)
+        if let presentedViewController = window.rootViewController?.presentedViewController , presentedViewController is UIAlertController {return}
+        window.rootViewController!.present(self, animated: true, completion: nil)
     }
 }

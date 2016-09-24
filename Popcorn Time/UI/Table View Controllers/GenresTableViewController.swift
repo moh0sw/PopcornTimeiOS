@@ -3,8 +3,8 @@
 import UIKit
 
 protocol GenresDelegate: class {
-    func finished(genreArrayIndex: Int)
-    func populateDataSourceArray(inout array: [String])
+    func finished(_ genreArrayIndex: Int)
+    func populateDataSourceArray(_ array: inout [String])
 }
 
 
@@ -19,34 +19,34 @@ class GenresTableViewController: UITableViewController, NSDiscardableContent {
         delegate?.populateDataSourceArray(&genres)
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         tableView.reloadData()
     }
 
     // MARK: - Table view data source
 
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return genres.count
     }
 
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath)
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         cell.textLabel?.text = genres[indexPath.row]
         if selectedRow == indexPath.row {
-            cell.accessoryType = .Checkmark
-            cell.textLabel?.textColor = UIColor.appColor()
+            cell.accessoryType = .checkmark
+            cell.textLabel?.textColor = UIColor.app
         } else {
-            cell.accessoryType = .None
-            cell.textLabel?.textColor = UIColor.whiteColor()
+            cell.accessoryType = .none
+            cell.textLabel?.textColor = UIColor.white
         }
         return cell
     }
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         selectedRow = indexPath.row
         delegate?.finished(indexPath.row)
-        dismissViewControllerAnimated(true, completion: nil)
+        dismiss(animated: true, completion: nil)
     }
     
     // MARK: - NSDiscardableContent

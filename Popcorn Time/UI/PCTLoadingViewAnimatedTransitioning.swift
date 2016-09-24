@@ -12,11 +12,11 @@ class PCTLoadingViewAnimatedTransitioning: NSObject, UIViewControllerAnimatedTra
         super.init()
     }
     
-    func transitionDuration(transitionContext: UIViewControllerContextTransitioning?) -> NSTimeInterval {
+    func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
         return 0.6
     }
     
-    func animateTransition(transitionContext: UIViewControllerContextTransitioning)  {
+    func animateTransition(using transitionContext: UIViewControllerContextTransitioning)  {
         if isPresenting {
             animatePresentationWithTransitionContext(transitionContext)
         }
@@ -26,30 +26,29 @@ class PCTLoadingViewAnimatedTransitioning: NSObject, UIViewControllerAnimatedTra
     }
     
     
-    func animatePresentationWithTransitionContext(transitionContext: UIViewControllerContextTransitioning) {
+    func animatePresentationWithTransitionContext(_ transitionContext: UIViewControllerContextTransitioning) {
         guard
-            let presentedControllerView = transitionContext.viewForKey(UITransitionContextToViewKey),
-            let containerView = transitionContext.containerView()
+            let presentedControllerView = transitionContext.view(forKey: UITransitionContextViewKey.to)
             else {
                 return
         }
         
-        containerView.addSubview(presentedControllerView)
-        presentedControllerView.hidden = true
+        transitionContext.containerView.addSubview(presentedControllerView)
+        presentedControllerView.isHidden = true
         
         let view = UIView(frame: sourceController.view.bounds)
-        view.backgroundColor = UIColor.blackColor()
+        view.backgroundColor = UIColor.black
         view.alpha = 0.0
         sourceController.view.addSubview(view)
-        UIView.animateWithDuration(transitionDuration(transitionContext), delay: 0.0, usingSpringWithDamping: 1.0, initialSpringVelocity: 0.0, options: .AllowUserInteraction, animations: {
+        UIView.animate(withDuration: transitionDuration(using: transitionContext), delay: 0.0, usingSpringWithDamping: 1.0, initialSpringVelocity: 0.0, options: .allowUserInteraction, animations: {
             if let sourceController = self.sourceController as? DetailItemOverviewViewController {
                 sourceController.lastHeaderHeight = sourceController.headerHeightConstraint.constant
                 let frame = sourceController.tabBarController?.tabBar.frame
                 let nframe = sourceController.navigationController?.navigationBar.frame
                 let offsetY = frame!.size.height
                 let noffsetY = -(nframe!.size.height + sourceController.statusBarHeight())
-                sourceController.tabBarController?.tabBar.frame = CGRectOffset(frame!, 0, offsetY)
-                sourceController.navigationController?.navigationBar.frame = CGRectOffset(nframe!, 0, noffsetY)
+                sourceController.tabBarController?.tabBar.frame = frame!.offsetBy(dx: 0, dy: offsetY)
+                sourceController.navigationController?.navigationBar.frame = nframe!.offsetBy(dx: 0, dy: noffsetY)
                 sourceController.progressiveness = 0.0
                 sourceController.blurView.alpha = 0.0
                 for view in sourceController.gradientViews {
@@ -58,30 +57,29 @@ class PCTLoadingViewAnimatedTransitioning: NSObject, UIViewControllerAnimatedTra
                 if let showDetail = self.sourceController as? TVShowDetailViewController {
                     showDetail.segmentedControl.alpha = 0.0
                 }
-                sourceController.headerHeightConstraint.constant = UIScreen.mainScreen().bounds.height
+                sourceController.headerHeightConstraint.constant = UIScreen.main.bounds.height
                 sourceController.view.layoutIfNeeded()
                 view.alpha = 0.4
             }
             }, completion: { completed in
                 view.removeFromSuperview()
                 self.sourceController.navigationController?.setNavigationBarHidden(true, animated: false)
-                presentedControllerView.hidden = false
-                transitionContext.completeTransition(!transitionContext.transitionWasCancelled())
+                presentedControllerView.isHidden = false
+                transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
         })
     }
     
-    func animateDismissalWithTransitionContext(transitionContext: UIViewControllerContextTransitioning) {
+    func animateDismissalWithTransitionContext(_ transitionContext: UIViewControllerContextTransitioning) {
         guard
-            let presentedControllerView = transitionContext.viewForKey(UITransitionContextFromViewKey),
-            let presentingControllerView = transitionContext.viewForKey(UITransitionContextToViewKey),
-            let containerView = transitionContext.containerView()
+            let presentedControllerView = transitionContext.view(forKey: UITransitionContextViewKey.from),
+            let presentingControllerView = transitionContext.view(forKey: UITransitionContextViewKey.to)
             else {
                 return
         }
-        containerView.addSubview(presentingControllerView)
-        presentedControllerView.hidden = true
+        transitionContext.containerView.addSubview(presentingControllerView)
+        presentedControllerView.isHidden = true
         sourceController.navigationController?.setNavigationBarHidden(false, animated: true)
-        UIView.animateWithDuration(transitionDuration(transitionContext), delay: 0.0, usingSpringWithDamping: 1.0, initialSpringVelocity: 0.0, options: .AllowUserInteraction, animations: {
+        UIView.animate(withDuration: transitionDuration(using: transitionContext), delay: 0.0, usingSpringWithDamping: 1.0, initialSpringVelocity: 0.0, options: .allowUserInteraction, animations: {
             if let sourceController = self.sourceController as? DetailItemOverviewViewController {
                 sourceController.headerHeightConstraint.constant = sourceController.lastHeaderHeight
                 sourceController.updateScrolling(true)
@@ -93,10 +91,10 @@ class PCTLoadingViewAnimatedTransitioning: NSObject, UIViewControllerAnimatedTra
                 }
                 let frame = sourceController.tabBarController?.tabBar.frame
                 let offsetY = -frame!.size.height
-                sourceController.tabBarController?.tabBar.frame = CGRectOffset(frame!, 0, offsetY)
+                sourceController.tabBarController?.tabBar.frame = frame!.offsetBy(dx: 0, dy: offsetY)
             }
             }, completion: { _ in
-                transitionContext.completeTransition(!transitionContext.transitionWasCancelled())
+                transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
         })
     }
 }

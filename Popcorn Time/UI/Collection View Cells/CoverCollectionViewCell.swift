@@ -10,13 +10,13 @@ class CoverCollectionViewCell: UICollectionViewCell {
     var watched = false {
         didSet {
             if let watchedIndicator = watchedIndicator {
-                UIView.animateWithDuration(0.25, animations: {
+                UIView.animate(withDuration: 0.25, animations: {
                     if self.watched == true {
                         watchedIndicator.alpha = 0.5
-                        watchedIndicator.hidden = false
+                        watchedIndicator.isHidden = false
                     } else {
                         watchedIndicator.alpha = 0.0
-                        watchedIndicator.hidden = true
+                        watchedIndicator.isHidden = true
                     }
                 })
             }

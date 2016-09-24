@@ -2,10 +2,11 @@
 
 import UIKit
 import AlamofireImage
+import PopcornKit
 
 protocol EpisodeDetailViewControllerDelegate: class {
-    func didDismissViewController(vc: EpisodeDetailViewController)
-    func loadMovieTorrent(media: PCTEpisode, animated: Bool, onChromecast: Bool)
+    func didDismissViewController(_ vc: EpisodeDetailViewController)
+    func loadMovieTorrent(_ media: Episode, animated: Bool, onChromecast: Bool)
 }
 
 class EpisodeDetailViewController: UIViewController, PCTTablePickerViewDelegate, UIGestureRecognizerDelegate {
@@ -22,7 +23,7 @@ class EpisodeDetailViewController: UIViewController, PCTTablePickerViewDelegate,
     @IBOutlet var torrentHealth: CircularView!
     @IBOutlet var heightConstraint: NSLayoutConstraint!
     
-    var currentItem: PCTEpisode?
+    var currentItem: Episode?
     var subtitlesTablePickerView: PCTTablePickerView!
     
     weak var delegate: EpisodeDetailViewControllerDelegate?
@@ -36,9 +37,9 @@ class EpisodeDetailViewController: UIViewController, PCTTablePickerViewDelegate,
         return splitViewController?.viewControllers.first?.tabBarController
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        if transitionCoordinator()?.viewControllerForKey(UITransitionContextToViewControllerKey) == self.presentingViewController {
+        if transitionCoordinator?.viewController(forKey: UITransitionContextViewControllerKey.to) == self.presentingViewController {
             delegate?.didDismissViewController(self)
         }
     }
@@ -49,7 +50,7 @@ class EpisodeDetailViewController: UIViewController, PCTTablePickerViewDelegate,
         scrollView.contentInset.bottom = adjustForTabbarInsets
         scrollView.scrollIndicatorInsets.bottom = adjustForTabbarInsets
         subtitlesTablePickerView?.tableView.contentInset.bottom = adjustForTabbarInsets
-        heightConstraint.constant = UIScreen.mainScreen().bounds.height * 0.35
+        heightConstraint.constant = UIScreen.main.bounds.height * 0.35
         subtitlesTablePickerView?.setNeedsLayout()
         subtitlesTablePickerView?.layoutIfNeeded()
         preferredContentSize = scrollView.contentSize
@@ -57,36 +58,40 @@ class EpisodeDetailViewController: UIViewController, PCTTablePickerViewDelegate,
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        heightConstraint.constant = UIScreen.mainScreen().bounds.height * 0.35
-        if let currentItem = currentItem {
-            TVAPI.sharedInstance.getEpisodeInfo(currentItem) { (imageURLAsString, subtitles) in
-                currentItem.coverImageAsString = imageURLAsString
-                if let imageURLAsString = imageURLAsString,
-                    url = NSURL(string: imageURLAsString) {
-                    self.backgroundImageView!.af_setImageWithURL(url, placeholderImage: UIImage(named: "Placeholder"), imageTransition: .CrossDissolve(animationLength))
+        heightConstraint.constant = UIScreen.main.bounds.height * 0.35
+        if var currentItem = currentItem {
+            TraktManager.shared.getEpisodeMetadata(currentItem.show.id, episodeNumber: currentItem.episode, seasonNumber: currentItem.season, completion: { (image, _, imdb, error) in
+                guard let imdb = imdb else { return }
+                currentItem.largeBackgroundImage = image
+                if let image = image,
+                    let url = URL(string: image) {
+                    self.backgroundImageView!.af_setImage(withURL: url, placeholderImage: UIImage(named: "Placeholder"), imageTransition: .crossDissolve(animationLength))
                 }
-                if let subtitles = subtitles {
-                    currentItem.subtitles = subtitles
-                    if subtitles.isEmpty {
-                        self.subtitlesButton.setTitle("No Subtitles Available", forState: .Normal)
-                    } else {
-                        self.subtitlesButton.setTitle("None ▾", forState: .Normal)
-                        self.subtitlesButton.userInteractionEnabled = true
-                        if let preferredSubtitle = NSUserDefaults.standardUserDefaults().objectForKey("PreferredSubtitleLanguage") as? String where preferredSubtitle != "None" {
-                            let languages = subtitles.map({$0.language})
-                            let index = languages.indexOf(languages.filter({$0 == preferredSubtitle}).first!)!
-                            let subtitle = currentItem.subtitles![index]
-                            currentItem.currentSubtitle = subtitle
-                            self.subtitlesButton.setTitle(subtitle.language + " ▾", forState: .Normal)
+                SubtitlesManager.shared.login({
+                    SubtitlesManager.shared.search(imdbId: imdb, completion: { (subtitles, error) in
+                        guard error == nil else { self.subtitlesButton.setTitle("Error loading subtitles.", for: .normal); return }
+                        currentItem.subtitles = subtitles
+                        if subtitles.isEmpty {
+                            self.subtitlesButton.setTitle("No Subtitles Available", for: .normal)
+                        } else {
+                            self.subtitlesButton.setTitle("None ▾", for: .normal)
+                            self.subtitlesButton.isUserInteractionEnabled = true
+                            if let preferredSubtitle = UserDefaults.standard.object(forKey: "PreferredSubtitleLanguage") as? String , preferredSubtitle != "None" {
+                                let languages = subtitles.map({$0.language})
+                                let index = languages.index{$0 == languages.filter({$0 == preferredSubtitle}).first!}
+                                let subtitle = currentItem.subtitles![index!]
+                                currentItem.currentSubtitle = subtitle
+                                self.subtitlesButton.setTitle(subtitle.language + " ▾", for: .normal)
+                            }
                         }
-                    }
-                    self.subtitlesTablePickerView = PCTTablePickerView(superView: self.view, sourceDict: PCTSubtitle.dictValue(subtitles), self)
-                    if let link = currentItem.currentSubtitle?.link {
-                        self.subtitlesTablePickerView.selectedItems = [link]
-                    }
-                    self.view.addSubview(self.subtitlesTablePickerView)
-                }
-            }
+                        self.subtitlesTablePickerView = PCTTablePickerView(superView: self.view, sourceDict: Dictionary(keys: subtitles.map({$0.link}), values: subtitles.map({$0.language})), self)
+                        if let link = currentItem.currentSubtitle?.link {
+                            self.subtitlesTablePickerView.selectedItems = [link]
+                        }
+                        self.view.addSubview(self.subtitlesTablePickerView)
+                    })
+                })
+            })
             titleLabel.text = currentItem.title
             var season = String(currentItem.season)
             season = season.characters.count == 1 ? "0" + season : season
@@ -94,124 +99,127 @@ class EpisodeDetailViewController: UIViewController, PCTTablePickerViewDelegate,
             episode = episode.characters.count == 1 ? "0" + episode : episode
             episodeAndSeasonLabel.text = "S\(season)E\(episode)"
             summaryView.text = currentItem.summary
-            infoLabel.text = "Aired: " + NSDateFormatter.localizedStringFromDate(currentItem.airedDate, dateStyle: .MediumStyle, timeStyle: .NoStyle)
-            currentItem.currentTorrent = currentItem.torrents.filter({$0.quality == NSUserDefaults.standardUserDefaults().stringForKey("PreferredQuality")}).first ?? currentItem.torrents.first!
-            qualityBtn?.userInteractionEnabled = currentItem.torrents.count > 1
-            qualityBtn?.setTitle("\(currentItem.currentTorrent.quality! + (currentItem.torrents.count > 1 ? " ▾" : ""))", forState: .Normal)
-            playNowBtn?.enabled = currentItem.currentTorrent.url != nil
-            torrentHealth.backgroundColor = currentItem.currentTorrent.health.color()
+            infoLabel.text = "Aired: " + DateFormatter.localizedString(from: currentItem.firstAirDate, dateStyle: .medium, timeStyle: .none)
+            qualityBtn?.isUserInteractionEnabled = currentItem.torrents.count > 1
+            currentItem.currentTorrent = currentItem.torrents.filter({$0.quality == UserDefaults.standard.string(forKey: "PreferredQuality")}).first ?? currentItem.torrents.first
+            if let torrent = currentItem.currentTorrent {
+                qualityBtn?.setTitle("\(torrent.quality! + (currentItem.torrents.count > 1 ? " ▾" : ""))", for: .normal)
+            } else {
+                qualityBtn?.setTitle("Error loading torrents.", for: .normal)
+            }
+            playNowBtn?.isEnabled = currentItem.currentTorrent?.url != nil
+            torrentHealth.backgroundColor = currentItem.currentTorrent?.health.color()
         } else {
-            let background = NSBundle.mainBundle().loadNibNamed("TableViewBackground", owner: self, options: nil).first as! TableViewBackground
+            let background = Bundle.main.loadNibNamed("TableViewBackground", owner: self, options: nil)?.first as! TableViewBackground
             background.frame = view.bounds
-            background.autoresizingMask = [.FlexibleHeight, .FlexibleWidth]
+            background.autoresizingMask = [.flexibleHeight, .flexibleWidth]
             background.backgroundColor = UIColor(red: 30.0/255.0, green: 30.0/255.0, blue: 30.0/255.0, alpha: 1.0)
             view.insertSubview(background, aboveSubview: view)
-            background.setUpView(image: UIImage(named: "AirTV")!.imageWithRenderingMode(.AlwaysTemplate), description: "No episode selected")
-            background.imageView.tintColor = UIColor.darkGrayColor()
+            background.setUpView(image: UIImage(named: "AirTV")!.withRenderingMode(.alwaysTemplate), description: "No episode selected")
+            background.imageView.tintColor = UIColor.darkGray
         }
         scrollView.setNeedsLayout()
         scrollView.layoutIfNeeded()
         preferredContentSize = scrollView.contentSize
     }
     
-    @IBAction func changeQualityTapped(sender: UIButton) {
-        let quality = UIAlertController(title:"Select Quality", message:nil, preferredStyle:UIAlertControllerStyle.ActionSheet)
-        for torrent in currentItem!.torrents {
-            quality.addAction(UIAlertAction(title: "\(torrent.quality!) \(torrent.size ?? "")", style: .Default, handler: { action in
+    @IBAction func changeQualityTapped(_ sender: UIButton) {
+        let quality = UIAlertController(title:"Select Quality", message:nil, preferredStyle:UIAlertControllerStyle.actionSheet)
+        for var torrent in currentItem!.torrents {
+            quality.addAction(UIAlertAction(title: "\(torrent.quality!) \(torrent.size ?? "")", style: .default, handler: { action in
                 self.currentItem?.currentTorrent = torrent
-                self.playNowBtn?.enabled = self.currentItem?.currentTorrent.url != nil
-                self.qualityBtn?.setTitle("\(torrent.quality!) ▾", forState: .Normal)
+                self.playNowBtn?.isEnabled = self.currentItem?.currentTorrent?.url != nil
+                self.qualityBtn?.setTitle("\(torrent.quality!) ▾", for: .normal)
                 self.torrentHealth.backgroundColor = torrent.health.color()
             }))
         }
-        quality.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
+        quality.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         quality.popoverPresentationController?.sourceView = sender
-        fixPopOverAnchor(quality)
-        presentViewController(quality, animated: true, completion: nil)
+        present(quality, animated: true, completion: nil)
     }
     
-    @IBAction func changeSubtitlesTapped(sender: UIButton) {
+    @IBAction func changeSubtitlesTapped(_ sender: UIButton) {
         subtitlesTablePickerView?.toggle()
     }
     
-    @IBAction func watchNowTapped(sender: UIButton) {
-        let onWifi: Bool = (UIApplication.sharedApplication().delegate! as! AppDelegate).reachability!.isReachableViaWiFi()
-        let wifiOnly: Bool = !NSUserDefaults.standardUserDefaults().boolForKey("StreamOnCellular")
+    @IBAction func watchNowTapped(_ sender: UIButton) {
+        let onWifi: Bool = (UIApplication.shared.delegate! as! AppDelegate).reachability!.isReachableViaWiFi()
+        let wifiOnly: Bool = !UserDefaults.standard.bool(forKey: "StreamOnCellular")
         if !wifiOnly || onWifi {
-            splitViewController?.collapseSecondaryViewController(self, forSplitViewController: splitViewController!)
+            splitViewController?.collapseSecondaryViewController(self, for: splitViewController!)
 //            dismissViewControllerAnimated(false, completion: { [unowned self] in
 //                self.delegate?.loadMovieTorrent(self.currentItem!, animated: true, onChromecast: GCKCastContext.sharedInstance().castState == .Connected)
 //            })
         } else {
-            let errorAlert = UIAlertController(title: "Cellular Data is Turned Off for streaming", message: "To enable it please go to settings.", preferredStyle: UIAlertControllerStyle.Alert)
-            errorAlert.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: { (action: UIAlertAction!) in }))
-            errorAlert.addAction(UIAlertAction(title: "Settings", style: .Default, handler: { (action: UIAlertAction!) in
-                let settings = self.storyboard!.instantiateViewControllerWithIdentifier("SettingsTableViewController") as! SettingsTableViewController
+            let errorAlert = UIAlertController(title: "Cellular Data is Turned Off for streaming", message: "To enable it please go to settings.", preferredStyle: UIAlertControllerStyle.alert)
+            errorAlert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: { (action: UIAlertAction!) in }))
+            errorAlert.addAction(UIAlertAction(title: "Settings", style: .default, handler: { (action: UIAlertAction!) in
+                let settings = self.storyboard!.instantiateViewController(withIdentifier: "SettingsTableViewController") as! SettingsTableViewController
                 self.navigationController?.pushViewController(settings, animated: true)
             }))
-            self.presentViewController(errorAlert, animated: true, completion: nil)
+            self.present(errorAlert, animated: true, completion: nil)
         }
     }
     
-    func tablePickerView(tablePickerView: PCTTablePickerView, didClose items: [String]) {
+    func tablePickerView(_ tablePickerView: PCTTablePickerView, didClose items: [String]) {
         if items.count == 0 {
             currentItem?.currentSubtitle = nil
-            subtitlesButton.setTitle("None ▾", forState: .Normal)
-        } else {
-            let links = currentItem!.subtitles!.map({$0.link})
-            let index = links.indexOf(links.filter({$0 == items.first!}).first!)!
-            let subtitle = currentItem!.subtitles![index]
-            currentItem?.currentSubtitle = subtitle
-            subtitlesButton.setTitle(subtitle.language + " ▾", forState: .Normal)
+            subtitlesButton.setTitle("None ▾", for: .normal)
+        } else if var currentItem = currentItem {
+            let links = currentItem.subtitles?.map({$0.link})
+            let index = links?.index{$0 == links?.filter({$0 == items.first!}).first!}
+            let subtitle = currentItem.subtitles?[index!]
+            currentItem.currentSubtitle = subtitle
+            subtitlesButton.setTitle(subtitle!.language + " ▾", for: .normal)
         }
     }
     
-    @IBAction func handleGesture(sender: UIPanGestureRecognizer) {
+    @IBAction func handleGesture(_ sender: UIPanGestureRecognizer) {
         let percentThreshold: CGFloat = 0.12
         let superview = sender.view!.superview!
-        let translation = sender.translationInView(superview)
+        let translation = sender.translation(in: superview)
         let progress = translation.y/superview.bounds.height/3.0
         
         guard let interactor = interactor else { return }
         
         switch sender.state {
-        case .Began:
+        case .began:
             interactor.hasStarted = true
-            dismissViewControllerAnimated(true, completion: nil)
+            dismiss(animated: true, completion: nil)
             scrollView.bounces = false
-        case .Changed:
+        case .changed:
             interactor.shouldFinish = progress > percentThreshold
-            interactor.updateInteractiveTransition(progress)
-        case .Cancelled:
+            interactor.update(progress)
+        case .cancelled:
             interactor.hasStarted = false
-            interactor.cancelInteractiveTransition()
+            interactor.cancel()
              scrollView.bounces = true
-        case .Ended:
+        case .ended:
             interactor.hasStarted = false
-            interactor.shouldFinish ? interactor.finishInteractiveTransition() : interactor.cancelInteractiveTransition()
+            interactor.shouldFinish ? interactor.finish() : interactor.cancel()
             scrollView.bounces = true
         default:
             break
         }
     }
     
-    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         return true
     }
     
-    func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer) -> Bool {
+    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
         return scrollView.contentOffset.y == 0 ? true : false
     }
     
-    override func preferredStatusBarStyle() -> UIStatusBarStyle {
-        return .LightContent
+    override var preferredStatusBarStyle : UIStatusBarStyle {
+        return .lightContent
     }
 }
 
 extension TVShowDetailViewController: EpisodeDetailViewControllerDelegate {
-    func didDismissViewController(vc: EpisodeDetailViewController) {
-        if let indexPath = self.tableView!.indexPathForSelectedRow where splitViewController!.collapsed {
-            self.tableView!.deselectRowAtIndexPath(indexPath, animated: false)
+    func didDismissViewController(_ vc: EpisodeDetailViewController) {
+        if let indexPath = self.tableView!.indexPathForSelectedRow , splitViewController!.isCollapsed {
+            self.tableView!.deselectRow(at: indexPath, animated: false)
         }
     }
 }

@@ -10,9 +10,9 @@ class AirPlayTableViewCell: UITableViewCell {
     var picked: Bool = false {
         didSet {
             if picked {
-                checkmarkAccessory?.hidden = false
+                checkmarkAccessory?.isHidden = false
             } else {
-                checkmarkAccessory?.hidden = true
+                checkmarkAccessory?.isHidden = true
             }
         }
     }

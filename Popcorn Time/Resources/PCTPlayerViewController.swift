@@ -3,13 +3,11 @@
 import UIKit
 import MediaPlayer
 import PopcornTorrent
-import Alamofire
-import GZIP
-import SRT2VTT
+import PopcornKit
 
 protocol PCTPlayerViewControllerDelegate: class {
-    func playNext(episode: PCTEpisode)
-    func presentCastPlayer(media: PCTItem, videoFilePath: NSURL, startPosition: NSTimeInterval)
+    func playNext(_ episode: Episode)
+    func presentCastPlayer(_ media: Media, videoFilePath: URL, startPosition: TimeInterval)
 }
 
 class PCTPlayerViewController: UIViewController, UIGestureRecognizerDelegate, UIActionSheetDelegate, VLCMediaPlayerDelegate, SubtitlesTableViewControllerDelegate, UIPopoverPresentationControllerDelegate, UpNextViewDelegate {
@@ -22,7 +20,7 @@ class PCTPlayerViewController: UIViewController, UIGestureRecognizerDelegate, UI
             bufferProgressView?.layer.borderWidth = 0.6
             bufferProgressView?.layer.cornerRadius = 1.0
             bufferProgressView?.clipsToBounds = true
-            bufferProgressView?.layer.borderColor = UIColor.darkTextColor().CGColor
+            bufferProgressView?.layer.borderColor = UIColor.darkText.cgColor
         }
     }
     @IBOutlet var volumeSlider: PCTBarSlider! {
@@ -55,9 +53,9 @@ class PCTPlayerViewController: UIViewController, UIGestureRecognizerDelegate, UI
     }
     @IBAction func positionSliderDidDrag() {
         resetIdleTimer()
-        let streamDuration = (fabsf(mediaplayer.remainingTime.numberValue.floatValue) + mediaplayer.time.numberValue.floatValue)
-        elapsedTimeLabel.text = VLCTime(number: NSNumber(float: (positionSlider.value * streamDuration))).stringValue
-        remainingTimeLabel.text = VLCTime(number: NSNumber(float: ((positionSlider.value * streamDuration) - streamDuration))).stringValue
+        let streamDuration = (fabsf(mediaplayer.remainingTime.value.floatValue) + mediaplayer.time.value.floatValue)
+        elapsedTimeLabel.text = VLCTime(number: NSNumber(value: (positionSlider.value * streamDuration) as Float)).stringValue
+        remainingTimeLabel.text = VLCTime(number: NSNumber(value: ((positionSlider.value * streamDuration) - streamDuration) as Float)).stringValue
         var text = ""
         switch positionSlider.scrubbingSpeed {
         case 1.0:
@@ -76,12 +74,12 @@ class PCTPlayerViewController: UIViewController, UIGestureRecognizerDelegate, UI
     }
     @IBAction func positionSliderTouchedDown() {
         stateBeforeScrubbing = mediaplayer.state
-        if mediaplayer.playing {
+        if mediaplayer.isPlaying {
             mediaplayer.pause()
         }
-        UIView.animateWithDuration(animationLength, animations: {
-            self.finishedScrubbingConstraints.active = false
-            self.duringScrubbingConstraints.active = true
+        UIView.animate(withDuration: animationLength, animations: {
+            self.finishedScrubbingConstraints.isActive = false
+            self.duringScrubbingConstraints.isActive = true
             self.view.layoutIfNeeded()
         })
     }
@@ -94,28 +92,23 @@ class PCTPlayerViewController: UIViewController, UIGestureRecognizerDelegate, UI
         }
     }
     @IBAction func positionSliderAction() {
-        if stateBeforeScrubbing != .Paused {
+        if stateBeforeScrubbing != .paused {
             mediaplayer.play()
-            playPauseButton.setImage(UIImage(named: "Pause"), forState: .Normal)
+            playPauseButton.setImage(UIImage(named: "Pause"), for: .normal)
         }
         mediaplayer.position = positionSlider.value
         view.layoutIfNeeded()
-        UIView.animateWithDuration(animationLength, animations: {
-            self.duringScrubbingConstraints.active = false
-            self.finishedScrubbingConstraints.active = true
+        UIView.animate(withDuration: animationLength, animations: {
+            self.duringScrubbingConstraints.isActive = false
+            self.finishedScrubbingConstraints.isActive = true
             self.view.layoutIfNeeded()
         })
     }
     
-    override func nextResponder() -> UIResponder? {
-        resetIdleTimer()
-        return super.nextResponder()
-    }
-    
     // MARK: - Button actions
     
-    @IBAction func playandPause(sender: UIButton) {
-        if mediaplayer.playing {
+    @IBAction func playandPause(_ sender: UIButton) {
+        if mediaplayer.isPlaying {
             mediaplayer.pause()
         } else {
             mediaplayer.play()
@@ -127,24 +120,24 @@ class PCTPlayerViewController: UIViewController, UIGestureRecognizerDelegate, UI
     @IBAction func rewind() {
         mediaplayer.longJumpBackward()
     }
-    @IBAction func fastForwardHeld(sender: UILongPressGestureRecognizer) {
+    @IBAction func fastForwardHeld(_ sender: UILongPressGestureRecognizer) {
         resetIdleTimer()
         switch sender.state {
-        case .Began:
+        case .began:
             fallthrough
-        case .Changed:
+        case .changed:
             mediaplayer.mediumJumpForward()
         default:
             break
         }
         
     }
-    @IBAction func rewindHeld(sender: UILongPressGestureRecognizer) {
+    @IBAction func rewindHeld(_ sender: UILongPressGestureRecognizer) {
         resetIdleTimer()
         switch sender.state {
-        case .Began:
+        case .began:
             fallthrough
-        case .Changed:
+        case .changed:
             mediaplayer.mediumJumpBackward()
         default:
             break
@@ -155,40 +148,37 @@ class PCTPlayerViewController: UIViewController, UIGestureRecognizerDelegate, UI
         resetIdleTimer()
         if mediaplayer.videoCropGeometry == nil // Change to aspect to scale to fill
         {
-            if movieView.bounds.width % 4 == 0 && movieView.bounds.height % 3 == 0 {
-                mediaplayer.videoCropGeometry = UnsafeMutablePointer<Int8>(("4:3" as NSString).UTF8String)
-            } else if movieView.bounds.width % 3 == 0 && movieView.bounds.height % 4 == 0 {
-                mediaplayer.videoCropGeometry = UnsafeMutablePointer<Int8>(("3:4" as NSString).UTF8String)
-            } else if movieView.bounds.width % 16 == 0 && movieView.bounds.height % 9 == 0 {
-                mediaplayer.videoCropGeometry = UnsafeMutablePointer<Int8>(("16:9" as NSString).UTF8String)
-            } else if movieView.bounds.width % 9 == 0 && movieView.bounds.height % 16 == 0 {
-                mediaplayer.videoCropGeometry = UnsafeMutablePointer<Int8>(("9:16" as NSString).UTF8String)
+            if movieView.bounds.width.truncatingRemainder(dividingBy: 4) == 0 && movieView.bounds.height.truncatingRemainder(dividingBy: 3) == 0 {
+                mediaplayer.videoCropGeometry = UnsafeMutablePointer<Int8>(mutating: ("4:3" as NSString).utf8String)
+            } else if movieView.bounds.width.truncatingRemainder(dividingBy: 3) == 0 && movieView.bounds.height.truncatingRemainder(dividingBy: 4) == 0 {
+                mediaplayer.videoCropGeometry = UnsafeMutablePointer<Int8>(mutating: ("3:4" as NSString).utf8String)
+            } else if movieView.bounds.width.truncatingRemainder(dividingBy: 16) == 0 && movieView.bounds.height.truncatingRemainder(dividingBy: 9) == 0 {
+                mediaplayer.videoCropGeometry = UnsafeMutablePointer<Int8>(mutating: ("16:9" as NSString).utf8String)
+            } else if movieView.bounds.width.truncatingRemainder(dividingBy: 9) == 0 && movieView.bounds.height.truncatingRemainder(dividingBy: 16) == 0 {
+                mediaplayer.videoCropGeometry = UnsafeMutablePointer<Int8>(mutating: ("9:16" as NSString).utf8String)
             }
-            videoDimensionsButton.setImage(UIImage(named: "Scale To Fit"), forState: .Normal)
+            videoDimensionsButton.setImage(UIImage(named: "Scale To Fit"), for: .normal)
         } else // Change aspect ratio to scale to fit
         {
-            videoDimensionsButton.setImage(UIImage(named: "Scale To Fill"), forState: .Normal)
+            videoDimensionsButton.setImage(UIImage(named: "Scale To Fill"), for: .normal)
             mediaplayer.videoAspectRatio = nil
             mediaplayer.videoCropGeometry = nil
         }
     }
     @IBAction func didFinishPlaying() {
-        dismissViewControllerAnimated(true, completion: nil)
+        self.dismiss(animated: true, completion: nil)
         mediaplayer.stop()
-        PTTorrentStreamer.sharedStreamer().cancelStreaming()
-        if NSUserDefaults.standardUserDefaults().boolForKey("removeCacheOnPlayerExit") {
-            try! NSFileManager.defaultManager().removeItemAtURL(directory)
-        }
+        PTTorrentStreamer.shared().cancelStreamingAndDeleteData(UserDefaults.standard.bool(forKey: "removeCacheOnPlayerExit"))
     }
     
     // MARK: - Public vars
     
     weak var delegate: PCTPlayerViewControllerDelegate?
-    var subtitles = [PCTSubtitle]()
-    var currentSubtitle: PCTSubtitle? {
+    var subtitles = [Subtitle]()
+    var currentSubtitle: Subtitle? {
         didSet {
             if let subtitle = currentSubtitle {
-                mediaplayer.numberOfChaptersForTitle(Int32(subtitles.indexOf(subtitle)!)) != NSNotFound ? mediaplayer.currentChapterIndex = Int32(subtitles.indexOf(subtitle)!) : openSubtitles(NSURL(string: subtitle.link)!)
+                mediaplayer.numberOfChapters(forTitle: Int32(subtitles.index(of: subtitle)!)) != NSNotFound ? mediaplayer.currentChapterIndex = Int32(subtitles.index(of: subtitle)!) : openSubtitles(URL(string: subtitle.link)!)
             } else {
                 mediaplayer.currentChapterIndex = NSNotFound // Remove all subtitles
             }
@@ -199,23 +189,23 @@ class PCTPlayerViewController: UIViewController, UIGestureRecognizerDelegate, UI
     
     private (set) var mediaplayer = VLCMediaPlayer()
     private var stateBeforeScrubbing: VLCMediaPlayerState!
-    private (set) var url: NSURL!
-    private (set) var directory: NSURL!
-    private (set) var media: PCTItem!
-    internal var nextMedia: PCTEpisode?
+    private (set) var url: URL!
+    private (set) var directory: URL!
+    private (set) var media: Media!
+    internal var nextMedia: Episode?
     private var startPosition: Float = 0.0
-    private var idleTimer: NSTimer!
+    private var idleTimer: Timer!
     private var shouldHideStatusBar = true
     private let NSNotFound: Int32 = -1
     private var volumeView: MPVolumeView = {
-       let view = MPVolumeView(frame: CGRectMake(-1000, -1000, 100, 100))
+       let view = MPVolumeView(frame: CGRect(x: -1000, y: -1000, width: 100, height: 100))
         view.sizeToFit()
         return view
     }()
     
     // MARK: - Player functions
     
-    func play(media: PCTItem, fromURL url: NSURL, progress fromPosition: Float, nextEpisode: PCTEpisode? = nil, directory: NSURL) {
+    func play(_ media: Media, fromURL url: URL, progress fromPosition: Float, nextEpisode: Episode? = nil, directory: URL) {
         self.url = url
         self.media = media
         self.startPosition = fromPosition
@@ -227,25 +217,26 @@ class PCTPlayerViewController: UIViewController, UIGestureRecognizerDelegate, UI
         }
     }
     
-    private func openSubtitles(filePath: NSURL) {
-        if filePath.fileURL {
-            mediaplayer.addPlaybackSlave(NSURL(fileURLWithPath: filePath.relativeString!), type: .Subtitle, enforce: true)
+    private func openSubtitles(_ filePath: URL) {
+        if filePath.isFileURL {
+            mediaplayer.addPlaybackSlave(URL(fileURLWithPath: filePath.relativeString), type: .subtitle, enforce: true)
         } else {
-            downloadSubtitle(filePath.relativeString!, downloadDirectory: self.directory, covertToVTT: false, completion: { [unowned self] subtitlePath in
-                self.mediaplayer.addPlaybackSlave(subtitlePath, type: .Subtitle, enforce: true)
+            PopcornKit.downloadSubtitleFile(filePath.relativeString, downloadDirectory: directory, completion: { (subtitlePath, error) in
+                guard let subtitlePath = subtitlePath else {return}
+                self.mediaplayer.addPlaybackSlave(subtitlePath, type: .subtitle, enforce: true)
             })
         }
     }
     
-    private func screenshotAtTime(time: NSNumber, completion: (image: UIImage) -> Void) {
-        let imageGen = AVAssetImageGenerator(asset: AVAsset(URL: url))
+    private func screenshotAtTime(_ time: NSNumber, completion: @escaping (_ image: UIImage) -> Void) {
+        let imageGen = AVAssetImageGenerator(asset: AVAsset(url: url))
         imageGen.appliesPreferredTrackTransform = true
         imageGen.requestedTimeToleranceAfter = kCMTimeZero
         imageGen.requestedTimeToleranceBefore = kCMTimeZero
         imageGen.cancelAllCGImageGeneration()
-        imageGen.generateCGImagesAsynchronouslyForTimes([NSValue(CMTime: CMTimeMakeWithSeconds(time.doubleValue,1000000000))]) { (_, image, _, _, error) in
-            if let image = image where error == nil {
-                completion(image: UIImage(CGImage: image))
+        imageGen.generateCGImagesAsynchronously(forTimes: [NSValue(time: CMTimeMakeWithSeconds(time.doubleValue,1000000000))]) { (_, image, _, _, error) in
+            if let image = image , error == nil {
+                completion(UIImage(cgImage: image))
                 
             }
         }
@@ -253,26 +244,26 @@ class PCTPlayerViewController: UIViewController, UIGestureRecognizerDelegate, UI
     
     // MARK: - View Methods
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(mediaPlayerStateChanged), name: VLCMediaPlayerStateChanged, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(mediaPlayerTimeChanged), name: VLCMediaPlayerTimeChanged, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(mediaPlayerStateChanged), name: NSNotification.Name(rawValue: VLCMediaPlayerStateChanged), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(mediaPlayerTimeChanged), name: NSNotification.Name(rawValue: VLCMediaPlayerTimeChanged), object: nil)
         
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         if startPosition > 0.0 {
-            let continueWatchingAlert = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
-            continueWatchingAlert.addAction(UIAlertAction(title: "Continue Watching", style: .Default, handler:{ action in
+            let continueWatchingAlert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+            continueWatchingAlert.addAction(UIAlertAction(title: "Continue Watching", style: .default, handler:{ action in
                 self.mediaplayer.play()
                 self.mediaplayer.position = self.startPosition
                 self.positionSlider.value = self.startPosition
             }))
-            continueWatchingAlert.addAction(UIAlertAction(title: "Start from beginning", style: .Default, handler: { action in
+            continueWatchingAlert.addAction(UIAlertAction(title: "Start from beginning", style: .default, handler: { action in
                 self.mediaplayer.play()
             }))
-            self.presentViewController(continueWatchingAlert, animated: true, completion: nil)
+            self.present(continueWatchingAlert, animated: true, completion: nil)
             
         } else {
             mediaplayer.play()
@@ -281,50 +272,60 @@ class PCTPlayerViewController: UIViewController, UIGestureRecognizerDelegate, UI
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        if let font = NSUserDefaults.standardUserDefaults().stringForKey("PreferredSubtitleFont"),
+        if let font = UserDefaults.standard.string(forKey: "PreferredSubtitleFont"),
             let name = UIFont(name: font, size: 0)?.familyName {
-            (mediaplayer as VLCFontAppearance).setTextRendererFont!(name)
+            (mediaplayer as VLCFontAppearance).setTextRendererFont!(name as NSString)
         }
-        if let style = NSUserDefaults.standardUserDefaults().stringForKey("PreferredSubtitleFontStyle") {
-            (mediaplayer as VLCFontAppearance).setTextRendererFontForceBold!(NSNumber(bool: style == "Bold"))
+        if let style = UserDefaults.standard.string(forKey: "PreferredSubtitleFontStyle") {
+            (mediaplayer as VLCFontAppearance).setTextRendererFontForceBold!(NSNumber(value: (style == "Bold") as Bool))
         }
-        if let size = NSUserDefaults.standardUserDefaults().stringForKey("PreferredSubtitleSize") {
-            (mediaplayer as VLCFontAppearance).setTextRendererFontSize!(NSNumber(float: Float(size.stringByReplacingOccurrencesOfString(" pt", withString: ""))!))
+        if let size = UserDefaults.standard.string(forKey: "PreferredSubtitleSize") {
+            (mediaplayer as VLCFontAppearance).setTextRendererFontSize!(NSNumber(value: Float(size.replacingOccurrences(of: " pt", with: ""))! as Float))
         }
-        if let subtitleColor = NSUserDefaults.standardUserDefaults().stringForKey("PreferredSubtitleColor")?.camelCaseString,
-            let color = UIColor.performSelector(Selector(subtitleColor + "Color")).takeRetainedValue() as? UIColor {
-            (mediaplayer as VLCFontAppearance).setTextRendererFontColor!(NSNumber(unsignedInt: color.hexInt()))
+        if let subtitleColor = UserDefaults.standard.string(forKey: "PreferredSubtitleColor")?.lowerCamelCased,
+            let color = UIColor.perform(Selector(subtitleColor + "Color")).takeRetainedValue() as? UIColor {
+            (mediaplayer as VLCFontAppearance).setTextRendererFontColor!(NSNumber(value: color.hexInt() as UInt32))
         }
-        subtitleSwitcherButton.hidden = subtitles.count == 0
-        subtitleSwitcherButtonWidthConstraint.constant = subtitleSwitcherButton.hidden == true ? 0 : 24
+        subtitleSwitcherButton.isHidden = subtitles.count == 0
+        subtitleSwitcherButtonWidthConstraint.constant = subtitleSwitcherButton.isHidden == true ? 0 : 24
         mediaplayer.delegate = self
         mediaplayer.drawable = movieView
-        mediaplayer.media = VLCMedia(URL: url)
+        mediaplayer.media = VLCMedia(url: url)
         if let nextMedia = nextMedia {
             upNextView.delegate = self
             upNextView.nextEpisodeInfoLabel.text = "Season \(nextMedia.season) Episode \(nextMedia.episode)"
             upNextView.nextEpisodeTitleLabel.text = nextMedia.title
             upNextView.nextShowTitleLabel.text = nextMedia.show!.title
-            TVAPI.sharedInstance.getEpisodeInfo(nextMedia) { (imageURLAsString, subtitles) in
-                self.nextMedia!.coverImageAsString = imageURLAsString
-                self.upNextView.nextEpsiodeThumbImageView.af_setImageWithURL(NSURL(string: self.nextMedia!.coverImageAsString!)!)
-                self.nextMedia!.subtitles = subtitles
-            }
+            TraktManager.shared.getEpisodeMetadata(nextMedia.show.id, episodeNumber: nextMedia.episode, seasonNumber: nextMedia.season, completion: { (image, _, imdb, error) in
+                guard let imdb = imdb else { return }
+                self.nextMedia?.largeBackgroundImage = image
+                if let image = image {
+                   self.upNextView.nextEpisodeThumbImageView.af_setImage(withURL: URL(string: image)!)
+                } else {
+                    self.upNextView.nextEpisodeThumbImageView.image = UIImage(named: "Placeholder")
+                }
+                SubtitlesManager.shared.login({
+                    SubtitlesManager.shared.search(imdbId: imdb, completion: { (subtitles, error) in
+                        guard error == nil else { return }
+                        self.nextMedia?.subtitles = subtitles
+                    })
+                })
+            })
         }
         resetIdleTimer()
         view.addSubview(volumeView)
         for subview in volumeView.subviews {
             if let slider = subview as? UISlider {
-                slider.addTarget(self, action: #selector(volumeChanged), forControlEvents: .ValueChanged)
+                slider.addTarget(self, action: #selector(volumeChanged), for: .valueChanged)
             }
         }
-        tapOnVideoRecognizer.requireGestureRecognizerToFail(doubleTapToZoomOnVideoRecognizer)
+        tapOnVideoRecognizer.require(toFail: doubleTapToZoomOnVideoRecognizer)
     }
 
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         mediaplayer.pause()
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
         if idleTimer != nil {
             idleTimer.invalidate()
             idleTimer = nil
@@ -335,47 +336,47 @@ class PCTPlayerViewController: UIViewController, UIGestureRecognizerDelegate, UI
     
     func mediaPlayerStateChanged() {
         resetIdleTimer()
-        let type: TraktTVAPI.type = media is PCTMovie ? .Movies : .Shows
+        let type: Trakt.MediaType = media is Movie ? .movies : .shows
         switch mediaplayer.state {
-        case .Error:
+        case .error:
             fallthrough
-        case .Ended:
+        case .ended:
             fallthrough
-        case .Stopped:
-            TraktTVAPI.sharedInstance.scrobble(media.id, progress: positionSlider.value, type: type, status: .Finished)
+        case .stopped:
+            TraktManager.shared.scrobble(media.id, progress: positionSlider.value, type: type, status: .finished)
             didFinishPlaying()
-        case .Paused:
-            playPauseButton.setImage(UIImage(named: "Play"), forState: .Normal)
-            TraktTVAPI.sharedInstance.scrobble(media.id, progress: positionSlider.value, type: type, status: .Paused)
-        case .Playing:
-            playPauseButton.setImage(UIImage(named: "Pause"), forState: .Normal)
-            TraktTVAPI.sharedInstance.scrobble(media.id, progress: positionSlider.value, type: type, status: .Watching)
+        case .paused:
+            playPauseButton.setImage(UIImage(named: "Play"), for: .normal)
+            TraktManager.shared.scrobble(media.id, progress: positionSlider.value, type: type, status: .paused)
+        case .playing:
+            playPauseButton.setImage(UIImage(named: "Pause"), for: .normal)
+            TraktManager.shared.scrobble(media.id, progress: positionSlider.value, type: type, status: .watching)
         default:
             break
         }
     }
     
     func mediaPlayerTimeChanged() {
-        if loadingView.hidden == false {
-            positionSlider.hidden = false
-            bufferProgressView!.hidden = false
-            loadingView.hidden = true
-            elapsedTimeLabel.hidden = false
-            remainingTimeLabel.hidden = false
-            videoDimensionsButton.hidden = false
+        if loadingView.isHidden == false {
+            positionSlider.isHidden = false
+            bufferProgressView!.isHidden = false
+            loadingView.isHidden = true
+            elapsedTimeLabel.isHidden = false
+            remainingTimeLabel.isHidden = false
+            videoDimensionsButton.isHidden = false
         }
         positionSlider.value = mediaplayer.position
         remainingTimeLabel.text = mediaplayer.remainingTime.stringValue
         elapsedTimeLabel.text = mediaplayer.time.stringValue
         if nextMedia != nil && (mediaplayer.remainingTime.intValue/1000) == -30 {
             upNextView.show()
-        } else if (mediaplayer.remainingTime.intValue/1000) < -30 && !upNextView.hidden {
+        } else if (mediaplayer.remainingTime.intValue/1000) < -30 && !upNextView.isHidden {
             upNextView.hide()
         }
     }
     
     func volumeChanged() {
-        if toolBarView.hidden {
+        if toolBarView.isHidden {
             toggleControlsVisible()
             resetIdleTimer()
         }
@@ -388,77 +389,72 @@ class PCTPlayerViewController: UIViewController, UIGestureRecognizerDelegate, UI
     
     // MARK: - View changes
     
-    override func traitCollectionDidChange(previousTraitCollection: UITraitCollection?) {
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         switchVideoDimensions()
         for constraint in compactConstraints {
-            constraint.priority = traitCollection.horizontalSizeClass == .Compact ? 999 : 240
+            constraint.priority = traitCollection.horizontalSizeClass == .compact ? 999 : 240
         }
         for constraint in regularConstraints {
-            constraint.priority = traitCollection.horizontalSizeClass == .Compact ? 240 : 999
+            constraint.priority = traitCollection.horizontalSizeClass == .compact ? 240 : 999
         }
-        UIView.animateWithDuration(animationLength, animations: {
+        UIView.animate(withDuration: animationLength, animations: {
             self.view.layoutIfNeeded()
         })
     }
     
     @IBAction func toggleControlsVisible() {
-        shouldHideStatusBar = navigationView.hidden
-        UIView.animateWithDuration(0.25, animations: {
-            if self.toolBarView.hidden {
+        shouldHideStatusBar = navigationView.isHidden
+        UIView.animate(withDuration: 0.25, animations: {
+            if self.toolBarView.isHidden {
                 self.toolBarView.alpha = 1.0
                 self.navigationView.alpha = 1.0
-                self.toolBarView.hidden = false
-                self.navigationView.hidden = false
+                self.toolBarView.isHidden = false
+                self.navigationView.isHidden = false
             } else {
                 self.toolBarView.alpha = 0.0
                 self.navigationView.alpha = 0.0
             }
             self.setNeedsStatusBarAppearanceUpdate()
-            }) { finished in
+            }, completion: { finished in
                 if self.toolBarView.alpha == 0.0 {
-                    self.toolBarView.hidden = true
-                    self.navigationView.hidden = true
+                    self.toolBarView.isHidden = true
+                    self.navigationView.isHidden = true
                 }
-        }
+        }) 
     }
     
     // MARK: - Navigation
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        fixIOS9PopOverAnchor(segue)
-        segue.destinationViewController.popoverPresentationController?.delegate = self
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        segue.destination.popoverPresentationController?.delegate = self
         if segue.identifier == "showSubtitles" {
-            let vc = (segue.destinationViewController as! UINavigationController).viewControllers.first! as! SubtitlesTableViewController
+            let vc = (segue.destination as! UINavigationController).viewControllers.first! as! SubtitlesTableViewController
             vc.dataSourceArray = subtitles
             vc.selectedSubtitle = currentSubtitle
             vc.delegate = self
         } else if segue.identifier == "showDevices" {
-            let vc = (segue.destinationViewController as! UINavigationController).viewControllers.first! as! StreamToDevicesTableViewController
-            if let movie = media as? PCTMovie {
-                vc.castMetadata = PCTCastMetaData(movie: movie, url: url.relativeString!, mediaAssetsPath: directory)
-            } else if let episode = media as? PCTEpisode {
-                vc.castMetadata = PCTCastMetaData(episode: episode, url: url.relativeString!, mediaAssetsPath: directory)
-            }
+            let vc = (segue.destination as! UINavigationController).viewControllers.first! as! StreamToDevicesTableViewController
+            vc.castMetadata = (title: media.title, image: media.smallCoverImage != nil ? URL(string: media.smallCoverImage!) : nil, contentType: media is Movie ? "video/mp4" : "video/x-matroska", subtitles: media.subtitles, url: url.relativeString, mediaAssetsPath: directory)
         }
     }
     
-    func presentationController(controller: UIPresentationController, viewControllerForAdaptivePresentationStyle style: UIModalPresentationStyle) -> UIViewController? {
-        (controller.presentedViewController as! UINavigationController).topViewController?.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Cancel", style: .Plain, target: self, action: #selector(dismiss))
+    func presentationController(_ controller: UIPresentationController, viewControllerForAdaptivePresentationStyle style: UIModalPresentationStyle) -> UIViewController? {
+        (controller.presentedViewController as! UINavigationController).topViewController?.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(cancelButtonPressed))
         return controller.presentedViewController
         
     }
     
     
-    func dismiss() {
-        dismissViewControllerAnimated(true, completion: nil)
+    func cancelButtonPressed() {
+        self.dismiss(animated: true, completion: nil)
     }
     
     // MARK: - Timers
     
     func resetIdleTimer() {
         if idleTimer == nil {
-            idleTimer = NSTimer.scheduledTimerWithTimeInterval(5, target: self, selector: #selector(idleTimerExceeded), userInfo: nil, repeats: false)
-            if !mediaplayer.playing || loadingView.hidden == false // If paused or loading, cancel timer so UI doesn't disappear
+            idleTimer = Timer.scheduledTimer(timeInterval: 5, target: self, selector: #selector(idleTimerExceeded), userInfo: nil, repeats: false)
+            if !mediaplayer.isPlaying || loadingView.isHidden == false // If paused or loading, cancel timer so UI doesn't disappear
             {
                 idleTimer.invalidate()
                 idleTimer = nil
@@ -472,19 +468,19 @@ class PCTPlayerViewController: UIViewController, UIGestureRecognizerDelegate, UI
     
     func idleTimerExceeded() {
         idleTimer = nil
-        if !toolBarView.hidden {
+        if !toolBarView.isHidden {
             toggleControlsVisible()
         }
     }
     
     // MARK: - Status Bar
     
-    override func prefersStatusBarHidden() -> Bool {
+    override var prefersStatusBarHidden : Bool {
         return !shouldHideStatusBar
     }
     
-    override func preferredStatusBarStyle() -> UIStatusBarStyle {
-        return .Default
+    override var preferredStatusBarStyle : UIStatusBarStyle {
+        return .default
     }
     
 }
@@ -504,19 +500,19 @@ class PCTPlayerViewController: UIViewController, UIGestureRecognizerDelegate, UI
      
      - SeeAlso: [All colors available here]
      */
-    optional func setTextRendererFontColor(fontColor: NSNumber)
+    @objc optional func setTextRendererFontColor(_ fontColor: NSNumber)
     /**
      Toggle bold on subtitle font.
      
      - Parameter fontForceBold: `NSNumber` wrapped `Bool`.
      */
-    optional func setTextRendererFontForceBold(fontForceBold: NSNumber)
+    @objc optional func setTextRendererFontForceBold(_ fontForceBold: NSNumber)
     /**
      Change the subtitle font.
      
      - Parameter fontname: `NSString` representation of font name. Eg `UIFonts` familyName property.
      */
-    optional func setTextRendererFont(fontname: NSString)
+    @objc optional func setTextRendererFont(_ fontname: NSString)
     /**
      Change the subtitle font size.
      
@@ -524,34 +520,7 @@ class PCTPlayerViewController: UIViewController, UIGestureRecognizerDelegate, UI
      
      - Important: Provide the font in reverse size as `libvlc` sets the text matrix to the identity matrix which reverses the font size. Ie. 5pt is really big and 100pt is really small.
      */
-    optional func setTextRendererFontSize(fontSize: NSNumber)
+    @objc optional func setTextRendererFontSize(_ fontSize: NSNumber)
 }
 
 extension VLCMediaPlayer: VLCFontAppearance {}
-
-func downloadSubtitle(path: String, fileName suggestedName: String? = nil, downloadDirectory directory: NSURL, covertToVTT: Bool, completion: (subtitlePath: NSURL) -> Void) {
-    var downloadDirectory: NSURL!
-    var zippedFilePath: NSURL!
-    var fileName: String!
-    Alamofire.download(.GET, path, destination: { (temporaryURL, response) -> NSURL in
-        fileName = suggestedName != nil ? suggestedName! : response.suggestedFilename!
-        downloadDirectory = directory.URLByAppendingPathComponent("Subtitles")
-        if !NSFileManager.defaultManager().fileExistsAtPath(downloadDirectory.relativePath!) {
-            try! NSFileManager.defaultManager().createDirectoryAtURL(downloadDirectory, withIntermediateDirectories: true, attributes: nil)
-        }
-        zippedFilePath = downloadDirectory.URLByAppendingPathComponent(fileName)
-        if NSFileManager.defaultManager().fileExistsAtPath(zippedFilePath.relativePath!) {
-            try! NSFileManager.defaultManager().removeItemAtPath(zippedFilePath.relativePath!)
-        }
-        return zippedFilePath
-    }).validate().response { (_, _, _, error) in
-        if let error = error {
-            print(error)
-            return
-        }
-        let filePath = downloadDirectory.relativePath! + "/" + fileName.stringByReplacingOccurrencesOfString(".gz", withString: "")
-        NSFileManager.defaultManager().createFileAtPath(filePath, contents: NSFileManager.defaultManager().contentsAtPath(zippedFilePath.relativePath!)?.gunzippedData(), attributes: nil)
-        covertToVTT ? completion(subtitlePath: SRT.sharedConverter().convertFileToVTT(NSURL(fileURLWithPath: filePath))) : completion(subtitlePath: NSURL(fileURLWithPath: filePath))
-        
-    }
-}

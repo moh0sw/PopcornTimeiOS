@@ -13,42 +13,42 @@ class UpNextView: UIVisualEffectView {
     @IBOutlet var nextEpisodeInfoLabel: UILabel!
     @IBOutlet var nextEpisodeTitleLabel: UILabel!
     @IBOutlet var nextShowTitleLabel: UILabel!
-    @IBOutlet var nextEpsiodeThumbImageView: UIImageView!
+    @IBOutlet var nextEpisodeThumbImageView: UIImageView!
     @IBOutlet var nextEpisodeCountdownLabel: UILabel!
     @IBOutlet var leadingConstraint: NSLayoutConstraint!
     @IBOutlet var trailingConstraint: NSLayoutConstraint!
     
     weak var delegate: UpNextViewDelegate?
-    private var timer: NSTimer!
-    private var updateTimer: NSTimer!
+    fileprivate var timer: Timer!
+    fileprivate var updateTimer: Timer!
     
     func show() {
-        if hidden {
-            hidden = false
-            trailingConstraint.active = false
-            leadingConstraint.active = true
+        if isHidden {
+            isHidden = false
+            trailingConstraint.isActive = false
+            leadingConstraint.isActive = true
             delegate?.constraintsWereUpdated(willHide: false)
             startTimer()
         }
     }
     
     func hide() {
-        if !hidden {
-            trailingConstraint.active = true
-            leadingConstraint.active = false
+        if !isHidden {
+            trailingConstraint.isActive = true
+            leadingConstraint.isActive = false
             delegate?.constraintsWereUpdated(willHide: true)
         }
     }
     
     func startTimer() {
         var delay = 10
-        updateTimer = NSTimer.every(1.0) {
+        updateTimer = Timer.every(1.0) {
             if delay - 1 >= 0 {
                 delay -= 1
                 self.nextEpisodeCountdownLabel.text = String(delay)
             }
         }
-        timer = NSTimer.after(10.0, {
+        timer = Timer.after(10.0, {
             self.updateTimer.invalidate()
             self.updateTimer = nil
             self.delegate?.timerFinished()
@@ -73,11 +73,11 @@ class UpNextView: UIVisualEffectView {
 
 extension PCTPlayerViewController {
     func constraintsWereUpdated(willHide hide: Bool) {
-        UIView.animateWithDuration(animationLength, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
+        UIView.animate(withDuration: animationLength, delay: 0, options: UIViewAnimationOptions(), animations: { () -> Void in
             self.view.layoutIfNeeded()
             }, completion: { (finished) in
                 if hide {
-                   self.upNextView.hidden = true
+                   self.upNextView.isHidden = true
                 }
         })
     }

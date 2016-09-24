@@ -2,12 +2,13 @@
 
 import UIKit
 import AlamofireImage
+import PopcornKit
 
 class AnimeCollectionViewController: ItemOverviewCollectionViewController, UIPopoverPresentationControllerDelegate, GenresDelegate, ItemOverviewDelegate {
     
-    var anime = [PCTShow]()
+    var anime = [Show]()
     
-    var currentGenre = AnimeAPI.genres.All {
+    var currentGenre = AnimeManager.Genres.all {
         didSet {
             anime.removeAll()
             collectionView?.reloadData()
@@ -15,7 +16,7 @@ class AnimeCollectionViewController: ItemOverviewCollectionViewController, UIPop
             loadNextPage(currentPage)
         }
     }
-    var currentFilter = AnimeAPI.filters.Popularity {
+    var currentFilter = AnimeManager.Filters.popularity {
         didSet {
             anime.removeAll()
             collectionView?.reloadData()
@@ -24,13 +25,13 @@ class AnimeCollectionViewController: ItemOverviewCollectionViewController, UIPop
         }
     }
     
-    @IBAction func searchBtnPressed(sender: UIBarButtonItem) {
-        presentViewController(searchController, animated: true, completion: nil)
+    @IBAction func searchBtnPressed(_ sender: UIBarButtonItem) {
+        present(searchController, animated: true, completion: nil)
     }
     
-    @IBAction func filter(sender: AnyObject) {
+    @IBAction func filter(_ sender: AnyObject) {
         self.collectionView?.performBatchUpdates({
-            self.filterHeader!.hidden = !self.filterHeader!.hidden
+            self.filterHeader!.isHidden = !self.filterHeader!.isHidden
             }, completion: nil)
     }
     
@@ -40,48 +41,47 @@ class AnimeCollectionViewController: ItemOverviewCollectionViewController, UIPop
         loadNextPage(currentPage)
     }
     
-    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
-        if let collectionView = object as? UICollectionView where collectionView == self.collectionView! && keyPath! == "frame" {
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        if let collectionView = object as? UICollectionView , collectionView == self.collectionView! && keyPath! == "frame" {
             collectionView.performBatchUpdates(nil, completion: nil)
         }
     }
     
-    func segmentedControlDidChangeSegment(segmentedControl: UISegmentedControl) {
-        currentFilter = AnimeAPI.filters.arrayValue[segmentedControl.selectedSegmentIndex]
+    func segmentedControlDidChangeSegment(_ segmentedControl: UISegmentedControl) {
+        currentFilter = AnimeManager.Filters.array[segmentedControl.selectedSegmentIndex]
     }
     
     // MARK: - ItemOverviewDelegate
     
-    func loadNextPage(pageNumber: Int, searchTerm: String? = nil, removeCurrentData: Bool = false) {
-        guard isLoading else {
-            isLoading = true
-            hasNextPage = false
-            AnimeAPI.sharedInstance.load(currentPage, filterBy: .Popularity, searchTerm: searchTerm) { items in
-                self.isLoading = false
-                if removeCurrentData {
-                    self.anime.removeAll()
-                }
-                self.anime += items
-                if items.isEmpty // If the array passed in is empty, there are no more results so the content inset of the collection view is reset.
-                {
-                    self.collectionView?.contentInset = UIEdgeInsetsMake(69, 0, 0, 0)
-                } else {
-                    self.hasNextPage = true
-                }
-                self.collectionView?.reloadData()
+    func loadNextPage(_ pageNumber: Int, searchTerm: String? = nil, removeCurrentData: Bool = false) {
+        guard !isLoading else { return }
+        isLoading = true
+        hasNextPage = false
+        PopcornKit.loadAnime(currentPage, filterBy: currentFilter, genre: currentGenre, searchTerm: searchTerm, completion: { (anime, error) in
+            self.isLoading = false
+            guard let anime = anime else { self.error = error; self.collectionView?.reloadData(); return }
+            if removeCurrentData {
+                self.anime.removeAll()
             }
-            return
-        }
+            self.anime += anime
+            if anime.isEmpty // If the array passed in is empty, there are no more results so the content inset of the collection view is reset.
+            {
+                self.collectionView?.contentInset.bottom = 0.0
+            } else {
+                self.hasNextPage = true
+            }
+            self.collectionView?.reloadData()
+        })
     }
     
-    func didDismissSearchController(searchController: UISearchController) {
+    func didDismissSearchController(_ searchController: UISearchController) {
         self.anime.removeAll()
         collectionView?.reloadData()
         self.currentPage = 1
         loadNextPage(self.currentPage)
     }
     
-    func search(text: String) {
+    func search(_ text: String?) {
         self.anime.removeAll()
         collectionView?.reloadData()
         self.currentPage = 1
@@ -94,42 +94,41 @@ class AnimeCollectionViewController: ItemOverviewCollectionViewController, UIPop
     
     // MARK: - Navigation
     
-    @IBAction func genresButtonTapped(sender: UIBarButtonItem) {
-        let controller = cache.objectForKey(TraktTVAPI.type.Animes.rawValue) as? UINavigationController ?? (storyboard?.instantiateViewControllerWithIdentifier("GenresNavigationController"))! as! UINavigationController
-        cache.setObject(controller, forKey: TraktTVAPI.type.Animes.rawValue)
-        controller.modalPresentationStyle = .Popover
+    @IBAction func genresButtonTapped(_ sender: UIBarButtonItem) {
+        let controller = cache.object(forKey: Trakt.MediaType.animes.rawValue as AnyObject) ?? (storyboard?.instantiateViewController(withIdentifier: "GenresNavigationController"))! as! UINavigationController
+        cache.setObject(controller, forKey: Trakt.MediaType.animes.rawValue as AnyObject)
+        controller.modalPresentationStyle = .popover
         controller.popoverPresentationController?.barButtonItem = sender
         controller.popoverPresentationController?.backgroundColor = UIColor(red: 30.0/255.0, green: 30.0/255.0, blue: 30.0/255.0, alpha: 1.0)
-        (controller.viewControllers[0] as! GenresTableViewController).delegate = self
-        presentViewController(controller, animated: true, completion: nil)
+        (controller.viewControllers.first as! GenresTableViewController).delegate = self
+        present(controller, animated: true, completion: nil)
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        fixIOS9PopOverAnchor(segue)
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "showDetail" {
-            let vc = segue.destinationViewController as! TVShowContainerViewController
-            vc.currentItem = anime[(collectionView?.indexPathForCell(sender as! CoverCollectionViewCell)?.row)!]
-            vc.currentType = .Animes
+            let vc = segue.destination as! TVShowContainerViewController
+            vc.currentItem = anime[collectionView!.indexPath(for: sender as! CoverCollectionViewCell)!.row]
+            vc.currentType = .animes
         }
     }
     
     // MARK: - Collection view data source
     
-    override func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
+    override func numberOfSections(in collectionView: UICollectionView) -> Int {
         collectionView.backgroundView = nil
         if anime.count == 0 {
             if error != nil {
-                let background = NSBundle.mainBundle().loadNibNamed("TableViewBackground", owner: self, options: nil).first as! TableViewBackground
+                let background = Bundle.main.loadNibNamed("TableViewBackground", owner: self, options: nil)?.first as! TableViewBackground
                 background.setUpView(error: error!)
                 collectionView.backgroundView = background
             } else if isLoading {
-                let indicator = UIActivityIndicatorView(activityIndicatorStyle: .White)
+                let indicator = UIActivityIndicatorView(activityIndicatorStyle: .white)
                 indicator.center = collectionView.center
                 collectionView.backgroundView = indicator
                 indicator.sizeToFit()
                 indicator.startAnimating()
             } else {
-                let background = NSBundle.mainBundle().loadNibNamed("TableViewBackground", owner: self, options: nil).first as! TableViewBackground
+                let background = Bundle.main.loadNibNamed("TableViewBackground", owner: self, options: nil)?.first as! TableViewBackground
                 background.setUpView(image: UIImage(named: "Search")!, title: "No results found.", description: "No search results found for \(searchController.searchBar.text!). Please check the spelling and try again.")
                 collectionView.backgroundView = background
             }
@@ -137,30 +136,30 @@ class AnimeCollectionViewController: ItemOverviewCollectionViewController, UIPop
         return 1
     }
     
-    override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return anime.count
     }
     
-    override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("cell", forIndexPath: indexPath) as! CoverCollectionViewCell
+    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! CoverCollectionViewCell
         cell.titleLabel.text = anime[indexPath.row].title
         cell.yearLabel.text = anime[indexPath.row].year
-        if let image = anime[indexPath.row].coverImageAsString,
-            let url = NSURL(string: image) {
-            cell.coverImage.af_setImageWithURL(url, placeholderImage: UIImage(named: "Placeholder"), imageTransition: .CrossDissolve(animationLength))
+        if let image = anime[indexPath.row].smallCoverImage,
+            let url = URL(string: image) {
+            cell.coverImage.af_setImage(withURL: url, placeholderImage: UIImage(named: "Placeholder"), imageTransition: .crossDissolve(animationLength))
         }
         return cell
     }
     
-    override func collectionView(collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, atIndexPath indexPath: NSIndexPath) -> UICollectionReusableView {
+    override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         filterHeader = filterHeader ?? {
-            let reuseableView = collectionView.dequeueReusableSupplementaryViewOfKind(kind, withReuseIdentifier: "filter", forIndexPath: indexPath) as! FilterCollectionReusableView
+            let reuseableView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "filter", for: indexPath) as! FilterCollectionReusableView
             reuseableView.segmentedControl?.removeAllSegments()
-            for (index, filterValue) in AnimeAPI.filters.arrayValue.enumerate() {
-                reuseableView.segmentedControl?.insertSegmentWithTitle(filterValue.stringValue(), atIndex: index, animated: false)
+            for (index, filterValue) in AnimeManager.Filters.array.enumerated() {
+                reuseableView.segmentedControl?.insertSegment(withTitle: filterValue.string, at: index, animated: false)
             }
-            reuseableView.hidden = true
-            reuseableView.segmentedControl?.addTarget(self, action: #selector(segmentedControlDidChangeSegment(_:)), forControlEvents: .ValueChanged)
+            reuseableView.isHidden = true
+            reuseableView.segmentedControl?.addTarget(self, action: #selector(segmentedControlDidChangeSegment(_:)), for: .valueChanged)
             reuseableView.segmentedControl?.selectedSegmentIndex = 0
             return reuseableView
             }()
@@ -169,17 +168,15 @@ class AnimeCollectionViewController: ItemOverviewCollectionViewController, UIPop
     
     // MARK: - GenresDelegate
     
-    func finished(genreArrayIndex: Int) {
-        navigationItem.title = AnimeAPI.genres.arrayValue[genreArrayIndex].rawValue
-        if AnimeAPI.genres.arrayValue[genreArrayIndex] == .All {
+    func finished(_ genreArrayIndex: Int) {
+        navigationItem.title = AnimeManager.Genres.array[genreArrayIndex].rawValue
+        if AnimeManager.Genres.array[genreArrayIndex] == .all {
             navigationItem.title = "Anime"
         }
-        currentGenre = AnimeAPI.genres.arrayValue[genreArrayIndex]
+        currentGenre = AnimeManager.Genres.array[genreArrayIndex]
     }
     
-    func populateDataSourceArray(inout array: [String]) {
-        for genre in AnimeAPI.genres.arrayValue {
-            array.append(genre.rawValue)
-        }
+    func populateDataSourceArray(_ array: inout [String]) {
+        array = AnimeManager.Genres.array.map({$0.rawValue})
     }
 }

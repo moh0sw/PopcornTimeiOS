@@ -8,13 +8,13 @@ class TableViewBackground: UIView {
     @IBOutlet var descriptionLabel: UILabel!
     
     
-    func setUpView(image image: UIImage, title: String? = nil, description: String? = nil) {
+    func setUpView(image: UIImage, title: String? = nil, description: String? = nil) {
         imageView.image = image
         titleLabel.text = title
         descriptionLabel.text = description
     }
     
-    func setUpView(error error: NSError) {
+    func setUpView(error: NSError) {
         var helpfulDescription = error.localizedDescription
         var title = String()
         switch error.code {

@@ -1,6 +1,7 @@
 
 
 import UIKit
+import PopcornKit
 
 class TVShowDetailTableViewCell: UITableViewCell {
     @IBOutlet var titleLabel: UILabel!
@@ -9,16 +10,16 @@ class TVShowDetailTableViewCell: UITableViewCell {
     
     var tvdbId: String! {
         didSet {
-            watchedButton.setImage(watchedButtonImage, forState: .Normal)
+            watchedButton.setImage(watchedButtonImage, for: .normal)
         }
     }
     
     var watchedButtonImage: UIImage {
-        return WatchlistManager.episodeManager.isWatched(tvdbId) ? UIImage(named: "WatchedOn")! : UIImage(named: "WatchedOff")!
+        return WatchlistManager.episode.isWatched(tvdbId) ? UIImage(named: "WatchedOn")! : UIImage(named: "WatchedOff")!
     }
     
     @IBAction func toggleWatched() {
-        WatchlistManager.episodeManager.toggleWatched(tvdbId)
-        watchedButton.setImage(watchedButtonImage, forState: .Normal)
+        WatchlistManager.episode.toggleWatched(tvdbId)
+        watchedButton.setImage(watchedButtonImage, for: .normal)
     }
 }

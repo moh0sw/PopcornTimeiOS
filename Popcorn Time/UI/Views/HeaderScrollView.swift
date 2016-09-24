@@ -3,21 +3,21 @@
 import UIKit
 
 public protocol HeaderScrollViewDelegate {
-    func headerDidScroll(headerView: UIView, progressiveness: Float)
+    func headerDidScroll(_ headerView: UIView, progressiveness: Float)
 }
 
 private enum ScrollDirection {
-    case Down
-    case Up
+    case down
+    case up
 }
 
-@IBDesignable public class HeaderScrollView: UIScrollView {
+@IBDesignable open class HeaderScrollView: UIScrollView {
     @IBInspectable var headerView: UIView = UIView() {
         didSet {
-            if let heightConstraint = headerView.constraints.filter({$0.firstAttribute == .Height}).first {
+            if let heightConstraint = headerView.constraints.filter({$0.firstAttribute == .height}).first {
                 headerHeightConstraint = heightConstraint
             } else {
-                headerHeightConstraint = NSLayoutConstraint(item: headerView, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1.0, constant: maximumHeaderHeight)
+                headerHeightConstraint = NSLayoutConstraint(item: headerView, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: maximumHeaderHeight)
             }
         }
     }
@@ -26,28 +26,28 @@ private enum ScrollDirection {
     
     @IBInspectable var minimumHeaderHeight: CGFloat = 22
     
-    @IBOutlet private var headerHeightConstraint: NSLayoutConstraint! {
+    @IBOutlet fileprivate var headerHeightConstraint: NSLayoutConstraint! {
         didSet {
             guard !headerView.constraints.contains(headerHeightConstraint) else {return}
             headerView.addConstraint(headerHeightConstraint)
         }
     }
     
-    public var programaticScrollEnabled = false
+    open var programaticScrollEnabled = false
     
-    private var scrollViewScrollingProgress: CGFloat {
+    fileprivate var scrollViewScrollingProgress: CGFloat {
         return (contentOffset.y + contentInset.top) / (contentSize.height + contentInset.top + contentInset.bottom - bounds.size.height)
     }
-    private var overallScrollingProgress: CGFloat {
+    fileprivate var overallScrollingProgress: CGFloat {
         return headerScrollingProgress * scrollViewScrollingProgress
     }
-    private var headerScrollingProgress: CGFloat {
+    fileprivate var headerScrollingProgress: CGFloat {
         get {
             return 1.0 - (headerHeightConstraint.constant - minimumHeaderHeight)/(maximumHeaderHeight - minimumHeaderHeight)
         }
     }
     
-    private var lastTranslation: CGFloat = 0.0
+    fileprivate var lastTranslation: CGFloat = 0.0
 //    private var scrollingIndicator: UIView
 //    
 //    public required init?(coder aDecoder: NSCoder) {
@@ -57,15 +57,15 @@ private enum ScrollDirection {
 //    }
     
     
-    override public var contentOffset: CGPoint {
+    override open var contentOffset: CGPoint {
         didSet {
             if !programaticScrollEnabled {
-                super.contentOffset = CGPointZero
+                super.contentOffset = CGPoint.zero
             }
         }
     }
     
-    public override func layoutSubviews() {
+    open override func layoutSubviews() {
         super.layoutSubviews()
         if programaticScrollEnabled == true && headerHeightConstraint.constant != minimumHeaderHeight {
             headerHeightConstraint.constant = minimumHeaderHeight
@@ -76,13 +76,13 @@ private enum ScrollDirection {
         }
     }
     
-    @IBAction func handleGesture(sender: UIPanGestureRecognizer) {
-        var translation = sender.translationInView(sender.view!.superview!)
+    @IBAction func handleGesture(_ sender: UIPanGestureRecognizer) {
+        var translation = sender.translation(in: sender.view!.superview!)
         isOverScrolling ? translation.y /= isOverScrollingBottom ? overScrollingBottomFraction : overScrollingTopFraction : ()
         let offset = translation.y - lastTranslation
-        let scrollDirection: ScrollDirection = offset > 0 ? .Up : .Down
+        let scrollDirection: ScrollDirection = offset > 0 ? .up : .down
         
-        if sender.state == .Changed || sender.state == .Began {
+        if sender.state == .changed || sender.state == .began {
             if (headerHeightConstraint.constant + offset) >= minimumHeaderHeight && programaticScrollEnabled == false {
                 if ((headerHeightConstraint.constant + offset) - minimumHeaderHeight) <= 8.0 // Stops scrolling from sticking just before we transition to scroll view input.
                 {
@@ -95,7 +95,7 @@ private enum ScrollDirection {
             }
             if headerHeightConstraint.constant == minimumHeaderHeight && isAtTop
             {
-                if scrollDirection == .Up {
+                if scrollDirection == .up {
                     programaticScrollEnabled = false
                 } else // If header is fully collapsed and we are not at the end of scroll view, hand scrolling to scroll view
                 {
@@ -103,7 +103,7 @@ private enum ScrollDirection {
                 }
             }
             lastTranslation = translation.y
-        } else if sender.state == .Ended {
+        } else if sender.state == .ended {
             if isOverScrollingTop {
                 headerHeightConstraint.constant = maximumHeaderHeight
                 updateScrolling(true)
@@ -114,14 +114,14 @@ private enum ScrollDirection {
         }
     }
     
-    func updateScrolling(animated: Bool) {
+    func updateScrolling(_ animated: Bool) {
         guard animated else {return}
-        UIView.animateWithDuration(0.45, delay: 0.0, usingSpringWithDamping: 0.9, initialSpringVelocity: 0.3, options: [.AllowUserInteraction, .CurveEaseOut], animations: {
+        UIView.animate(withDuration: 0.45, delay: 0.0, usingSpringWithDamping: 0.9, initialSpringVelocity: 0.3, options: [.allowUserInteraction, .curveEaseOut], animations: {
             self.superview?.layoutIfNeeded()
             }, completion: nil)
     }
     
-    func scrollToEnd(animated: Bool) {
+    func scrollToEnd(_ animated: Bool) {
         headerHeightConstraint.constant -= verticalOffsetForBottom
         
         if headerHeightConstraint.constant > maximumHeaderHeight { headerHeightConstraint.constant = maximumHeaderHeight }
@@ -133,7 +133,7 @@ private enum ScrollDirection {
         updateScrolling(animated)
     }
     
-    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         return gestureRecognizers!.contains(gestureRecognizer) && gestureRecognizers!.contains(otherGestureRecognizer)
     }
 
