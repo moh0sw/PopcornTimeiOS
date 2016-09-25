@@ -218,21 +218,21 @@ class TVShowDetailViewController: DetailItemOverviewViewController, UITableViewD
                                 GCKCastContext.sharedInstance().sessionManager.startSession(with: castDevice!)
                             }
                             let castPlayerViewController = self.storyboard?.instantiateViewController(withIdentifier: "CastPlayerViewController") as! CastPlayerViewController
-                            let castMetadata: CastMetaData = (title: media.title, image: media.show!.smallCoverImage != nil ? URL(string: media.show!.smallCoverImage!) : nil, contentType: "video/x-matroska", subtitles: media.subtitles, url: videoFileURL!.relativeString, mediaAssetsPath: videoFilePath!.deletingLastPathComponent())
+                            let castMetadata: CastMetaData = (title: media.title, image: media.show!.smallCoverImage != nil ? URL(string: media.show!.smallCoverImage!) : nil, contentType: "video/x-matroska", subtitles: media.subtitles, url: videoFileURL.relativeString, mediaAssetsPath: videoFilePath.deletingLastPathComponent())
                             GoogleCastManager(castMetadata: castMetadata).sessionManager(GCKCastContext.sharedInstance().sessionManager, didStart: GCKCastContext.sharedInstance().sessionManager.currentSession!)
                             castPlayerViewController.backgroundImage = self.backgroundImageView.image
                             castPlayerViewController.title = media.title
                             castPlayerViewController.media = media
                             castPlayerViewController.startPosition = TimeInterval(currentProgress)
-                            castPlayerViewController.directory = videoFilePath!.deletingLastPathComponent()
+                            castPlayerViewController.directory = videoFilePath.deletingLastPathComponent()
                             self.present(castPlayerViewController, animated: true, completion: nil)
                         } else {
-                            moviePlayer.play(media, fromURL: videoFileURL!, progress: currentProgress, nextEpisode: nextEpisode, directory: videoFilePath!.deletingLastPathComponent())
+                            moviePlayer.play(media, fromURL: videoFileURL, progress: currentProgress, nextEpisode: nextEpisode, directory: videoFilePath.deletingLastPathComponent())
                             self.present(moviePlayer, animated: true, completion: nil)
                         }
                 }) { error in
                     loadingViewController.cancelButtonPressed()
-                    let alert = UIAlertController(title: "Error", message: error!.localizedDescription, preferredStyle: .alert)
+                    let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
                     alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
                     self.present(alert, animated: true, completion: nil)
                     print("Error is \(error)")

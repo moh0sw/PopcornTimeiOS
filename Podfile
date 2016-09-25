@@ -7,7 +7,6 @@ source 'https://github.com/angryDuck2/CocoaSpecs'
 target "Popcorn Time" do
     pod 'PopcornTorrent', git: 'https://github.com/PopcornTimeTV/PopcornTorrent.git'
     pod 'PopcornKit', git: 'https://github.com/PopcornTimeTV/PopcornKit.git', :branch => 'new-apis'
-    pod 'AlamofireXMLRPC', :git => 'https://github.com/PopcornTimeTV/AlamofireXMLRPC.git'
 
     pod 'Alamofire', '~> 4.0'
     pod 'AlamofireImage', '~> 3.0'

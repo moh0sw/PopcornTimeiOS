@@ -582,6 +582,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 6F8B9328C0A1586670968A68 /* Pods-Popcorn Time.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -600,6 +601,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 32BEB75AC9001224E0BB6EF0 /* Pods-Popcorn Time.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "${SRCROOT}/Popcorn Time/Entitlements.plist";
 				CODE_SIGN_IDENTITY = "iPhone Developer";

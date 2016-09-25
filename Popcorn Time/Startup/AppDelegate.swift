@@ -3,7 +3,7 @@
 import UIKit
 import Reachability
 import AlamofireNetworkActivityIndicator
-import GoogleCast
+import GoogleCast.GCKCastContext
 import PopcornKit
 
 let animationLength = 0.33
@@ -16,7 +16,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         NetworkActivityIndicatorManager.shared.isEnabled = true
-        window?.tintColor = UIColor(red:0.37, green:0.41, blue:0.91, alpha:1.0)
+        window?.tintColor = UIColor.app
         reachability?.startNotifier()
         NotificationCenter.default.addObserver(self, selector: #selector(reachabilityChanged(_:)), name: NSNotification.Name.reachabilityChanged, object: nil)
         if !UserDefaults.standard.bool(forKey: "TOSAccepted") {
