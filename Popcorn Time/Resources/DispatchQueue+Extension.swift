@@ -23,7 +23,7 @@ extension DispatchQueue {
         return cancelableBlock
     }
     
-    private static var _onceTracker = [String]()
+    @nonobjc private static var _onceTracker = [String]()
     
     /**
      Executes a block of code, associated with a unique token, only once.  The code is thread safe and will

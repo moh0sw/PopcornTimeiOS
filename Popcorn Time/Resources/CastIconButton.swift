@@ -1,6 +1,7 @@
 
 
 import UIKit
+import GoogleCast.GCKCommon
 
 class CastIconButton: UIButton {
     

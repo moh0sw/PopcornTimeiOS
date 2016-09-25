@@ -95,7 +95,7 @@ extension UIView {
         }
     }
     
-    var parentViewController: UIViewController? {
+    @nonobjc var parentViewController: UIViewController? {
         var parentResponder: UIResponder? = self
         while parentResponder != nil {
             parentResponder = parentResponder!.next
@@ -264,11 +264,11 @@ extension String {
         return range(of: aString, options: NSString.CompareOptions.caseInsensitive) != nil
     }
     /// Produce a string of which all spaces are removed.
-    var whiteSpacelessed: String {
+    @nonobjc var whiteSpacelessed: String {
         return replacingOccurrences(of: " ", with: "")
     }
     /// Produce a string of which all spaces are removed and all letters capitalised except for the first.
-    var lowerCamelCased: String {
+    @nonobjc var lowerCamelCased: String {
         guard characters.count < 1 else {
             var camelString = capitalized.whiteSpacelessed
             camelString.replaceSubrange(startIndex..<characters.index(startIndex, offsetBy: 1), with: String(capitalized.characters.first!).lowercased())
@@ -310,7 +310,7 @@ func += <K, V> (left: inout [K:V], right: [K:V]) {
 
 extension Locale {
     
-    static var langs: [String: String] {
+    @nonobjc static var langs: [String: String] {
         get {
             return [
                 "af": "Afrikaans",
@@ -562,7 +562,7 @@ extension UITableView {
         }
     }
     
-    var indexPathsForAllCells: [IndexPath] {
+    @nonobjc var indexPathsForAllCells: [IndexPath] {
         var allIndexPaths = [IndexPath]()
         for section in 0..<numberOfSections {
             for row in 0..<numberOfRows(inSection: section) {
@@ -576,7 +576,7 @@ extension UITableView {
 // MARK: - CGSize
 
 extension CGSize {
-    static let max = CGSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude)
+    @nonobjc static let max = CGSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude)
 }
 
 // MARK: - UIViewController
@@ -590,7 +590,7 @@ extension UIViewController {
     
     func dismissUntilAnimated<T: UIViewController>(_ animated: Bool, viewController: T.Type, completion: ((_ viewController: T) -> Void)?) {
         var vc = presentingViewController!
-        while let new = vc.presentingViewController , !(new is T) {
+        while let new = vc.presentingViewController, !(new is T) {
             vc = new
         }
         vc.dismiss(animated: animated, completion: {
@@ -602,20 +602,20 @@ extension UIViewController {
 // MARK: UIScrollView
 
 extension UIScrollView {
-    var isAtTop: Bool {
+    @nonobjc var isAtTop: Bool {
         return contentOffset.y <= verticalOffsetForTop
     }
     
-    var isAtBottom: Bool {
+    @nonobjc var isAtBottom: Bool {
         return contentOffset.y >= verticalOffsetForBottom
     }
     
-    var verticalOffsetForTop: CGFloat {
+    @nonobjc var verticalOffsetForTop: CGFloat {
         let topInset = contentInset.top
         return -topInset
     }
     
-    var verticalOffsetForBottom: CGFloat {
+    @nonobjc var verticalOffsetForBottom: CGFloat {
         let scrollViewHeight = bounds.height
         let scrollContentSizeHeight = contentSize.height
         let bottomInset = contentInset.bottom
@@ -637,7 +637,7 @@ extension UserDefaults {
 // MARK: - UIColor 
 
 extension UIColor {
-    static var app = UIColor(red:0.37, green:0.41, blue:0.91, alpha:1.0)
+    @nonobjc static var app = UIColor(red:0.37, green:0.41, blue:0.91, alpha:1.0)
     
     class func systemColors() -> [UIColor] {
         return [UIColor.black, UIColor.darkGray, UIColor.lightGray, UIColor.white, UIColor.gray, UIColor.red, UIColor.green, UIColor.blue, UIColor.cyan, UIColor.yellow, UIColor.magenta, UIColor.orange, UIColor.purple, UIColor.brown]
@@ -771,7 +771,7 @@ extension GCKMediaTextTrackStyle {
 
 // MARK: - UITextView
 
-@IBDesignable open class PCTTextView: UITextView {
+@IBDesignable class PCTTextView: UITextView {
     
     @IBInspectable var moreButtonText: String = "...more" {
         didSet {
@@ -791,11 +791,11 @@ extension GCKMediaTextTrackStyle {
         }
     }
     
-    fileprivate var heightConstraint: NSLayoutConstraint!
+    private var heightConstraint: NSLayoutConstraint!
     
-    open let moreButton = UIButton(type: .system)
+    let moreButton = UIButton(type: .system)
     
-    required public init?(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         moreButtonBackgroundColor = backgroundColor
         heightConstraint = NSLayoutConstraint(item: self, attribute: .height, relatedBy: .lessThanOrEqual, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: maxHeight)
@@ -809,7 +809,7 @@ extension GCKMediaTextTrackStyle {
         loadButton()
     }
     
-    fileprivate func loadButton() {
+    private func loadButton() {
         textContainer.maximumNumberOfLines = 0
         textContainer.lineBreakMode = .byWordWrapping
         moreButton.frame = CGRect(origin: CGPoint.zero, size: CGSize.max)
@@ -821,7 +821,7 @@ extension GCKMediaTextTrackStyle {
         addConstraint(heightConstraint)
     }
     
-    open func expandView() {
+    func expandView() {
         heightConstraint.isActive = false
         self.superview?.setNeedsLayout()
         UIView.animate(withDuration: animationLength, animations: {
@@ -843,7 +843,7 @@ extension GCKMediaTextTrackStyle {
     }
     
     
-    override open func layoutSubviews() {
+    override func layoutSubviews() {
         super.layoutSubviews()
         moreButton.frame.origin.x = bounds.width - moreButton.frame.width - 5
         moreButton.frame.origin.y = bounds.height - moreButton.frame.height - 2.5

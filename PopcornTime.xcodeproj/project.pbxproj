@@ -350,6 +350,7 @@
 				TargetAttributes = {
 					7EA9DF031B61A19A00BAC6AF = {
 						CreatedOnToolsVersion = 6.4;
+						DevelopmentTeam = BQBJ6NTPEG;
 						LastSwiftMigration = 0800;
 					};
 				};
@@ -584,14 +585,11 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = BQBJ6NTPEG;
 				INFOPLIST_FILE = "${SRCROOT}/Popcorn Time/Info.plist";
-				PRODUCT_BUNDLE_IDENTIFIER = com.popcorntimetv.popcorntime.ios;
+				PRODUCT_BUNDLE_IDENTIFIER = com.popcorntimetv.popcorntimeios;
 				PRODUCT_NAME = "Popcorn Time";
-				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "${SRCROOT}/Popcorn Time/Resources/PopcornTime-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 			};
@@ -604,14 +602,11 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "${SRCROOT}/Popcorn Time/Entitlements.plist";
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = BQBJ6NTPEG;
 				INFOPLIST_FILE = "${SRCROOT}/Popcorn Time/Info.plist";
-				PRODUCT_BUNDLE_IDENTIFIER = com.popcorntimetv.popcorntime.ios;
+				PRODUCT_BUNDLE_IDENTIFIER = com.popcorntimetv.popcorntimeios;
 				PRODUCT_NAME = "Popcorn Time";
-				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "${SRCROOT}/Popcorn Time/Resources/PopcornTime-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 			};

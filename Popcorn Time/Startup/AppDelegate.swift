@@ -3,7 +3,7 @@
 import UIKit
 import Reachability
 import AlamofireNetworkActivityIndicator
-import GoogleCast.GCKCastContext
+import GoogleCast
 import PopcornKit
 
 let animationLength = 0.33
@@ -23,7 +23,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
             self.window?.makeKeyAndVisible()
             self.window?.rootViewController?.present(storyboard.instantiateViewController(withIdentifier: "TermsOfServiceNavigationController"), animated: false, completion: nil)
-            
         }
         GCKCastContext.setSharedInstanceWith(GCKCastOptions(receiverApplicationID: kGCKMediaDefaultReceiverApplicationID))
         return true

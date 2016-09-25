@@ -142,23 +142,23 @@ private enum ScrollDirection {
 // MARK: - Scroll View Helper Variables
 
 extension HeaderScrollView {
-    var isOverScrollingBottom: Bool {
+    @nonobjc var isOverScrollingBottom: Bool {
         return bounds.height > contentSize.height + contentInset.bottom
     }
     
-    var isOverScrollingTop: Bool {
+    @nonobjc var isOverScrollingTop: Bool {
         return headerHeightConstraint.constant > maximumHeaderHeight
     }
     
-    var isOverScrolling: Bool {
+    @nonobjc var isOverScrolling: Bool {
         return isOverScrollingTop || isOverScrollingBottom
     }
     
-    var overScrollingBottomFraction: CGFloat {
+    @nonobjc var overScrollingBottomFraction: CGFloat {
         return (contentInset.bottom + contentSize.height)/bounds.height
     }
     
-    var overScrollingTopFraction: CGFloat {
+    @nonobjc var overScrollingTopFraction: CGFloat {
         return maximumHeaderHeight/headerHeightConstraint.constant
     }
 }
