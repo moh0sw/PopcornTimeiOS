@@ -45,13 +45,12 @@ class MovieDetailViewController: DetailItemOverviewViewController, PCTTablePicke
         super.viewDidLoad()
         navigationItem.title = currentItem.title
         watchedBtn.image = getWatchedButtonImage()
-        let adjustForTabbarInsets = UIEdgeInsetsMake(0, 0, tabBarController!.tabBar.frame.height, 0)
-        scrollView.contentInset = adjustForTabbarInsets
-        scrollView.scrollIndicatorInsets = adjustForTabbarInsets
+        scrollView.contentInset.bottom = tabBarController?.tabBar.frame.height ?? 0.0
+        scrollView.scrollIndicatorInsets.bottom = tabBarController?.tabBar.frame.height ?? 0.0
         titleLabel.text = currentItem.title
         summaryView.text = currentItem.summary
         ratingView.rating = Float(currentItem.rating)
-        infoLabel.text = "\(currentItem.year) ● \(currentItem.runtime) min ● \(currentItem.genres[0].capitalized)"
+        infoLabel.text = "\(currentItem.year!) ● \(currentItem.runtime!) min ● \(currentItem.genres.first!.capitalized)"
         playButton.borderColor = SLColorArt(image: backgroundImageView.image).secondaryColor
         trailerBtn.isEnabled = currentItem.trailer != nil
         if currentItem.torrents.isEmpty {
@@ -138,73 +137,44 @@ class MovieDetailViewController: DetailItemOverviewViewController, PCTTablePicke
         subtitlesTablePickerView.toggle()
     }
     
-    @IBAction func watchNowTapped(_ sender: UIButton) {
-        let onWifi: Bool = (UIApplication.shared.delegate! as! AppDelegate).reachability!.isReachableViaWiFi()
-        let wifiOnly: Bool = !UserDefaults.standard.bool(forKey: "StreamOnCellular")
-        if !wifiOnly || onWifi {
-            loadMovieTorrent(currentItem)
-        } else {
-            let errorAlert = UIAlertController(title: "Cellular Data is Turned Off for streaming", message: "To enable it please go to settings.", preferredStyle: UIAlertControllerStyle.alert)
-            errorAlert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-            errorAlert.addAction(UIAlertAction(title: "Settings", style: .default, handler: { _ in
-                let settings = self.storyboard!.instantiateViewController(withIdentifier: "SettingsTableViewController") as! SettingsTableViewController
-                self.navigationController?.pushViewController(settings, animated: true)
-            }))
-            self.present(errorAlert, animated: true, completion: nil)
-        }
-    }
-    
-    func loadMovieTorrent(_ media: Movie, onChromecast: Bool = GCKCastContext.sharedInstance().castState == .connected) {
-        let loadingViewController = storyboard!.instantiateViewController(withIdentifier: "LoadingViewController") as! LoadingViewController
-        loadingViewController.transitioningDelegate = self
-        loadingViewController.backgroundImage = backgroundImageView.image
-        present(loadingViewController, animated: true, completion: nil)
-        PopcornKit.downloadTorrentFile(media.currentTorrent!.url!) { [unowned self] (url, error) in
-            if let url = url {
-                let moviePlayer = self.storyboard!.instantiateViewController(withIdentifier: "PCTPlayerViewController") as! PCTPlayerViewController
-                moviePlayer.delegate = self
-                let currentProgress = WatchlistManager.movie.currentProgress(media.id)
-                let castDevice = GCKCastContext.sharedInstance().sessionManager.currentSession?.device
-                PTTorrentStreamer.shared().startStreaming(fromFileOrMagnetLink: url, progress: { status in
-                    loadingViewController.progress = status.bufferingProgress
-                    loadingViewController.speed = Int(status.downloadSpeed)
-                    loadingViewController.seeds = Int(status.seeds)
-                    loadingViewController.updateProgress()
-                    moviePlayer.bufferProgressView?.progress = status.totalProgreess
-                    }, readyToPlay: {(videoFileURL, videoFilePath) in
-                        loadingViewController.dismiss(animated: false, completion: nil)
-                        if onChromecast {
-                            if GCKCastContext.sharedInstance().sessionManager.currentSession == nil {
-                                GCKCastContext.sharedInstance().sessionManager.startSession(with: castDevice!)
-                            }
-                            let castPlayerViewController = self.storyboard?.instantiateViewController(withIdentifier: "CastPlayerViewController") as! CastPlayerViewController
-                            let castMetadata: CastMetaData = (title: media.title, image: media.smallCoverImage != nil ? URL(string: media.smallCoverImage!) : nil, contentType: "video/mp4", subtitles: media.subtitles, url: videoFileURL.relativeString, mediaAssetsPath: videoFilePath.deletingLastPathComponent())
-                            GoogleCastManager(castMetadata: castMetadata).sessionManager(GCKCastContext.sharedInstance().sessionManager, didStart: GCKCastContext.sharedInstance().sessionManager.currentSession!)
-                            castPlayerViewController.backgroundImage = self.backgroundImageView.image
-                            castPlayerViewController.title = media.title
-                            castPlayerViewController.media = media
-                            castPlayerViewController.startPosition = TimeInterval(currentProgress)
-                            castPlayerViewController.directory = videoFilePath.deletingLastPathComponent()
-                            self.present(castPlayerViewController, animated: true, completion: nil)
-                        } else {
-                            moviePlayer.play(media, fromURL: videoFileURL, progress: currentProgress, directory: videoFilePath.deletingLastPathComponent())
-                            moviePlayer.delegate = self
-                            self.present(moviePlayer, animated: true, completion: nil)
-                        }
-                }) { error in
-                    loadingViewController.cancelButtonPressed()
-                    let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
-                    alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-                    self.present(alert, animated: true, completion: nil)
-                    print("Error is \(error)")
-                }
-            } else if let error = error {
-                loadingViewController.dismiss(animated: true, completion: { [unowned self] in
-                    let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
-                    alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-                    self.present(alert, animated: true, completion: nil)
-                    })
+    @IBAction func watchNowTapped() {
+        if UserDefaults.standard.bool(forKey: "StreamOnCellular") || (UIApplication.shared.delegate! as! AppDelegate).reachability!.isReachableViaWiFi() {
+            guard let url = currentItem.currentTorrent?.url else { return }
+            
+            let currentProgress = WatchlistManager.movie.currentProgress(currentItem.id)
+            
+            let loadingViewController = storyboard?.instantiateViewController(withIdentifier: "LoadingViewController") as! LoadingViewController
+            loadingViewController.transitioningDelegate = self
+            loadingViewController.backgroundImage = backgroundImageView.image
+            present(loadingViewController, animated: true, completion: nil)
+            
+            let error: (String) -> Void = { [weak self] (errorMessage) in
+                let alertVc = UIAlertController(title: "Error", message: errorMessage, preferredStyle: .alert)
+                alertVc.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+                self?.present(alertVc, animated: true, completion: nil)
             }
+            
+            let finishedLoading: (LoadingViewController, UIViewController) -> Void = { [weak self] (loadingVc, playerVc) in
+                loadingVc.dismiss(animated: false, completion: nil)
+                self?.present(playerVc, animated: true, completion: nil)
+            }
+            
+            if GCKCastContext.sharedInstance().castState == .connected {
+                let playViewController = self.storyboard?.instantiateViewController(withIdentifier: "CastPlayerViewController") as! CastPlayerViewController
+                currentItem.playOnChromecast(fromFileOrMagnetLink: url, loadingViewController: loadingViewController, playViewController: playViewController, progress: currentProgress, errorBlock: error, finishedLoadingBlock: finishedLoading)
+            } else {
+                let playViewController = self.storyboard?.instantiateViewController(withIdentifier: "PCTPlayerViewController") as! PCTPlayerViewController
+                playViewController.delegate = self
+                currentItem.play(fromFileOrMagnetLink: url, loadingViewController: loadingViewController, playViewController: playViewController, progress: currentProgress, errorBlock: error, finishedLoadingBlock: finishedLoading)
+            }
+        } else {
+            let errorAlert = UIAlertController(title: "Cellular Data is turned off for streaming", message: nil, preferredStyle: .alert)
+            errorAlert.addAction(UIAlertAction(title: "Turn On", style: .default, handler: { [weak self] _ in
+                UserDefaults.standard.set(true, forKey: "StreamOnCellular")
+                self?.watchNowTapped()
+            }))
+            errorAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+            self.present(errorAlert, animated: true, completion: nil)
         }
     }
     
@@ -237,9 +207,7 @@ class MovieDetailViewController: DetailItemOverviewViewController, PCTTablePicke
 
 extension MovieDetailViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        var sections = 0
-        if relatedItems.count > 0 {sections += 1}; if currentItem.actors.count > 0 {sections += 1}
-        return sections
+        return 2
     }
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return section == 0 ? relatedItems.count : currentItem.actors.count
@@ -259,6 +227,8 @@ extension MovieDetailViewController: UICollectionViewDelegate, UICollectionViewD
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if &classContext == context && keyPath == "frame" {
             collectionView.collectionViewLayout.invalidateLayout()
+        } else {
+            super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
         }
     }
     
@@ -282,6 +252,8 @@ extension MovieDetailViewController: UICollectionViewDelegate, UICollectionViewD
             if let image = currentItem.actors[indexPath.row].smallImage,
                 let url = URL(string: image) {
                 imageView.af_setImage(withURL: url, placeholderImage: UIImage(named: "Placeholder"))
+            } else {
+                imageView.image = UIImage(named: "Placeholder")
             }
             imageView.layer.cornerRadius = self.collectionView(collectionView, layout: collectionView.collectionViewLayout, sizeForItemAt: indexPath).width/2
             (cell.viewWithTag(2) as! UILabel).text = currentItem.actors[indexPath.row].name
@@ -323,7 +295,13 @@ extension MovieDetailViewController: UICollectionViewDelegate, UICollectionViewD
         if kind == UICollectionElementKindSectionHeader {
             return {
                let element = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "header", for: indexPath)
-                (element.viewWithTag(1) as! UILabel).text = indexPath.section == 0 ? "RELATED" : "CAST"
+                let label = (element.viewWithTag(1) as! UILabel)
+                label.text = ""
+                if indexPath.section == 0 && !relatedItems.isEmpty {
+                    label.text = "RELATED"
+                } else if indexPath.section == 1 && !currentItem.actors.isEmpty {
+                    label.text = "CAST"
+                }
                 return element
             }()
         }

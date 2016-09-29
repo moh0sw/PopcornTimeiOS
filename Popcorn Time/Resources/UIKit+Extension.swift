@@ -79,21 +79,6 @@ import MediaPlayer
 }
 
 extension UIView {
-    /**
-     Remove all constraints from the view.
-     */
-    func removeConstraints() {
-        if let superview = self.superview {
-            for constraint in superview.constraints {
-                if constraint.firstItem as? UIView == self || constraint.secondItem as? UIView == self {
-                    constraint.isActive = false
-                }
-            }
-        }
-        for constraint in constraints {
-            constraint.isActive = false
-        }
-    }
     
     @nonobjc var parentViewController: UIViewController? {
         var parentResponder: UIResponder? = self
@@ -866,6 +851,14 @@ extension UITextView {
     
 }
 
+extension Array {
+    mutating func enumerate(_ block: (_ element: Element) -> Void) {
+        for element in self {
+            block(element)
+        }
+    }
+}
+
 // MARK: - UIAlertController
 
 extension UIAlertController {
@@ -878,3 +871,4 @@ extension UIAlertController {
         window.rootViewController!.present(self, animated: true, completion: nil)
     }
 }
+

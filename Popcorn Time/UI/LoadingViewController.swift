@@ -2,21 +2,40 @@
 
 import UIKit
 import PopcornTorrent
-import AlamofireImage
 
 class LoadingViewController: UIViewController {
     
-    @IBOutlet fileprivate weak var progressLabel: UILabel!
-    @IBOutlet fileprivate weak var progressView: UIProgressView!
-    @IBOutlet fileprivate weak var speedLabel: UILabel!
-    @IBOutlet fileprivate weak var seedsLabel: UILabel!
-    @IBOutlet fileprivate weak var loadingView: UIView!
-    @IBOutlet fileprivate weak var backgroundImageView: UIImageView!
+    @IBOutlet private var progressLabel: UILabel!
+    @IBOutlet private var progressView: UIProgressView!
+    @IBOutlet private var speedLabel: UILabel!
+    @IBOutlet private var seedsLabel: UILabel!
+    @IBOutlet private var loadingView: UIView!
+    @IBOutlet private var backgroundImageView: UIImageView!
 
     
-    var progress: Float = 0.0
-    var speed: Int = 0
-    var seeds: Int = 0
+    var progress: Float = 0.0 {
+        didSet {
+            loadingView.isHidden = true
+            progressView.isHidden = false
+            progressLabel.isHidden = false
+            progressView.progress = progress
+            progressLabel.text = String(format: "%.0f%%", progress*100)
+        }
+    }
+    var speed: Int = 0 {
+        didSet {
+            loadingView.isHidden = true
+            speedLabel.isHidden = false
+            speedLabel.text = ByteCountFormatter.string(fromByteCount: Int64(speed), countStyle: .binary) + "/s"
+        }
+    }
+    var seeds: Int = 0 {
+        didSet {
+            loadingView.isHidden = true
+            seedsLabel.isHidden = false
+            seedsLabel.text = "\(seeds) seeds"
+        }
+    }
     var backgroundImage: UIImage?
     
     override func viewDidLoad() {
@@ -25,17 +44,6 @@ class LoadingViewController: UIViewController {
         if let backgroundImage = backgroundImage {
             backgroundImageView.image = backgroundImage
         }
-    }
-    
-    func updateProgress() {
-        loadingView.isHidden = true
-        for view in [progressLabel, speedLabel, seedsLabel, progressView] as [UIView] {
-            view.isHidden = false
-        }
-        progressView.progress = progress
-        progressLabel.text = String(format: "%.0f%%", progress*100)
-        speedLabel.text = ByteCountFormatter.string(fromByteCount: Int64(speed), countStyle: .binary) + "/s"
-        seedsLabel.text = "\(seeds) seeds"
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -48,7 +56,7 @@ class LoadingViewController: UIViewController {
         dismiss(animated: true, completion: nil)
     }
     
-    override var preferredStatusBarStyle : UIStatusBarStyle {
+    override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
     

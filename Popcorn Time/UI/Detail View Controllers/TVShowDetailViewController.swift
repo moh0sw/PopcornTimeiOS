@@ -86,7 +86,7 @@ class TVShowDetailViewController: DetailItemOverviewViewController, UITableViewD
             guard let show = show else { return }
             self.currentItem = show
             self.summaryView.text = self.currentItem.summary
-            self.infoLabel.text = "\(self.currentItem.year) ● \(self.currentItem.status!.capitalized) ● \(self.currentItem.genres.first!.capitalized)"
+            self.infoLabel.text = "\(self.currentItem.year!) ● \(self.currentItem.status!.capitalized) ● \(self.currentItem.genres.first!.capitalized)"
             self.setUpSegmenedControl()
             self.tableView.reloadData()
         }
@@ -204,7 +204,6 @@ class TVShowDetailViewController: DetailItemOverviewViewController, UITableViewD
                     loadingViewController.progress = status.bufferingProgress
                     loadingViewController.speed = Int(status.downloadSpeed)
                     loadingViewController.seeds = Int(status.seeds)
-                    loadingViewController.updateProgress()
                     moviePlayer.bufferProgressView?.progress = status.totalProgreess
                     }, readyToPlay: {(videoFileURL, videoFilePath) in
                         loadingViewController.dismiss(animated: false, completion: nil)

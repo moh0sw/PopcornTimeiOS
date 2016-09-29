@@ -22,23 +22,23 @@ class CastPlayerViewController: UIViewController, GCKRemoteMediaClientListener, 
     @IBOutlet var compactConstraints: [NSLayoutConstraint]!
     @IBOutlet var regularConstraints: [NSLayoutConstraint]!
     
-    fileprivate var classContext = 0
-    fileprivate var elapsedTimer: Timer!
-    fileprivate var observingValues: Bool = false
-    fileprivate var bufferView: JGProgressHUD = {
+    private var classContext = 0
+    private var elapsedTimer: Timer!
+    private var observingValues: Bool = false
+    private var bufferView: JGProgressHUD = {
        let hud = JGProgressHUD(style: .dark)
         hud?.textLabel.text = "Buffering"
         hud?.interactionType = .blockAllTouches
         return hud!
     }()
-    fileprivate var subtitleColors: [String: UIColor] = {
+    private var subtitleColors: [String: UIColor] = {
         var colorDict = [String: UIColor]()
         for (index, color) in UIColor.systemColors().enumerated() {
             colorDict[UIColor.systemColorStrings()[index]] = color
         }
         return colorDict
     }()
-    fileprivate var subtitleFonts: [String: UIFont] = {
+    private var subtitleFonts: [String: UIFont] = {
         var fontDict = [String: UIFont]()
         for familyName in UIFont.familyNames {
             for fontName in UIFont.fontNames(forFamilyName: familyName) {
@@ -51,8 +51,8 @@ class CastPlayerViewController: UIViewController, GCKRemoteMediaClientListener, 
         fontDict["Default"] = UIFont.systemFont(ofSize: 25)
         return fontDict
     }()
-    fileprivate var subtitles = ["None": ""]
-    fileprivate var selectedSubtitleMeta: [String]
+    private var subtitles = ["None": ""]
+    private var selectedSubtitleMeta: [String]
     
     var backgroundImage: UIImage?
     var startPosition: TimeInterval = 0.0
@@ -71,14 +71,14 @@ class CastPlayerViewController: UIViewController, GCKRemoteMediaClientListener, 
     var directory: URL!
     var pickerView: PCTPickerView!
     
-    fileprivate var remoteMediaClient = GCKCastContext.sharedInstance().sessionManager.currentCastSession?.remoteMediaClient
-    fileprivate var timeSinceLastMediaStatusUpdate: TimeInterval {
+    private var remoteMediaClient = GCKCastContext.sharedInstance().sessionManager.currentCastSession?.remoteMediaClient
+    private var timeSinceLastMediaStatusUpdate: TimeInterval {
         if let remoteMediaClient = remoteMediaClient , state == .playing {
             return remoteMediaClient.timeSinceLastMediaStatusUpdate
         }
         return 0.0
     }
-    fileprivate var streamPosition: TimeInterval {
+    private var streamPosition: TimeInterval {
         get {
             if let mediaStatus = remoteMediaClient?.mediaStatus {
                 return mediaStatus.streamPosition + timeSinceLastMediaStatusUpdate
@@ -88,19 +88,19 @@ class CastPlayerViewController: UIViewController, GCKRemoteMediaClientListener, 
             remoteMediaClient?.seek(toTimeInterval: newValue, resumeState: GCKMediaResumeState.play)
         }
     }
-    fileprivate var state: GCKMediaPlayerState {
+    private var state: GCKMediaPlayerState {
         return remoteMediaClient?.mediaStatus?.playerState ?? GCKMediaPlayerState.unknown
     }
-    fileprivate var idleReason: GCKMediaPlayerIdleReason {
+    private var idleReason: GCKMediaPlayerIdleReason {
         return remoteMediaClient?.mediaStatus?.idleReason ?? GCKMediaPlayerIdleReason.none
     }
-    fileprivate var streamDuration: TimeInterval {
+    private var streamDuration: TimeInterval {
         return remoteMediaClient?.mediaStatus?.mediaInformation?.streamDuration ?? 0.0
     }
-    fileprivate var elapsedTime: VLCTime {
+    private var elapsedTime: VLCTime {
         return VLCTime(number: NSNumber(value: streamPosition * 1000 as Double))
     }
-    fileprivate var remainingTime: VLCTime {
+    private var remainingTime: VLCTime {
         return VLCTime(number: NSNumber(value: (streamPosition - streamDuration) * 1000 as Double))
     }
     
@@ -241,7 +241,7 @@ class CastPlayerViewController: UIViewController, GCKRemoteMediaClientListener, 
         if let image = backgroundImage {
             imageView.image = image
             backgroundImageView.image = image
-        }
+        } 
         titleLabel.text = title
         pickerView = PCTPickerView(superView: view, componentDataSources: [subtitles as Dictionary<String, AnyObject>, subtitleColors, subtitleFonts], delegate: self, selectedItems: selectedSubtitleMeta, attributesForComponents: [nil, NSForegroundColorAttributeName, NSFontAttributeName])
         view.addSubview(pickerView)

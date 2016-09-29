@@ -60,9 +60,7 @@ public class FloatRatingView: UIView {
     @IBInspectable public var fullImage: UIImage? {
         didSet {
             // Update full image views
-            for imageView in self.fullImageViews {
-                imageView.image = fullImage
-            }
+            fullImageViews.enumerate({$0.image = fullImage})
             self.refresh()
         }
     }
@@ -152,9 +150,7 @@ public class FloatRatingView: UIView {
     // MARK: Refresh hides or shows full images
     
     func refresh() {
-        for i in 0..<self.fullImageViews.count {
-            let imageView = self.fullImageViews[i]
-            
+        for (i, imageView) in fullImageViews.enumerated() {
             if self.rating>=Float(i+1) {
                 imageView.layer.mask = nil
                 imageView.isHidden = false
@@ -168,7 +164,7 @@ public class FloatRatingView: UIView {
                 imageView.isHidden = false
             }
             else {
-                imageView.layer.mask = nil;
+                imageView.layer.mask = nil
                 imageView.isHidden = true
             }
         }
@@ -234,9 +230,7 @@ public class FloatRatingView: UIView {
     }
     
     func initImageViews() {
-        if self.emptyImageViews.count != 0 {
-            return
-        }
+        guard emptyImageViews.isEmpty else { return }
         
         // Add new image views
         for _ in 0..<self.maxRating {

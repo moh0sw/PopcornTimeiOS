@@ -21,7 +21,7 @@ class SettingsTableViewController: UITableViewController, PCTTablePickerViewDele
         tabBarController?.view.addSubview(tablePickerView)
         pickerView = PCTPickerView(superView: view, componentDataSources: [[String : AnyObject]](), delegate: self, selectedItems: [String]())
         tabBarController?.view.addSubview(pickerView)
-        updateSignedInStatus(traktSignInButton, isSignedIn: UserDefaults.standard.bool(forKey: "AuthorizedTrakt"))
+        updateSignedInStatus(traktSignInButton, isSignedIn: TraktManager.shared.isSignedIn())
         updateSignedInStatus(openSubsSignInButton, isSignedIn: UserDefaults.standard.bool(forKey: "AuthorizedOpenSubs"))
         streamOnCellularSwitch.isOn = UserDefaults.standard.bool(forKey: "StreamOnCellular")
         removeCacheOnPlayerExitSwitch.isOn = UserDefaults.standard.bool(forKey: "removeCacheOnPlayerExit")
@@ -169,16 +169,15 @@ class SettingsTableViewController: UITableViewController, PCTTablePickerViewDele
                 cell.detailTextLabel?.text = string
             }
         case 4:
-            if indexPath.row == 1 {
+            if indexPath.row == 0 {
               cell.detailTextLabel?.text = "\(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString")!).\(Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion")!)"
-            } else if indexPath.row == 2 {
+            } else if indexPath.row == 1 {
                 var date = "Never."
                 if let lastChecked = UserDefaults.standard.object(forKey: "lastVersionCheckPerformedOnDate") as? Date {
                     date = DateFormatter.localizedString(from: lastChecked, dateStyle: .short, timeStyle: .short)
                 }
                 cell.detailTextLabel?.text = "Last checked: \(date)"
             }
-            
         default:
             break
         }
@@ -233,7 +232,7 @@ class SettingsTableViewController: UITableViewController, PCTTablePickerViewDele
     // MARK: - Authorization
     
     @IBAction func authorizeTraktTV(_ sender: UIButton) {
-        if UserDefaults.standard.bool(forKey: "AuthorizedTrakt") {
+        if TraktManager.shared.isSignedIn() {
             let alert = UIAlertController(title: "Sign Out", message: "Are you sure you want to Sign Out?", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "Yes", style: .destructive, handler: { action in
                 TraktManager.shared.logout()
@@ -292,10 +291,12 @@ class SettingsTableViewController: UITableViewController, PCTTablePickerViewDele
     // MARK: - TraktManagerDelegate
     
     func authenticationDidSucceed() {
+        dismiss(animated: true, completion: nil)
         updateSignedInStatus(traktSignInButton, isSignedIn: true)
     }
     
     func authenticationDidFail(withError error: NSError) {
+        dismiss(animated: true, completion: nil)
         let alert = UIAlertController(title: "Error authenticating.", message: error.localizedDescription, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
         present(alert, animated: true, completion: nil)

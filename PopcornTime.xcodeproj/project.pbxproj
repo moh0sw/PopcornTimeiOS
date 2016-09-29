@@ -18,6 +18,7 @@
 		4D74C21B1D23CEC500FB81CA /* StreamToDevicesTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D74C21A1D23CEC500FB81CA /* StreamToDevicesTableViewController.swift */; };
 		4D849B581D3059FC0008AD51 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4D849B571D3059FC0008AD51 /* Launch Screen.storyboard */; };
 		4D936BCA1D3506D0004F2B40 /* DetailItemOverviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D936BC91D3506D0004F2B40 /* DetailItemOverviewViewController.swift */; };
+		4D97E9091D9C3B37009FEF7E /* Media+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D97E9081D9C3B37009FEF7E /* Media+Extension.swift */; };
 		4DA7BA4F1D5A629400229B14 /* PCTPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA7BA4E1D5A629400229B14 /* PCTPickerView.swift */; };
 		4DA7BA511D5A686B00229B14 /* PCTPickerView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4DA7BA501D5A686B00229B14 /* PCTPickerView.xib */; };
 		4DA7BA5A1D5BE14400229B14 /* Entitlements.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4DA7BA591D5BE14400229B14 /* Entitlements.plist */; };
@@ -78,6 +79,7 @@
 		4D74C21A1D23CEC500FB81CA /* StreamToDevicesTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = StreamToDevicesTableViewController.swift; path = "UI/Table View Controllers/StreamToDevicesTableViewController.swift"; sourceTree = "<group>"; };
 		4D849B571D3059FC0008AD51 /* Launch Screen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = "Launch Screen.storyboard"; path = "Startup/Launch Screen.storyboard"; sourceTree = "<group>"; };
 		4D936BC91D3506D0004F2B40 /* DetailItemOverviewViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DetailItemOverviewViewController.swift; path = "UI/Detail View Controllers/DetailItemOverviewViewController.swift"; sourceTree = "<group>"; };
+		4D97E9081D9C3B37009FEF7E /* Media+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Media+Extension.swift"; path = "Resources/Media+Extension.swift"; sourceTree = "<group>"; };
 		4DA7BA4E1D5A629400229B14 /* PCTPickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PCTPickerView.swift; path = UI/PCTPickerView.swift; sourceTree = "<group>"; };
 		4DA7BA501D5A686B00229B14 /* PCTPickerView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = PCTPickerView.xib; path = UI/PCTPickerView.xib; sourceTree = "<group>"; };
 		4DA7BA591D5BE14400229B14 /* Entitlements.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Entitlements.plist; sourceTree = "<group>"; };
@@ -103,6 +105,7 @@
 		4DC5419E1CFB54A3001A531C /* PCTEpsiodeDetailPresentationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PCTEpsiodeDetailPresentationController.swift; path = Resources/PCTEpsiodeDetailPresentationController.swift; sourceTree = "<group>"; };
 		4DC5641A1D91B28800D804DA /* DispatchQueue+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "DispatchQueue+Extension.swift"; path = "Resources/DispatchQueue+Extension.swift"; sourceTree = "<group>"; };
 		4DC5641C1D91B3DF00D804DA /* FloatRatingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FloatRatingView.swift; path = Resources/FloatRatingView.swift; sourceTree = "<group>"; };
+		4DC870AE1D9D8472005455B0 /* Popcorn Time.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Popcorn Time.entitlements"; sourceTree = "<group>"; };
 		4DCA0F121D4A4A91003FC58E /* PCTLoadingViewAnimatedTransitioning.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PCTLoadingViewAnimatedTransitioning.swift; path = UI/PCTLoadingViewAnimatedTransitioning.swift; sourceTree = "<group>"; };
 		4DCFA56B1CD2206F005246DC /* TableViewBackground.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = TableViewBackground.xib; path = UI/TableViewBackground.xib; sourceTree = "<group>"; };
 		4DCFA56D1CD25D04005246DC /* TableViewBackground.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TableViewBackground.swift; path = UI/TableViewBackground.swift; sourceTree = "<group>"; };
@@ -215,6 +218,7 @@
 		7EA9DF061B61A19A00BAC6AF /* Popcorn Time */ = {
 			isa = PBXGroup;
 			children = (
+				4DC870AE1D9D8472005455B0 /* Popcorn Time.entitlements */,
 				7EA9DF2E1B61A21800BAC6AF /* Startup */,
 				7EA9DF2B1B61A1E500BAC6AF /* UI */,
 				7EA9DF2F1B61A22A00BAC6AF /* Resources */,
@@ -274,6 +278,7 @@
 				4D0005651D3C3CAD0075706C /* AirPlayManager.swift */,
 				4D580A071D3CFAF500963F10 /* GoogleCastManager.swift */,
 				4DC5419D1CFB54A3001A531C /* UIKit+Extension.swift */,
+				4D97E9081D9C3B37009FEF7E /* Media+Extension.swift */,
 				4DB3B8ED1CC3B1760096FEA0 /* CastIconButton.swift */,
 				4DC5641C1D91B3DF00D804DA /* FloatRatingView.swift */,
 				4DC5641A1D91B28800D804DA /* DispatchQueue+Extension.swift */,
@@ -352,6 +357,11 @@
 						CreatedOnToolsVersion = 6.4;
 						DevelopmentTeam = BQBJ6NTPEG;
 						LastSwiftMigration = 0800;
+						SystemCapabilities = {
+							com.apple.Keychain = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -463,6 +473,7 @@
 				4DC5641B1D91B28800D804DA /* DispatchQueue+Extension.swift in Sources */,
 				4DC5418D1CFB545A001A531C /* ItemOverviewCollectionViewController.swift in Sources */,
 				4DC5419F1CFB54A3001A531C /* UIKit+Extension.swift in Sources */,
+				4D97E9091D9C3B37009FEF7E /* Media+Extension.swift in Sources */,
 				4DB3B8EF1CC3B1760096FEA0 /* CastIconButton.swift in Sources */,
 				4DC5418C1CFB545A001A531C /* MoviesCollectionViewController.swift in Sources */,
 				4DCFA56E1CD25D04005246DC /* TableViewBackground.swift in Sources */,
@@ -583,8 +594,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 6F8B9328C0A1586670968A68 /* Pods-Popcorn Time.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "Popcorn Time/Popcorn Time.entitlements";
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = BQBJ6NTPEG;
 				INFOPLIST_FILE = "${SRCROOT}/Popcorn Time/Info.plist";
@@ -599,9 +610,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 32BEB75AC9001224E0BB6EF0 /* Pods-Popcorn Time.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = "${SRCROOT}/Popcorn Time/Entitlements.plist";
+				CODE_SIGN_ENTITLEMENTS = "Popcorn Time/Popcorn Time.entitlements";
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = BQBJ6NTPEG;
 				INFOPLIST_FILE = "${SRCROOT}/Popcorn Time/Info.plist";
