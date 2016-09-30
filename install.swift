@@ -41,7 +41,8 @@ public extension URLSession {
     }
 }
 
-_ = func run(_ args: String...) -> Int32 {
+@discardableResult
+func run(_ args: String...) -> Int32 {
     let task = Process()
     task.launchPath = "/bin/bash"
     task.arguments = args
