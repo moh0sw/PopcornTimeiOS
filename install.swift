@@ -41,7 +41,7 @@ public extension URLSession {
     }
 }
 
-func run(_ args: String...) -> Int32 {
+_ = func run(_ args: String...) -> Int32 {
     let task = Process()
     task.launchPath = "/bin/bash"
     task.arguments = args
@@ -61,7 +61,7 @@ func input(_ input: String) -> String {
 
 // Fetch the latest version
 print("# Fetching the latest changes from github...")
-run("-c", "git stash", "git fetch", "git rebase")
+_ = run("-c", "git stash", "git fetch", "git rebase")
 
 
 // Fetch the releases
