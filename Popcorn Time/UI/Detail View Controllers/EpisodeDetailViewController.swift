@@ -99,7 +99,9 @@ class EpisodeDetailViewController: UIViewController, PCTTablePickerViewDelegate,
             episode = episode.characters.count == 1 ? "0" + episode : episode
             episodeAndSeasonLabel.text = "S\(season)E\(episode)"
             summaryView.text = currentItem.summary
-            infoLabel.text = "Aired: " + DateFormatter.localizedString(from: currentItem.firstAirDate, dateStyle: .medium, timeStyle: .none)
+            if let date = currentItem.firstAirDate {
+                infoLabel.text = "Aired: " + DateFormatter.localizedString(from: date, dateStyle: .medium, timeStyle: .none)
+            }
             qualityBtn?.isUserInteractionEnabled = currentItem.torrents.count > 1
             currentItem.currentTorrent = currentItem.torrents.filter({$0.quality == UserDefaults.standard.string(forKey: "PreferredQuality")}).first ?? currentItem.torrents.first
             if let torrent = currentItem.currentTorrent {
@@ -108,7 +110,7 @@ class EpisodeDetailViewController: UIViewController, PCTTablePickerViewDelegate,
                 qualityBtn?.setTitle("Error loading torrents.", for: .normal)
             }
             playNowBtn?.isEnabled = currentItem.currentTorrent?.url != nil
-            torrentHealth.backgroundColor = currentItem.currentTorrent?.health.color()
+            torrentHealth.backgroundColor = currentItem.currentTorrent?.health.color
         } else {
             let background = Bundle.main.loadNibNamed("TableViewBackground", owner: self, options: nil)?.first as! TableViewBackground
             background.frame = view.bounds
@@ -125,12 +127,12 @@ class EpisodeDetailViewController: UIViewController, PCTTablePickerViewDelegate,
     
     @IBAction func changeQualityTapped(_ sender: UIButton) {
         let quality = UIAlertController(title:"Select Quality", message:nil, preferredStyle:UIAlertControllerStyle.actionSheet)
-        for var torrent in currentItem!.torrents {
+        for torrent in currentItem!.torrents {
             quality.addAction(UIAlertAction(title: "\(torrent.quality!) \(torrent.size ?? "")", style: .default, handler: { action in
                 self.currentItem?.currentTorrent = torrent
                 self.playNowBtn?.isEnabled = self.currentItem?.currentTorrent?.url != nil
                 self.qualityBtn?.setTitle("\(torrent.quality!) ▾", for: .normal)
-                self.torrentHealth.backgroundColor = torrent.health.color()
+                self.torrentHealth.backgroundColor = torrent.health.color
             }))
         }
         quality.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))

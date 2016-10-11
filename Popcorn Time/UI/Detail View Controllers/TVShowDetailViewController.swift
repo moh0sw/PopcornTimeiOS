@@ -51,8 +51,8 @@ class TVShowDetailViewController: DetailItemOverviewViewController, UITableViewD
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.navigationBar.frame.size.width = splitViewController?.primaryColumnWidth ?? view.bounds.width
-        WatchlistManager.episode.getProgress()
-        WatchlistManager.show.getWatched() {
+        WatchedlistManager.episode.getWatchedProgress()
+        WatchedlistManager.show.getWatched() {
             self.tableView.reloadData()
         }
     }
@@ -86,7 +86,7 @@ class TVShowDetailViewController: DetailItemOverviewViewController, UITableViewD
             guard let show = show else { return }
             self.currentItem = show
             self.summaryView.text = self.currentItem.summary
-            self.infoLabel.text = "\(self.currentItem.year!) ● \(self.currentItem.status!.capitalized) ● \(self.currentItem.genres.first!.capitalized)"
+            self.infoLabel.text = "\(self.currentItem.year) ● \(self.currentItem.status!.capitalized) ● \(self.currentItem.genres.first!.capitalized)"
             self.setUpSegmenedControl()
             self.tableView.reloadData()
         }
@@ -194,11 +194,11 @@ class TVShowDetailViewController: DetailItemOverviewViewController, UITableViewD
         loadingViewController.transitioningDelegate = self
         loadingViewController.backgroundImage = backgroundImageView.image
         present(loadingViewController, animated: animated, completion: nil)
-        PopcornKit.downloadTorrentFile(media.currentTorrent!.url!) { [unowned self] (url, error) in
+        PopcornKit.downloadTorrentFile(media.currentTorrent!.url) { [unowned self] (url, error) in
             if let url = url {
                 let moviePlayer = self.storyboard!.instantiateViewController(withIdentifier: "PCTPlayerViewController") as! PCTPlayerViewController
                 moviePlayer.delegate = self
-                let currentProgress = WatchlistManager.episode.currentProgress(media.id)
+                let currentProgress = WatchedlistManager.episode.currentProgress(media.id)
                 let castDevice = GCKCastContext.sharedInstance().sessionManager.currentSession?.device
                 PTTorrentStreamer.shared().startStreaming(fromFileOrMagnetLink: url, progress: { status in
                     loadingViewController.progress = status.bufferingProgress

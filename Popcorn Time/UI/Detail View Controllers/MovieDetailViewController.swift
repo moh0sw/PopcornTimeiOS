@@ -26,7 +26,7 @@ class MovieDetailViewController: DetailItemOverviewViewController, PCTTablePicke
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        WatchlistManager.movie.getProgress()
+        WatchedlistManager.movie.getWatchedProgress()
         view.addObserver(self, forKeyPath: "frame", options: .new, context: &classContext)
     }
     
@@ -50,7 +50,7 @@ class MovieDetailViewController: DetailItemOverviewViewController, PCTTablePicke
         titleLabel.text = currentItem.title
         summaryView.text = currentItem.summary
         ratingView.rating = Float(currentItem.rating)
-        infoLabel.text = "\(currentItem.year!) ● \(currentItem.runtime!) min ● \(currentItem.genres.first!.capitalized)"
+        infoLabel.text = "\(currentItem.year) ● \(currentItem.runtime) min ● \(currentItem.genres.first!.capitalized)"
         playButton.borderColor = SLColorArt(image: backgroundImageView.image).secondaryColor
         trailerBtn.isEnabled = currentItem.trailer != nil
         if currentItem.torrents.isEmpty {
@@ -98,7 +98,7 @@ class MovieDetailViewController: DetailItemOverviewViewController, PCTTablePicke
     }
     
     func getWatchedButtonImage() -> UIImage {
-        return WatchlistManager.movie.isWatched(currentItem.id) ? UIImage(named: "WatchedOn")! : UIImage(named: "WatchedOff")!
+        return WatchedlistManager.movie.isAdded(currentItem.id) ? UIImage(named: "WatchedOn")! : UIImage(named: "WatchedOff")!
     }
     
     func updateTorrents() {
@@ -109,23 +109,23 @@ class MovieDetailViewController: DetailItemOverviewViewController, PCTTablePicke
         } else {
             self.qualityBtn?.setTitle("No torrents available.", for: .normal)
         }
-        self.torrentHealth.backgroundColor = self.currentItem.currentTorrent?.health.color()
+        self.torrentHealth.backgroundColor = self.currentItem.currentTorrent?.health.color
         self.playButton.isEnabled = self.currentItem.currentTorrent?.url != nil
     }
     
     @IBAction func toggleWatched() {
-        WatchlistManager.movie.toggleWatched(currentItem.id)
+        WatchedlistManager.movie.toggle(currentItem.id)
         watchedBtn.image = getWatchedButtonImage()
     }
     
     @IBAction func changeQualityTapped(_ sender: UIButton) {
         let quality = UIAlertController(title:"Select Quality", message:nil, preferredStyle:UIAlertControllerStyle.actionSheet)
-        for var torrent in currentItem.torrents {
+        for torrent in currentItem.torrents {
             quality.addAction(UIAlertAction(title: "\(torrent.quality!) \(torrent.size!)", style: .default, handler: { action in
                 self.currentItem.currentTorrent = torrent
                 self.playButton.isEnabled = self.currentItem.currentTorrent?.url != nil
                 self.qualityBtn.setTitle("\(torrent.quality!) ▾", for: .normal)
-                self.torrentHealth.backgroundColor = torrent.health.color()
+                self.torrentHealth.backgroundColor = torrent.health.color
             }))
         }
         quality.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
@@ -141,7 +141,7 @@ class MovieDetailViewController: DetailItemOverviewViewController, PCTTablePicke
         if UserDefaults.standard.bool(forKey: "StreamOnCellular") || (UIApplication.shared.delegate! as! AppDelegate).reachability!.isReachableViaWiFi() {
             guard let url = currentItem.currentTorrent?.url else { return }
             
-            let currentProgress = WatchlistManager.movie.currentProgress(currentItem.id)
+            let currentProgress = WatchedlistManager.movie.currentProgress(currentItem.id)
             
             let loadingViewController = storyboard?.instantiateViewController(withIdentifier: "LoadingViewController") as! LoadingViewController
             loadingViewController.transitioningDelegate = self
@@ -243,7 +243,7 @@ extension MovieDetailViewController: UICollectionViewDelegate, UICollectionViewD
                     let url = URL(string: image) {
                     coverCell.coverImage.af_setImage(withURL: url, placeholderImage: UIImage(named: "Placeholder"))
                 }
-                coverCell.watched = WatchlistManager.movie.isWatched(relatedItems[indexPath.row].id)
+                coverCell.watched = WatchedlistManager.movie.isAdded(relatedItems[indexPath.row].id)
                 return coverCell
             }()
         } else {

@@ -37,7 +37,7 @@ class MoviesCollectionViewController: ItemOverviewCollectionViewController, UIPo
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        WatchlistManager.movie.getWatched() {
+        WatchedlistManager.movie.getWatched() {
             self.collectionView?.reloadData()
         }
     }
@@ -148,7 +148,7 @@ class MoviesCollectionViewController: ItemOverviewCollectionViewController, UIPo
         }
         cell.titleLabel.text = movies[indexPath.row].title
         cell.yearLabel.text = movies[indexPath.row].year
-        cell.watched = WatchlistManager.movie.isWatched(movies[indexPath.row].id)
+        cell.watched = WatchedlistManager.movie.isAdded(movies[indexPath.row].id)
         return cell
     }
     
