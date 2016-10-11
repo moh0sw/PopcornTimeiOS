@@ -336,7 +336,7 @@ class PCTPlayerViewController: UIViewController, UIGestureRecognizerDelegate, UI
     
     func mediaPlayerStateChanged() {
         resetIdleTimer()
-        let type: Trakt.MediaType = media is Movie ? .movies : .shows
+        let type: Trakt.MediaType = media is Movie ? .movies : .episodes
         switch mediaplayer.state {
         case .error:
             fallthrough

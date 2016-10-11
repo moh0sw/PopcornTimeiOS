@@ -34,7 +34,6 @@ extension Media {
         errorBlock: @escaping (String) -> Void,
         finishedLoadingBlock: @escaping (LoadingViewController, UIViewController) -> Void)
     {
-        guard let url = self.currentTorrent?.url else { return }
         if !url.hasPrefix("magnet") {
             PopcornKit.downloadTorrentFile(url, completion: { (url, error) in
                 guard let url = url, error == nil else { errorBlock(error!.localizedDescription); return }
