@@ -269,15 +269,17 @@ class SettingsTableViewController: UITableViewController, PCTTablePickerViewDele
             alert.addAction(UIAlertAction(title: "Sign In", style: .default, handler: { (action) in
                 let credential = URLCredential(user: alert.textFields![0].text!, password: alert.textFields![1].text!, persistence: .permanent)
                 URLCredentialStorage.shared.set(credential, for: SubtitlesManager.shared.protectionSpace)
-                SubtitlesManager.shared.login({
-                    UserDefaults.standard.set(true, forKey: "AuthorizedOpenSubs")
-                    self.updateSignedInStatus(sender, isSignedIn: true)
-                    }, error: { error in
+                SubtitlesManager.shared.login() { error in
+                    if let error = error {
                         URLCredentialStorage.shared.remove(credential, for: SubtitlesManager.shared.protectionSpace)
                         alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
                         alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
                         self.present(alert, animated: true, completion: nil)
-                })
+                    } else {
+                        UserDefaults.standard.set(true, forKey: "AuthorizedOpenSubs")
+                        self.updateSignedInStatus(sender, isSignedIn: true)
+                    }
+                }
             }))
             alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
             present(alert, animated: true, completion: nil)

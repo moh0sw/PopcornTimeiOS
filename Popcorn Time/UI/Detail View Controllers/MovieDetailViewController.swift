@@ -62,29 +62,27 @@ class MovieDetailViewController: DetailItemOverviewViewController, PCTTablePicke
         } else {
             updateTorrents()
         }
-        SubtitlesManager.shared.login({
-            SubtitlesManager.shared.search(imdbId: self.currentItem.id, completion: { (subtitles, error) in
-                guard error == nil else { self.subtitlesButton.setTitle("Error loading subtitles", for: .normal); return }
-                self.currentItem.subtitles = subtitles
-                if subtitles.count == 0 {
-                    self.subtitlesButton.setTitle("No Subtitles Available", for: .normal)
-                } else {
-                    self.subtitlesButton.setTitle("None ▾", for: .normal)
-                    self.subtitlesButton.isUserInteractionEnabled = true
-                    if let preferredSubtitle = UserDefaults.standard.object(forKey: "PreferredSubtitleLanguage") as? String , preferredSubtitle != "None" {
-                        let languages = subtitles.map({$0.language})
-                        let index = languages.index{$0 == languages.filter({$0 == preferredSubtitle}).first!}
-                        let subtitle = self.currentItem.subtitles![index!]
-                        self.currentItem.currentSubtitle = subtitle
-                        self.subtitlesButton.setTitle(subtitle.language + " ▾", for: .normal)
-                    }
+        SubtitlesManager.shared.search(imdbId: self.currentItem.id, completion: { (subtitles, error) in
+            guard error == nil else { self.subtitlesButton.setTitle("Error loading subtitles", for: .normal); return }
+            self.currentItem.subtitles = subtitles
+            if subtitles.count == 0 {
+                self.subtitlesButton.setTitle("No Subtitles Available", for: .normal)
+            } else {
+                self.subtitlesButton.setTitle("None ▾", for: .normal)
+                self.subtitlesButton.isUserInteractionEnabled = true
+                if let preferredSubtitle = UserDefaults.standard.object(forKey: "PreferredSubtitleLanguage") as? String , preferredSubtitle != "None" {
+                    let languages = subtitles.map({$0.language})
+                    let index = languages.index{$0 == languages.filter({$0 == preferredSubtitle}).first!}
+                    let subtitle = self.currentItem.subtitles![index!]
+                    self.currentItem.currentSubtitle = subtitle
+                    self.subtitlesButton.setTitle(subtitle.language + " ▾", for: .normal)
                 }
-                self.subtitlesTablePickerView = PCTTablePickerView(superView: self.view, sourceDict: Dictionary(keys: subtitles.map({$0.link}), values: subtitles.map({$0.language})), self)
-                if let link = self.currentItem.currentSubtitle?.link {
-                    self.subtitlesTablePickerView.selectedItems = [link]
-                }
-                self.tabBarController?.view.addSubview(self.subtitlesTablePickerView)
-            })
+            }
+            self.subtitlesTablePickerView = PCTTablePickerView(superView: self.view, sourceDict: Dictionary(keys: subtitles.map({$0.link}), values: subtitles.map({$0.language})), self)
+            if let link = self.currentItem.currentSubtitle?.link {
+                self.subtitlesTablePickerView.selectedItems = [link]
+            }
+            self.tabBarController?.view.addSubview(self.subtitlesTablePickerView)
         })
         TraktManager.shared.getRelated(currentItem) { (movies, _) in
             self.relatedItems = movies

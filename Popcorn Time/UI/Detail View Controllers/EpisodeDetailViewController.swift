@@ -67,29 +67,27 @@ class EpisodeDetailViewController: UIViewController, PCTTablePickerViewDelegate,
                     let url = URL(string: image) {
                     self.backgroundImageView!.af_setImage(withURL: url, placeholderImage: UIImage(named: "Placeholder"), imageTransition: .crossDissolve(animationLength))
                 }
-                SubtitlesManager.shared.login({
-                    SubtitlesManager.shared.search(imdbId: imdb, completion: { (subtitles, error) in
-                        guard error == nil else { self.subtitlesButton.setTitle("Error loading subtitles.", for: .normal); return }
-                        currentItem.subtitles = subtitles
-                        if subtitles.isEmpty {
-                            self.subtitlesButton.setTitle("No Subtitles Available", for: .normal)
-                        } else {
-                            self.subtitlesButton.setTitle("None ▾", for: .normal)
-                            self.subtitlesButton.isUserInteractionEnabled = true
-                            if let preferredSubtitle = UserDefaults.standard.object(forKey: "PreferredSubtitleLanguage") as? String , preferredSubtitle != "None" {
-                                let languages = subtitles.map({$0.language})
-                                let index = languages.index{$0 == languages.filter({$0 == preferredSubtitle}).first!}
-                                let subtitle = currentItem.subtitles![index!]
-                                currentItem.currentSubtitle = subtitle
-                                self.subtitlesButton.setTitle(subtitle.language + " ▾", for: .normal)
-                            }
+                SubtitlesManager.shared.search(imdbId: imdb, completion: { (subtitles, error) in
+                    guard error == nil else { self.subtitlesButton.setTitle("Error loading subtitles.", for: .normal); return }
+                    currentItem.subtitles = subtitles
+                    if subtitles.isEmpty {
+                        self.subtitlesButton.setTitle("No Subtitles Available", for: .normal)
+                    } else {
+                        self.subtitlesButton.setTitle("None ▾", for: .normal)
+                        self.subtitlesButton.isUserInteractionEnabled = true
+                        if let preferredSubtitle = UserDefaults.standard.object(forKey: "PreferredSubtitleLanguage") as? String , preferredSubtitle != "None" {
+                            let languages = subtitles.map({$0.language})
+                            let index = languages.index{$0 == languages.filter({$0 == preferredSubtitle}).first!}
+                            let subtitle = currentItem.subtitles![index!]
+                            currentItem.currentSubtitle = subtitle
+                            self.subtitlesButton.setTitle(subtitle.language + " ▾", for: .normal)
                         }
-                        self.subtitlesTablePickerView = PCTTablePickerView(superView: self.view, sourceDict: Dictionary(keys: subtitles.map({$0.link}), values: subtitles.map({$0.language})), self)
-                        if let link = currentItem.currentSubtitle?.link {
-                            self.subtitlesTablePickerView.selectedItems = [link]
-                        }
-                        self.view.addSubview(self.subtitlesTablePickerView)
-                    })
+                    }
+                    self.subtitlesTablePickerView = PCTTablePickerView(superView: self.view, sourceDict: Dictionary(keys: subtitles.map({$0.link}), values: subtitles.map({$0.language})), self)
+                    if let link = currentItem.currentSubtitle?.link {
+                        self.subtitlesTablePickerView.selectedItems = [link]
+                    }
+                    self.view.addSubview(self.subtitlesTablePickerView)
                 })
             })
             titleLabel.text = currentItem.title
