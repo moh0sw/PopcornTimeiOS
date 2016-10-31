@@ -92,9 +92,9 @@ class SettingsTableViewController: UITableViewController, PCTTablePickerViewDele
             let controller = UIAlertController(title: nil, message: nil, preferredStyle: .alert)
             controller.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
             do {
-                let size = FileManager.default.folderSizeAtPath(downloadsDirectory)
-                for path in try FileManager.default.contentsOfDirectory(atPath: downloadsDirectory) {
-                   try FileManager.default.removeItem(atPath: downloadsDirectory + "/\(path)")
+                let size = FileManager.default.folderSizeAtPath(NSTemporaryDirectory())
+                for path in try FileManager.default.contentsOfDirectory(atPath: NSTemporaryDirectory()) {
+                   try FileManager.default.removeItem(atPath: NSTemporaryDirectory() + "/\(path)")
                 }
                 controller.title = "Success"
                 if size == 0 {
@@ -235,7 +235,7 @@ class SettingsTableViewController: UITableViewController, PCTTablePickerViewDele
         if TraktManager.shared.isSignedIn() {
             let alert = UIAlertController(title: "Sign Out", message: "Are you sure you want to Sign Out?", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "Yes", style: .destructive, handler: { action in
-                TraktManager.shared.logout()
+                do { try TraktManager.shared.logout() } catch {}
                 self.updateSignedInStatus(sender, isSignedIn: false)
             }))
             alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))

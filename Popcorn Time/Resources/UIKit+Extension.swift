@@ -222,15 +222,6 @@ extension UIView {
 }
 // MARK: - String
 
-let downloadsDirectory: String = {
-    let cachesPath = URL(fileURLWithPath: NSTemporaryDirectory())
-    let downloadsDirectoryPath = cachesPath.appendingPathComponent("Downloads")
-    if !FileManager.default.fileExists(atPath: downloadsDirectoryPath.relativePath) {
-        try! FileManager.default.createDirectory(atPath: downloadsDirectoryPath.relativePath, withIntermediateDirectories: true, attributes: nil)
-    }
-    return downloadsDirectoryPath.absoluteString
-}()
-
 extension String {
     
     func sliceFrom(_ start: String, to: String) -> String? {
