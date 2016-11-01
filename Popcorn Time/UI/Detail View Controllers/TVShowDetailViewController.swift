@@ -51,7 +51,7 @@ class TVShowDetailViewController: DetailItemOverviewViewController, UITableViewD
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.navigationBar.frame.size.width = splitViewController?.primaryColumnWidth ?? view.bounds.width
-        WatchedlistManager.episode.getWatchedProgress()
+        WatchedlistManager.episode.syncTraktProgress()
         WatchedlistManager.show.getWatched() {
             self.tableView.reloadData()
         }
@@ -93,7 +93,7 @@ class TVShowDetailViewController: DetailItemOverviewViewController, UITableViewD
         if currentType == .animes {
             PopcornKit.getAnimeInfo(currentItem.id, completion: completion)
         } else {
-            PopcornKit.getShowInfo(currentItem.id, completion: completion)
+            PopcornKit.getShowInfo(currentItem.id, tmdbId: currentItem.tmdbId, completion: completion)
         }
     }
     

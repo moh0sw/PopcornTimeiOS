@@ -60,13 +60,8 @@ class EpisodeDetailViewController: UIViewController, PCTTablePickerViewDelegate,
         super.viewDidLoad()
         heightConstraint.constant = UIScreen.main.bounds.height * 0.35
         if var currentItem = currentItem {
-            TraktManager.shared.getEpisodeMetadata(currentItem.show.id, episodeNumber: currentItem.episode, seasonNumber: currentItem.season, completion: { (image, _, imdb, error) in
+            TraktManager.shared.getEpisodeMetadata(currentItem.show.id, episodeNumber: currentItem.episode, seasonNumber: currentItem.season, completion: { ( _, imdb, error) in
                 guard let imdb = imdb else { return }
-                currentItem.largeBackgroundImage = image
-                if let image = image,
-                    let url = URL(string: image) {
-                    self.backgroundImageView!.af_setImage(withURL: url, placeholderImage: UIImage(named: "Placeholder"), imageTransition: .crossDissolve(animationLength))
-                }
                 SubtitlesManager.shared.search(imdbId: imdb, completion: { (subtitles, error) in
                     guard error == nil else { self.subtitlesButton.setTitle("Error loading subtitles.", for: .normal); return }
                     currentItem.subtitles = subtitles
@@ -89,6 +84,14 @@ class EpisodeDetailViewController: UIViewController, PCTTablePickerViewDelegate,
                     }
                     self.view.addSubview(self.subtitlesTablePickerView)
                 })
+            })
+            TMDBManager.shared.getEpisodeScreenshots(forShowWithImdbId: currentItem.show.id, orTMDBId: currentItem.show.tmdbId, season: currentItem.season, episode: currentItem.episode, completion: { (tmdb, image, error) in
+                if let tmdb = tmdb { currentItem.show.tmdbId = tmdb }
+                if let image = image,
+                    let url = URL(string: image) {
+                    currentItem.largeBackgroundImage = image
+                    self.backgroundImageView!.af_setImage(withURL: url, placeholderImage: UIImage(named: "Placeholder"), imageTransition: .crossDissolve(animationLength))
+                }
             })
             titleLabel.text = currentItem.title
             var season = String(currentItem.season)

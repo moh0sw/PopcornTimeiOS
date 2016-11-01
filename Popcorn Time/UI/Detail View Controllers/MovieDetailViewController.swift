@@ -26,7 +26,7 @@ class MovieDetailViewController: DetailItemOverviewViewController, PCTTablePicke
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        WatchedlistManager.movie.getWatchedProgress()
+        WatchedlistManager.movie.syncTraktProgress()
         view.addObserver(self, forKeyPath: "frame", options: .new, context: &classContext)
     }
     
@@ -54,11 +54,11 @@ class MovieDetailViewController: DetailItemOverviewViewController, PCTTablePicke
         playButton.borderColor = SLColorArt(image: backgroundImageView.image).secondaryColor
         trailerBtn.isEnabled = currentItem.trailer != nil
         if currentItem.torrents.isEmpty {
-            PopcornKit.getMovieInfo(currentItem.id, completion: { (movie, error) in
+            PopcornKit.getMovieInfo(currentItem.id, tmdbId: currentItem.tmdbId) { (movie, error) in
                 guard let movie = movie else { self.qualityBtn?.setTitle("Error loading torrents.", for: .normal); return}
                 self.currentItem = movie
                 self.updateTorrents()
-            })
+            }
         } else {
             updateTorrents()
         }

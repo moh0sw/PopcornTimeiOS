@@ -296,18 +296,21 @@ class PCTPlayerViewController: UIViewController, UIGestureRecognizerDelegate, UI
             upNextView.nextEpisodeInfoLabel.text = "Season \(nextMedia.season) Episode \(nextMedia.episode)"
             upNextView.nextEpisodeTitleLabel.text = nextMedia.title
             upNextView.nextShowTitleLabel.text = nextMedia.show!.title
-            TraktManager.shared.getEpisodeMetadata(nextMedia.show.id, episodeNumber: nextMedia.episode, seasonNumber: nextMedia.season, completion: { (image, _, imdb, error) in
+            TraktManager.shared.getEpisodeMetadata(nextMedia.show.id, episodeNumber: nextMedia.episode, seasonNumber: nextMedia.season, completion: { (_, imdb, error) in
                 guard let imdb = imdb else { return }
-                self.nextMedia?.largeBackgroundImage = image
-                if let image = image {
-                   self.upNextView.nextEpisodeThumbImageView.af_setImage(withURL: URL(string: image)!)
-                } else {
-                    self.upNextView.nextEpisodeThumbImageView.image = UIImage(named: "Placeholder")
-                }
                 SubtitlesManager.shared.search(imdbId: imdb, completion: { (subtitles, error) in
                     guard error == nil else { return }
                     self.nextMedia?.subtitles = subtitles
                 })
+            })
+            TMDBManager.shared.getEpisodeScreenshots(forShowWithImdbId: nextMedia.show.id, orTMDBId: nextMedia.show.tmdbId, season: nextMedia.season, episode: nextMedia.episode, completion: { (tmdb, image, error) in
+                if let tmdb = tmdb { self.nextMedia?.show.tmdbId = tmdb }
+                if let image = image {
+                    self.nextMedia?.largeBackgroundImage = image
+                    self.upNextView.nextEpisodeThumbImageView.af_setImage(withURL: URL(string: image)!)
+                } else {
+                    self.upNextView.nextEpisodeThumbImageView.image = UIImage(named: "Placeholder")
+                }
             })
         }
         resetIdleTimer()
