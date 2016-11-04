@@ -58,8 +58,9 @@ class DetailItemOverviewViewController: UIViewController, UIGestureRecognizerDel
                 let offsetY = -frame.size.height
                 self.tabBarController?.tabBar.frame = frame.offsetBy(dx: 0, dy: offsetY)
             }
-            
         }
+        view.setNeedsLayout()
+        view.layoutIfNeeded()
     }
     
     override func viewWillDisappear(_ animated: Bool) {

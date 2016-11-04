@@ -72,7 +72,7 @@ class GoogleCastManager: NSObject, GCKDeviceScannerListener, GCKSessionManagerLi
     // MARK: - GCKSessionManagerListener
     
     func sessionManager(_ sessionManager: GCKSessionManager, didEnd session: GCKSession, withError error: Error?) {
-        guard error == nil else { print(error); return }
+        guard error == nil else { return }
         if let device = deviceAwaitingConnection {
             GCKCastContext.sharedInstance().sessionManager.startSession(with: device)
         } else {
