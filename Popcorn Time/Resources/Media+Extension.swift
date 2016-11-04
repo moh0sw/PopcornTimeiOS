@@ -34,19 +34,19 @@ extension Media {
         errorBlock: @escaping (String) -> Void,
         finishedLoadingBlock: @escaping (LoadingViewController, UIViewController) -> Void)
     {
-        if !url.hasPrefix("magnet") {
+        if url.hasPrefix("magnet") || (url.hasSuffix(".torrent") && !url.hasPrefix("http")) {
+            PTTorrentStreamer.shared().startStreaming(fromFileOrMagnetLink: url, progress: { (status) in
+                loadingBlock(status, loadingViewController)
+            }, readyToPlay: { (videoFileURL, videoFilePath) in
+                playBlock(videoFileURL, videoFilePath, self, progress, playViewController)
+                finishedLoadingBlock(loadingViewController, playViewController)
+            }, failure: { _ in
+                errorBlock("Error processing torrent.")
+            })
+        } else {
             PopcornKit.downloadTorrentFile(url, completion: { (url, error) in
                 guard let url = url, error == nil else { errorBlock(error!.localizedDescription); return }
                 self.play(fromFileOrMagnetLink: url, loadingViewController: loadingViewController, playViewController: playViewController, progress: progress, loadingBlock: loadingBlock, playBlock: playBlock, errorBlock: errorBlock, finishedLoadingBlock: finishedLoadingBlock)
-            })
-        } else {
-            PTTorrentStreamer.shared().startStreaming(fromFileOrMagnetLink: url, progress: { (status) in
-                loadingBlock(status, loadingViewController)
-                }, readyToPlay: { (videoFileURL, videoFilePath) in
-                    playBlock(videoFileURL, videoFilePath, self, progress, playViewController)
-                    finishedLoadingBlock(loadingViewController, playViewController)
-                }, failure: { _ in
-                    errorBlock("Error processing torrent.")
             })
         }
     }
