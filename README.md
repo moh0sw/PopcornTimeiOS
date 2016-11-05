@@ -4,6 +4,8 @@
 
 ## Popcorn Time for iOS
 
+**PSA: We are NOT affiliated with AppDB or any other organization - free or otherwise - that provides resigned IPA files and it is not our responsibility if there are bugs in their versions of the app.**
+
 [![Platform](http://img.shields.io/badge/platform-iOS%20%7C%20tvOS-lightgrey.svg?style=flat)](https://github.com/PopcornTimeTV)
 [![Twitter](https://img.shields.io/badge/twitter-@Popcorn%20Time-3299EC.svg?style=flat)](https://twitter.com/popcorntimetv)
 [![Reddit](https://img.shields.io/badge/discussion-reddit-red.svg?style=flat)](https://reddit.com/r/popcorntime)
